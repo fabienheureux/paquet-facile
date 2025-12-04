@@ -20,16 +20,17 @@ from wagtail.admin.widgets.slug import SlugInput
 from wagtail.api import APIField
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import RichTextField, StreamField
+from wagtail_dsfr.content_manager.fields import DynamicStreamField
 from wagtail.models import Orderable
 from wagtail.models.i18n import TranslatableMixin
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
-from blog.blocks import COLOPHON_BLOCKS
-from blog.managers import CategoryManager
-from content_manager.abstract import SitesFacilesBasePage
-from content_manager.constants import LIMITED_RICHTEXTFIELD_FEATURES
-from content_manager.models import Tag
+from wagtail_dsfr.blog.blocks import COLOPHON_BLOCKS
+from wagtail_dsfr.blog.managers import CategoryManager
+from wagtail_dsfr.content_manager.abstract import SitesFacilesBasePage
+from wagtail_dsfr.content_manager.constants import LIMITED_RICHTEXTFIELD_FEATURES
+from wagtail_dsfr.content_manager.models import Tag
 
 User = get_user_model()
 
@@ -229,7 +230,7 @@ class BlogIndexPage(RoutablePageMixin, SitesFacilesBasePage):
         ),
     ]
 
-    subpage_types = ["blog.BlogEntryPage"]
+    subpage_types = ["wagtail_dsfr_blog.BlogEntryPage"]
 
     class Meta:
         verbose_name = _("Blog index")
@@ -471,7 +472,7 @@ class BlogIndexPage(RoutablePageMixin, SitesFacilesBasePage):
                 "extra_title": extra_title,
                 "extra_breadcrumbs": extra_breadcrumbs,
             },
-            template="blog/categories_list_page.html",
+            template="wagtail_dsfr_blog/categories_list_page.html",
         )
 
     @path("tags/", name="tags_list")
@@ -501,7 +502,7 @@ class BlogIndexPage(RoutablePageMixin, SitesFacilesBasePage):
                 "extra_title": extra_title,
                 "extra_breadcrumbs": extra_breadcrumbs,
             },
-            template="blog/tags_list_page.html",
+            template="wagtail_dsfr_blog/tags_list_page.html",
         )
 
 
@@ -515,10 +516,10 @@ class BlogEntryPage(SitesFacilesBasePage):
     )
     date = models.DateTimeField(verbose_name=_("Post date"), default=timezone.now)
     authors = ParentalManyToManyField(
-        "blog.Person", blank=True, help_text=_("Author entries can be created in Snippets > Persons")
+        "wagtail_dsfr_blog.Person", blank=True, help_text=_("Author entries can be created in Snippets > Persons")
     )
 
-    parent_page_types = ["blog.BlogIndexPage"]
+    parent_page_types = ["wagtail_dsfr_blog.BlogIndexPage"]
     subpage_types = []
 
     settings_panels = SitesFacilesBasePage.settings_panels + [
