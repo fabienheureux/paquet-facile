@@ -40,8 +40,8 @@ class CustomBlock(blocks.StructBlock):
 
 Vos blocs personnalisés seront automatiquement ajoutés aux pages qui utilisent `DynamicStreamField` ou héritent de `SitesFacilesBasePage`.
 
-## Astuces d'intégration
 
-- Utilisez `@register_common_block` pour enregistrer vos blocs personnalisés dans le registre global
-- Pour le templating, utilisez les conventions Wagtail (héritage de `base.html`, blocs `{% block %}`) et référez-vous à la doc officielle : <https://docs.wagtail.org/en/stable/topics/streamfield.html>
-- Inspirez-vous du projet `demo/` pour voir les blocs en situation (héros, pages de blog, etc.)
+## Et les migrations dans tout ça ? 
+
+L'objectif du `DynamicStreamField` est de s'appuyer sur un callable plutôt que sur une liste statique de blocs.  
+De ce fait, aucune migration n'est générée via l'utilisation de cette technique.
