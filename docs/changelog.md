@@ -112,50 +112,50 @@
 - 🧩 Ajout de blocs manquants (#245)
 - 🐛 Corrections blog (#240)
 
-## Version 1.10.2 (amont)
+## Version 1.10.2 
 - 🎨 Semi-rollback des pictos mode sombre (#235)
 
-## Version 1.10.1 (amont)
+## Version 1.10.1 
 - 🐛 Corrections pictogrammes en mode sombre (#231, #232)
 - 📦 Mises à jour dépendances (Wagtail → 6.3, django-dsfr → 1.4.1) (#234)
 
-## Version 1.10.0 (amont)
+## Version 1.10.0 
 - ⚠️ Avertissement sur l'utilisation du DSFR (#221)
 - 🐳 Corrections Docker (#212)
 - 🛠️ Mise en place du système de modèles de pages (#218)
 - 🔀 Permet de migrer de versions précédentes (#217)
 
-## Version 1.9.0 (amont)
+## Version 1.9.0 
 - 🧩 Nouveaux composants : Onglets et Partage (#206)
 - 📄 Ajout de `publiccode.yml` (#208)
 - 🌐 Mise en place de l'API (#209)
 - 🔐 Gestion de l'accès aux pages privées (#216)
 - 🧱 Blocs accordéons/étapier pour multi-colonnes (#215)
 
-## Version 1.8.0 (amont)
+## Version 1.8.0 
 - 📅 Système d'agenda/calendrier (#191)
 - 🖼️ Masque le header des cartes horizontales si pas d'image (#199)
 - 📢 Mention « Site fait avec Sites faciles » en pied de page (#196)
 - 📦 Mises à jour dépendances + nouveau bandeau info (#193)
 
-## Version 1.7.0 (amont)
+## Version 1.7.0 
 - 🧩 Listes de boutons pour appels à action (#184)
 - 📰 Filtrage des articles sur l’index + bloc "Derniers articles" (#186)
 - 📦 Mises à jour dépendances Python (#190)
 
-## Version 1.6.1 (amont)
+## Version 1.6.1 
 - 🐛 Répare l'affichage des tuiles (#180)
 
-## Version 1.6.0 (amont)
+## Version 1.6.0 
 - ✉️ Envoi de courriels de récupération de mot de passe (#168)
 - 🧰 Générateur de formulaire (#169)
 - 🌞 Force le thème clair à la première visite si sélecteur désactivé (#174)
 - 🐛 Corrections tuiles et ajustements (#176)
 
-## Version 1.5.2 (amont)
+## Version 1.5.2 
 - 🗂️ Nouveau bloc "Liste des sous-pages" (#148, #150)
 - 🧩 Améliorations blocs Mise en avant / Mise en exergue (#147)
 - 🖼️ Paramètre `parameters` pour les iframes (#152)
 
-## Version 1.5.1 (amont)
+## Version 1.5.1 
 - 🐛 Corrections d'affichage pour cartes/vidéos (#146)

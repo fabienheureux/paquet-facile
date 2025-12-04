@@ -1,6 +1,6 @@
 # Migration d'un site Wagtail existant
 
-Ce guide réduit la migration à l'essentiel : sauvegarder, installer, migrer, mettre à jour les ContentTypes.
+Ce guide réduit la migration à l'essentiel : sauvegarder, installer, migrer, mettre à jour les tables.
 
 ## 1. Sauvegarder
 - Exportez la base : `python manage.py dumpdata > backup.json` (ou votre méthode habituelle).
@@ -16,18 +16,19 @@ python manage.py migrate
 python manage.py collectstatic
 ```
 
-## 4. Mettre à jour les ContentTypes
-Lancez la commande fournie pour réaligner les ContentTypes de l’ancien projet Sites Faciles vers `wagtail_dsfr` :
+## 4. Migrer depuis Sites Faciles
+Si vous migrez depuis l'ancien projet Sites Faciles, lancez la commande fournie pour renommer les tables et mettre à jour l'historique des migrations :
 
 ```bash
-python manage.py migrate_contenttype --dry-run
-python manage.py migrate_contenttype
+python manage.py migrate_from_sites_faciles --dry-run
+python manage.py migrate_from_sites_faciles
 ```
 
-La commande se trouve dans `wagtail_dsfr/management/commands/migrate_contenttype.py` et gère :
-- Le basculement des `ContentType` `blog`, `events`, `forms`, `content_manager`, `config` vers leurs équivalents `wagtail_dsfr_*`
-- La mise à jour des pages existantes pour pointer vers les nouveaux types
+La commande se trouve dans `wagtail_dsfr/management/commands/migrate_from_sites_faciles.py` et gère :
+- Le renommage des tables de base de données en les préfixant avec `wagtail_dsfr_`
+- La mise à jour de la table `django_migrations` pour refléter les nouveaux noms d'applications
+- Le basculement des apps `blog`, `events`, `forms`, `content_manager`, `config` vers leurs équivalents `wagtail_dsfr_*`
 
 ## 5. Vérifier
-- Parcourez vos pages principales et l’admin Wagtail pour valider le rendu DSFR.
+- Parcourez vos pages principales et l'admin Wagtail pour valider le rendu DSFR.
 - Inspirez-vous du projet `demo/` pour les gabarits (header, footer, menus). Toute personnalisation Wagtail/Django non spécifique à `wagtail_dsfr` reste documentée sur <https://docs.wagtail.org/> et <https://docs.djangoproject.com/>.
