@@ -20,6 +20,7 @@ from wagtail.admin.widgets.slug import SlugInput
 from wagtail.api import APIField
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import RichTextField, StreamField
+from wagtail_dsfr.content_manager.fields import DynamicStreamField
 from wagtail.models import Orderable
 from wagtail.models.i18n import TranslatableMixin
 from wagtail.search import index

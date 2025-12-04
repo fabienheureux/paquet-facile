@@ -199,3 +199,48 @@ rules:
     replace: '"{package_name}_content_manager.Tag"'
     scope: all
     literal: true
+
+  # ---------- DynamicStreamField transformations ----------
+  # Step 1: Replace imports of STREAMFIELD_COMMON_BLOCKS and HERO_STREAMFIELD_BLOCKS with callable imports
+  - search: 'from {package_name}\.content_manager\.blocks\.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS'
+    replace: 'from {package_name}.content_manager.blocks.streamfield_callables import (\n    get_common_streamfield_blocks,\n    get_hero_streamfield_blocks,\n)'
+    path_glob: "**/models.py"
+
+  - search: 'from {package_name}\.content_manager\.blocks\.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS'
+    replace: 'from {package_name}.content_manager.blocks.streamfield_callables import (\n    get_common_streamfield_blocks,\n    get_hero_streamfield_blocks,\n)'
+    path_glob: "**/abstract.py"
+
+  - search: 'from {package_name}\.content_manager\.blocks\.core import STREAMFIELD_COMMON_BLOCKS, HERO_STREAMFIELD_BLOCKS'
+    replace: 'from {package_name}.content_manager.blocks.streamfield_callables import (\n    get_common_streamfield_blocks,\n    get_hero_streamfield_blocks,\n)'
+    path_glob: "**/models.py"
+
+  - search: 'from {package_name}\.content_manager\.blocks\.core import STREAMFIELD_COMMON_BLOCKS, HERO_STREAMFIELD_BLOCKS'
+    replace: 'from {package_name}.content_manager.blocks.streamfield_callables import (\n    get_common_streamfield_blocks,\n    get_hero_streamfield_blocks,\n)'
+    path_glob: "**/abstract.py"
+
+  # Step 2: Add DynamicStreamField import after wagtail.fields import
+  - search: 'from wagtail\.fields import (.*?)StreamField'
+    replace: 'from wagtail.fields import \1StreamField\nfrom {package_name}.content_manager.fields import DynamicStreamField'
+    path_glob: "**/models.py"
+
+  - search: 'from wagtail\.fields import (.*?)StreamField'
+    replace: 'from wagtail.fields import \1StreamField\nfrom {package_name}.content_manager.fields import DynamicStreamField'
+    path_glob: "**/abstract.py"
+
+  # Step 3: Replace body = StreamField(STREAMFIELD_COMMON_BLOCKS, with DynamicStreamField and callable
+  - search: '(body\s*=\s*)StreamField\(\s*\n?\s*STREAMFIELD_COMMON_BLOCKS,'
+    replace: '\1DynamicStreamField(\n        get_common_streamfield_blocks,'
+    path_glob: "**/models.py"
+
+  - search: '(body\s*=\s*)StreamField\(\s*\n?\s*STREAMFIELD_COMMON_BLOCKS,'
+    replace: '\1DynamicStreamField(\n        get_common_streamfield_blocks,'
+    path_glob: "**/abstract.py"
+
+  # Step 4: Replace hero = StreamField(HERO_STREAMFIELD_BLOCKS, with DynamicStreamField and callable
+  - search: '(hero\s*=\s*)StreamField\(\s*\n?\s*HERO_STREAMFIELD_BLOCKS,'
+    replace: '\1DynamicStreamField(\n        get_hero_streamfield_blocks,'
+    path_glob: "**/models.py"
+
+  - search: '(hero\s*=\s*)StreamField\(\s*\n?\s*HERO_STREAMFIELD_BLOCKS,'
+    replace: '\1DynamicStreamField(\n        get_hero_streamfield_blocks,'
+    path_glob: "**/abstract.py"

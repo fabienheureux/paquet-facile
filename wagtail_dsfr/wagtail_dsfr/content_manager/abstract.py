@@ -4,13 +4,17 @@ from dsfr.constants import COLOR_CHOICES
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.api import APIField
 from wagtail.fields import RichTextField, StreamField
+from wagtail_dsfr.content_manager.fields import DynamicStreamField
 from wagtail.images import get_image_model_string
 from wagtail.images.api.fields import ImageRenditionField
 from wagtail.models import Page
 from wagtail.search import index
 
 from wagtail_dsfr.content_manager.blocks.buttons_links import ButtonsHorizontalListBlock
-from wagtail_dsfr.content_manager.blocks.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS
+from wagtail_dsfr.content_manager.blocks.streamfield_callables import (
+    get_common_streamfield_blocks,
+    get_hero_streamfield_blocks,
+)
 from wagtail_dsfr.content_manager.utils import get_streamfield_raw_text
 
 
@@ -20,10 +24,11 @@ class SitesFacilesBasePage(Page):
     by all pages in Sites Faciles
     """
 
-    hero = StreamField(HERO_STREAMFIELD_BLOCKS, blank=True, use_json_field=True, max_num=1)
+    hero = DynamicStreamField(
+        get_hero_streamfield_blocks, blank=True, use_json_field=True, max_num=1)
 
-    body = StreamField(
-        STREAMFIELD_COMMON_BLOCKS,
+    body = DynamicStreamField(
+        get_common_streamfield_blocks,
         blank=True,
         use_json_field=True,
         collapsed=True,
