@@ -47,3 +47,23 @@ class FeaturedContentBlock(blocks.StructBlock):
     class Meta:
         icon = "pick"
         template = "demo/blocks/featured_content_block.html"
+
+
+@register_common_block(
+    name="coucou",
+    label="Coucou",
+    group="Coucou Blocks",
+)
+class CoucouBlock(blocks.StructBlock):
+    """
+    Another example of a custom registered block with explicit name.
+    """
+
+    headline = blocks.CharBlock(required=True)
+    description = blocks.TextBlock(required=False)
+    image = ImageChooserBlock(required=False)
+    link = blocks.URLBlock(required=False)
+
+    class Meta:
+        icon = "pick"
+        template = "demo/blocks/featured_content_block.html"

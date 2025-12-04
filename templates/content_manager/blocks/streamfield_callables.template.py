@@ -18,11 +18,19 @@ def get_common_streamfield_blocks():
         body = DynamicStreamField(get_common_streamfield_blocks, blank=True, use_json_field=True)
 
     This prevents infinite migrations by keeping block definitions dynamic.
-    The actual block definitions are imported from core.py at runtime.
+    The actual block definitions are imported from core.py at runtime, and any
+    custom blocks registered via @register_common_block are automatically included.
     """
     from {package_name}.content_manager.blocks.core import STREAMFIELD_COMMON_BLOCKS
+    from {package_name}.content_manager.registry import get_registered_blocks
 
-    return STREAMFIELD_COMMON_BLOCKS
+    # Start with the core blocks
+    blocks = list(STREAMFIELD_COMMON_BLOCKS)
+
+    # Add any custom registered blocks
+    blocks.extend(get_registered_blocks())
+
+    return blocks
 
 
 def get_hero_streamfield_blocks():

@@ -1059,7 +1059,7 @@ wheels = [
 
 [[package]]
 name = "wagtail-dsfr"
-version = "2.3.0rc5"
+version = "2.4.0rc1"
 source = { editable = "../wagtail_dsfr" }
 dependencies = [
     { name = "beautifulsoup4" },

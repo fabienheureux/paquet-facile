@@ -15,6 +15,7 @@ class DynamicStreamField(StreamField):
     This works by:
     1. Accepting a callable function that returns block types
     2. Excluding block type definitions from the migration data via deconstruct()
+    3. Lazy evaluation of blocks via @cached_property
 
     This prevents the infinite migration problem where adding a new block type
     causes Django to detect a model change and create a new migration.
@@ -43,6 +44,7 @@ class DynamicStreamField(StreamField):
     - Add new blocks without triggering migrations
     - Keep block definitions centralized
     - Still use the full power of StreamField
+    - Blocks registered via @register_common_block are automatically included
 
     Example with mixed approach (static + dynamic blocks):
         body = DynamicStreamField(
@@ -62,7 +64,6 @@ class DynamicStreamField(StreamField):
             block_types: Can be either:
                 - A list of block tuples: [('name', BlockClass()), ...]
                 - A callable that returns such a list: get_common_blocks
-                - A mixed list with callable: [...] + get_extra_blocks()
                 - None (empty list)
             use_json_field: Whether to use JSONField for storage (default: True)
             block_lookup: Optional block lookup dictionary
@@ -71,11 +72,10 @@ class DynamicStreamField(StreamField):
         if block_types is None:
             block_types = []
 
-        # Store the original block_types argument for later use
-        self.block_types_arg = block_types
+        # Store the original callable for lazy evaluation
+        self._block_types_callable = block_types if callable(block_types) else None
 
-        # If block_types is a callable, call it now to get the actual blocks
-        # This is needed during field initialization
+        # For parent __init__, evaluate the callable or use the list
         if callable(block_types):
             block_types = block_types()
 
@@ -86,12 +86,18 @@ class DynamicStreamField(StreamField):
         """
         Lazy evaluation of the stream_block.
 
-        If block_types was provided as a callable, evaluate it here.
-        This ensures that blocks are always fresh when accessed.
+        If block_types was provided as a callable, re-evaluate it here.
+        This ensures that blocks registered after model definition
+        (e.g., in AppConfig.ready()) are included.
         """
-        # Re-evaluate callable if needed
-        if callable(self.block_types_arg):
-            self.block_types_arg = self.block_types_arg()
+        if self._block_types_callable is not None:
+            # Re-create the StreamBlock with fresh blocks from the callable
+            from wagtail.blocks import StreamBlock
+
+            block_types = self._block_types_callable()
+            return StreamBlock(block_types, required=not self.blank)
+
+        # Fall back to parent implementation
         return super().stream_block
 
     def deconstruct(self):
