@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n static dsfr_tags wagtailcore_tags wagtailimages_tags wagtailroutablepage_tags sites_conformes_tags %}
+{% load i18n static dsfr_tags wagtailcore_tags wagtailimages_tags wagtailroutablepage_tags wagtail_dsfr_tags %}
 
 {% block title %}
   <title>{{ page.seo_title|default:page.title }} — {{ settings.sites_conformes_content_manager.CmsDsfrConfig.site_title }}</title>

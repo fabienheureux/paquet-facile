@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static dsfr_tags wagtailcore_tags wagtailimages_tags wagtailroutablepage_tags sites_conformes_tags i18n %}
+{% load static dsfr_tags wagtailcore_tags wagtailimages_tags wagtailroutablepage_tags wagtail_dsfr_tags i18n %}
 
 {% block title %}
   <title>
@@ -65,7 +65,7 @@
 
   <div class="fr-container fr-pt-4w">
     {% include "sites_conformes_content_manager/blocks/breadcrumbs.html" %}
-
+    
     {% if page.show_title %}
       <h1>
         {{ page.title }}

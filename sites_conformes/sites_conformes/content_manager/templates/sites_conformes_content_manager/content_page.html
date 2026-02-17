@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load static dsfr_tags wagtailcore_tags wagtailimages_tags sites_conformes_tags i18n %}
+{% load static dsfr_tags wagtailcore_tags wagtailimages_tags wagtail_dsfr_tags i18n %}
 
 {% block title %}
   <title>{{ page.seo_title|default:page.title }} — {{ settings.sites_conformes_content_manager.CmsDsfrConfig.site_title }}</title>
@@ -37,7 +37,7 @@
   {% include "sites_conformes_content_manager/blocks/heading.html" %}
   <div class="fr-container fr-pt-4w">
     {% include "sites_conformes_content_manager/blocks/breadcrumbs.html" %}
-
+    
     {% if page.show_title %}
       <h1>
         {{ page.title }}

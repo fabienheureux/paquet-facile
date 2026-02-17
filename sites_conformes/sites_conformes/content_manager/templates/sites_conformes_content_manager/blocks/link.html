@@ -1,4 +1,4 @@
-{% load i18n dsfr_tags wagtailcore_tags sites_conformes_tags %}
+{% load i18n dsfr_tags wagtailcore_tags wagtail_dsfr_tags %}
 {% settings_value "WAGTAILADMIN_PATH" as admin_path %}
 <div class="fr-mb-4w">
   <a class="fr-link {{ value.size }}{% if admin_path in value.url %} fr-icon-lock-line fr-link--icon-right{% elif value.document %} fr-link--download{% else %} {{ value.icon }}{% endif %}"
