@@ -1,7 +1,7 @@
 # search-and-replace.yml
 
 # Package name for namespacing (used in {package_name} placeholder)
-package_name: wagtail_dsfr
+package_name: sites_conformes
 
 apps:
   - blog
@@ -202,28 +202,28 @@ rules:
 
   # ---------- DynamicStreamField transformations ----------
   # NOTE: Run with -j 1 flag to avoid race conditions when multiple rules target same file
-  - search: "from wagtail.fields import RichTextField, StreamField"
-    replace: "from wagtail.fields import RichTextField, StreamField\nfrom wagtail_dsfr.content_manager.fields import DynamicStreamField"
-    literal: true
-    scope: all
-  - search: "from wagtail_dsfr.content_manager.blocks.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS"
-    replace: "from wagtail_dsfr.content_manager.blocks.streamfield_callables import get_common_streamfield_blocks, get_hero_streamfield_blocks"
-    literal: true
-    scope: all
+  # - search: "from wagtail.fields import RichTextField, StreamField"
+  #   replace: "from wagtail.fields import RichTextField, StreamField\nfrom wagtail_dsfr.content_manager.fields import DynamicStreamField"
+  #   literal: true
+  #   scope: all
+  # - search: "from wagtail_dsfr.content_manager.blocks.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS"
+  #   replace: "from wagtail_dsfr.content_manager.blocks.streamfield_callables import get_common_streamfield_blocks, get_hero_streamfield_blocks"
+  #   literal: true
+  #   scope: all
 
-  - search: 'body\s*=\s*StreamField\('
-    replace: "body = DynamicStreamField("
-    scope: all
+  # - search: 'body\s*=\s*StreamField\('
+  #   replace: "body = DynamicStreamField("
+  #   scope: all
 
-  - search: 'hero\s*=\s*StreamField\('
-    replace: "hero = DynamicStreamField("
-    scope: all
+  # - search: 'hero\s*=\s*StreamField\('
+  #   replace: "hero = DynamicStreamField("
+  #   scope: all
 
-  # Replace constant names with callables only inside DynamicStreamField()
-  - search: 'DynamicStreamField\(\s*STREAMFIELD_COMMON_BLOCKS'
-    replace: "DynamicStreamField(get_common_streamfield_blocks"
-    scope: all
+  # # Replace constant names with callables only inside DynamicStreamField()
+  # - search: 'DynamicStreamField\(\s*STREAMFIELD_COMMON_BLOCKS'
+  #   replace: "DynamicStreamField(get_common_streamfield_blocks"
+  #   scope: all
 
-  - search: 'DynamicStreamField\(\s*HERO_STREAMFIELD_BLOCKS'
-    replace: "DynamicStreamField(get_hero_streamfield_blocks"
-    scope: all
+  # - search: 'DynamicStreamField\(\s*HERO_STREAMFIELD_BLOCKS'
+  #   replace: "DynamicStreamField(get_hero_streamfield_blocks"
+  #   scope: all
