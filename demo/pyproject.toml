@@ -5,11 +5,11 @@ description = "Demo Wagtail site using sites_faciles"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
 dependencies = [
-    "wagtail-dsfr",
+    "sites-conformes",
 ]
 
 [tool.uv.sources]
-wagtail-dsfr = { path = "../wagtail_dsfr", editable = true }
+sites-conformes = { path = "../sites_conformes", editable = true }
 
 [dependency-groups]
 dev = [

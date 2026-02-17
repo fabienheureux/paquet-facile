@@ -198,25 +198,25 @@ WAGTAILDOCS_EXTENSIONS = [
 TEMPLATES[0]["OPTIONS"]["context_processors"].extend(
     [
         "wagtailmenus.context_processors.wagtailmenus",
-        "wagtail_dsfr.content_manager.context_processors.skiplinks",
-        "wagtail_dsfr.content_manager.context_processors.mega_menus",
+        "sites_conformes.content_manager.context_processors.skiplinks",
+        "sites_conformes.content_manager.context_processors.mega_menus",
     ]
 )
 
 INSTALLED_APPS.extend(
     [
         "dsfr",
-        "wagtail_dsfr",
-        "wagtail_dsfr.blog",
-        "wagtail_dsfr.content_manager",
-        "wagtail_dsfr.events",
+        "sites_conformes",
+        "sites_conformes.blog",
+        "sites_conformes.content_manager",
+        "sites_conformes.events",
         "wagtail.contrib.settings",
         "wagtail.contrib.typed_table_block",
         "wagtail.contrib.routable_page",
         "wagtail_modeladmin",
         "wagtailmenus",
         "wagtailmarkdown",
-        "wagtail_dsfr.proconnect",
+        "sites_conformes.proconnect",
     ]
 )
 WAGTAILADMIN_PATH = "admin/"

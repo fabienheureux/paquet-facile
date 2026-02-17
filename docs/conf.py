@@ -1,6 +1,6 @@
 # Configuration file for the Sphinx documentation builder.
 
-project = "wagtail-dsfr"
+project = "sites-conformes"
 copyright = "2025, DINUM"
 author = "DINUM"
 release = "2.1.0"
@@ -31,18 +31,18 @@ language = "fr"
 
 html_theme = "sphinx_wagtail_theme"
 html_static_path = ["_static"]
-html_baseurl = "https://wagtail-dsfr.fabien.cool/"
+html_baseurl = "https://sites-conformes.fabien.cool/"
 
 html_theme_options = {
-    "project_name": "wagtail-dsfr",
-    "github_url": "https://github.com/fabienheureux/wagtail-dsfr/",
+    "project_name": "sites-conformes",
+    "github_url": "https://github.com/fabienheureux/sites-conformes/",
     "logo": "logo.svg",
-    "logo_alt": "wagtail-dsfr",
+    "logo_alt": "sites-conformes",
 }
 
 html_context = {
     "github_user": "fabienheureux",
-    "github_repo": "wagtail-dsfr",
+    "github_repo": "sites-conformes",
     "github_version": "main",
     "conf_py_path": "/docs/",
 }

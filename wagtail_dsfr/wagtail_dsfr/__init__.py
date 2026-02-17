@@ -1,1 +1,1 @@
-default_app_config = "wagtail_dsfr.apps.WagtailDsfrAppConfig"
+default_app_config = "sites_conformes.apps.WagtailDsfrAppConfig"

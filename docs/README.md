@@ -1,6 +1,6 @@
-# Documentation wagtail-dsfr
+# Documentation sites-conformes
 
-Documentation officielle de wagtail-dsfr en français, construite avec Sphinx et le thème Wagtail.
+Documentation officielle de sites-conformes en français, construite avec Sphinx et le thème Wagtail.
 
 ## Build local
 

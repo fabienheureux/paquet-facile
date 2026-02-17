@@ -1,6 +1,6 @@
 # Configuration
 
-Ce guide couvre uniquement les réglages spécifiques à `wagtail_dsfr`. Pour la configuration générale Wagtail/Django, référez-vous à leurs documentations officielles.
+Ce guide couvre uniquement les réglages spécifiques à `sites_conformes`. Pour la configuration générale Wagtail/Django, référez-vous à leurs documentations officielles.
 
 ## HOST_URL
 URL de votre site (sans protocole) :

@@ -1,13 +1,13 @@
 # Blocs StreamField
 
-wagtail-dsfr fournit une collection de blocs StreamField adaptés au DSFR pour composer vos pages sans réinventer les composants.
+sites-conformes fournit une collection de blocs StreamField adaptés au DSFR pour composer vos pages sans réinventer les composants.
 
 ## Ajouter les blocs à vos pages
 
-wagtail-dsfr utilise un système de `DynamicStreamField` qui permet d'ajouter automatiquement tous les blocs DSFR sans avoir à les importer manuellement. Les blocs disponibles sont chargés dynamiquement via un système de registre.
+sites-conformes utilise un système de `DynamicStreamField` qui permet d'ajouter automatiquement tous les blocs DSFR sans avoir à les importer manuellement. Les blocs disponibles sont chargés dynamiquement via un système de registre.
 
 ```python
-from wagtail_dsfr.content_manager.abstract import SitesFacilesBasePage
+from sites_conformes.content_manager.abstract import SitesFacilesBasePage
 
 class ContentPage(SitesFacilesBasePage):
     # Les champs hero et body sont déjà définis dans SitesFacilesBasePage
@@ -26,7 +26,7 @@ Pour ajouter vos blocs personnalisés aux blocs DSFR existants, utilisez le déc
 ```python
 # Dans votre fichier blocks.py
 from wagtail import blocks
-from wagtail_dsfr.content_manager.registry import register_common_block
+from sites_conformes.content_manager.registry import register_common_block
 
 @register_common_block
 class CustomBlock(blocks.StructBlock):

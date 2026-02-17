@@ -1,8 +1,8 @@
-# Wagtail DSFR - Package Python
+# Sites Conformes - Package Python
 
 Ce dépôt contient les outils permettant de transformer [Sites Faciles](https://github.com/numerique-gouv/sites-faciles) en package Python réutilisable.
 
-**Package publié :** [wagtail-dsfr sur PyPI](https://pypi.org/project/wagtail-dsfr/)
+**Package publié :** [sites-conformes sur PyPI](https://pypi.org/project/sites-conformes/)
 
 ## 🎯 Objectif
 
@@ -19,10 +19,10 @@ Le script `paquet_facile.py` permet de synchroniser ce fork avec le dépôt Site
 Le script crée une structure de package Python standard :
 
 ```
-wagtail_dsfr/              # Racine du package
+sites_conformes/              # Racine du package
 ├── pyproject.toml         # Configuration du package
 ├── README.md              # Documentation du package
-└── wagtail_dsfr/          # Code Python
+└── sites_conformes/          # Code Python
     ├── __init__.py
     ├── apps.py
     ├── blog/
@@ -72,28 +72,28 @@ Le versioning suit celui de Sites Faciles (tags iso).
 
 ```bash
 # Depuis un autre projet
-pip install -e /chemin/vers/sites-faciles/wagtail_dsfr
+pip install -e /chemin/vers/sites-faciles/sites_conformes
 ```
 
 ### Installation depuis PyPI
 
 ```bash
-pip install wagtail-dsfr
+pip install sites-conformes
 ```
 
 ### Configuration Django
 
-Voir le [README du package](./wagtail_dsfr/README.md) pour la configuration complète.
+Voir le [README du package](./sites_conformes/README.md) pour la configuration complète.
 
 Exemple minimal :
 
 ```python
 INSTALLED_APPS.extend([
     "dsfr",
-    "wagtail_dsfr",
-    "wagtail_dsfr.blog",
-    "wagtail_dsfr.content_manager",
-    "wagtail_dsfr.events",
+    "sites_conformes",
+    "sites_conformes.blog",
+    "sites_conformes.content_manager",
+    "sites_conformes.events",
     "wagtail.contrib.settings",
     "wagtail_modeladmin",
     "wagtailmenus",
@@ -105,7 +105,7 @@ Configuration des URLs :
 
 ```python
 # urls.py
-from wagtail_dsfr.config.urls import *
+from sites_conformes.config.urls import *
 ```
 
 ### Migration depuis Sites Faciles
@@ -114,7 +114,7 @@ Si vous migrez depuis le dépôt Sites Faciles :
 
 ```bash
 # 1. Installer le package et configurer INSTALLED_APPS
-pip install wagtail-dsfr
+pip install sites-conformes
 
 # 2. Exécuter les migrations
 python manage.py migrate
@@ -123,7 +123,7 @@ python manage.py migrate
 python manage.py migrate_contenttype
 ```
 
-Voir le [README du package](./wagtail_dsfr/README.md) pour plus de détails.
+Voir le [README du package](./sites_conformes/README.md) pour plus de détails.
 
 ## 🧪 Projet de démonstration
 
@@ -138,7 +138,7 @@ uv run python manage.py runserver
 
 ## 📚 Ressources
 
-- **Documentation complète :** Voir le [README du package](./wagtail_dsfr/README.md)
+- **Documentation complète :** Voir le [README du package](./sites_conformes/README.md)
 - **Projet original :** [Sites Faciles sur GitHub](https://github.com/numerique-gouv/sites-faciles)
-- **Package PyPI :** [wagtail-dsfr](https://pypi.org/project/wagtail-dsfr/)
+- **Package PyPI :** [sites-conformes](https://pypi.org/project/sites-conformes/)
 - **Exemple d'intégration :** [PR Que Faire de Mes Objets](https://github.com/incubateur-ademe/quefairedemesobjets/pull/1375)

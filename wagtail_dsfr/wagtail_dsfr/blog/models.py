@@ -20,17 +20,17 @@ from wagtail.admin.widgets.slug import SlugInput
 from wagtail.api import APIField
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import RichTextField, StreamField
-from wagtail_dsfr.content_manager.fields import DynamicStreamField
+from sites_conformes.content_manager.fields import DynamicStreamField
 from wagtail.models import Orderable
 from wagtail.models.i18n import TranslatableMixin
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
-from wagtail_dsfr.blog.blocks import COLOPHON_BLOCKS
-from wagtail_dsfr.blog.managers import CategoryManager
-from wagtail_dsfr.content_manager.abstract import SitesFacilesBasePage
-from wagtail_dsfr.content_manager.constants import LIMITED_RICHTEXTFIELD_FEATURES
-from wagtail_dsfr.content_manager.models import Tag
+from sites_conformes.blog.blocks import COLOPHON_BLOCKS
+from sites_conformes.blog.managers import CategoryManager
+from sites_conformes.content_manager.abstract import SitesFacilesBasePage
+from sites_conformes.content_manager.constants import LIMITED_RICHTEXTFIELD_FEATURES
+from sites_conformes.content_manager.models import Tag
 
 User = get_user_model()
 
@@ -121,7 +121,7 @@ class Category(TranslatableMixin, index.Indexed, Orderable):
         blank=True,
         verbose_name=_("Description"),
         help_text=_("Displayed on the top of the category page"),
-    )
+    )  # type: ignore
     colophon = StreamField(
         COLOPHON_BLOCKS,
         blank=True,
@@ -184,7 +184,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class CategoryEntryPage(models.Model):
     category = models.ForeignKey(Category, related_name="+", verbose_name=_("Category"), on_delete=models.CASCADE)
-    page = ParentalKey("BlogEntryPage", related_name="entry_categories")
+    page = ParentalKey("BlogEntryPage", related_name="entry_categories")  # type: ignore
     panels = [FieldPanel("category")]
 
     def __str__(self):
@@ -192,7 +192,7 @@ class CategoryEntryPage(models.Model):
 
 
 class TagEntryPage(TaggedItemBase):
-    content_object = ParentalKey("BlogEntryPage", related_name="entry_tags")
+    content_object = ParentalKey("BlogEntryPage", related_name="entry_tags")  # type: ignore
 
 
 class BlogIndexPage(RoutablePageMixin, SitesFacilesBasePage):
@@ -230,7 +230,7 @@ class BlogIndexPage(RoutablePageMixin, SitesFacilesBasePage):
         ),
     ]
 
-    subpage_types = ["wagtail_dsfr_blog.BlogEntryPage"]
+    subpage_types = ["sites_conformes_blog.BlogEntryPage"]
 
     class Meta:
         verbose_name = _("Blog index")
@@ -472,7 +472,7 @@ class BlogIndexPage(RoutablePageMixin, SitesFacilesBasePage):
                 "extra_title": extra_title,
                 "extra_breadcrumbs": extra_breadcrumbs,
             },
-            template="wagtail_dsfr_blog/categories_list_page.html",
+            template="sites_conformes_blog/categories_list_page.html",
         )
 
     @path("tags/", name="tags_list")
@@ -502,7 +502,7 @@ class BlogIndexPage(RoutablePageMixin, SitesFacilesBasePage):
                 "extra_title": extra_title,
                 "extra_breadcrumbs": extra_breadcrumbs,
             },
-            template="wagtail_dsfr_blog/tags_list_page.html",
+            template="sites_conformes_blog/tags_list_page.html",
         )
 
 
@@ -516,10 +516,10 @@ class BlogEntryPage(SitesFacilesBasePage):
     )
     date = models.DateTimeField(verbose_name=_("Post date"), default=timezone.now)
     authors = ParentalManyToManyField(
-        "wagtail_dsfr_blog.Person", blank=True, help_text=_("Author entries can be created in Snippets > Persons")
+        "sites_conformes_blog.Person", blank=True, help_text=_("Author entries can be created in Snippets > Persons")
     )
 
-    parent_page_types = ["wagtail_dsfr_blog.BlogIndexPage"]
+    parent_page_types = ["sites_conformes_blog.BlogIndexPage"]
     subpage_types = []
 
     settings_panels = SitesFacilesBasePage.settings_panels + [

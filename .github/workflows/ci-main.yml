@@ -28,4 +28,4 @@ jobs:
 
       # - name: ✨ Ruff
       #   run: |
-      #     ruff check wagtail_dsfr
+      #     ruff check sites_conformes

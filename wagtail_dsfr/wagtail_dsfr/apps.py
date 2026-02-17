@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class WagtailDsfrAppConfig(AppConfig):
-    name = "wagtail_dsfr"
-    label = "wagtail_dsfr"
-    verbose_name = _("Wagtail Dsfr")
+    name = "sites_conformes"
+    label = "sites_conformes"
+    verbose_name = _("Sites Conformes")
     default_auto_field = "django.db.models.AutoField"

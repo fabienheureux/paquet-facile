@@ -1,14 +1,14 @@
-# Documentation wagtail-dsfr
+# Documentation sites-conformes
 
-Bienvenue dans la documentation de **wagtail-dsfr**, un gestionnaire de contenu basé sur Wagtail et le Système de design de l'État (DSFR).
+Bienvenue dans la documentation de **sites-conformes**, un gestionnaire de contenu basé sur Wagtail et le Système de design de l'État (DSFR).
 
 :::{note}
-Cette documentation concerne les fonctionnalités spécifiques à wagtail-dsfr. Pour la documentation générale de Wagtail, consultez [docs.wagtail.org](https://docs.wagtail.org/).
+Cette documentation concerne les fonctionnalités spécifiques à sites-conformes. Pour la documentation générale de Wagtail, consultez [docs.wagtail.org](https://docs.wagtail.org/).
 :::
 
-## Qu'est-ce que wagtail-dsfr ?
+## Qu'est-ce que sites-conformes ?
 
-wagtail-dsfr est un package Python qui étend Wagtail pour créer des sites conformes au [Système de Design de l'État français (DSFR)](https://www.systeme-de-design.gouv.fr/).
+sites-conformes est un package Python qui étend Wagtail pour créer des sites conformes au [Système de Design de l'État français (DSFR)](https://www.systeme-de-design.gouv.fr/).
 
 **Fonctionnalités principales :**
 - 📝 Modèles de pages pour blog, événements et contenu
@@ -33,14 +33,14 @@ changelog
 
 ```bash
 # Installation
-pip install wagtail-dsfr
+pip install sites-conformes
 
 # Ajouter à INSTALLED_APPS
 INSTALLED_APPS = [
-    "wagtail_dsfr",
-    "wagtail_dsfr.blog",
-    "wagtail_dsfr.content_manager",
-    "wagtail_dsfr.events",
+    "sites_conformes",
+    "sites_conformes.blog",
+    "sites_conformes.content_manager",
+    "sites_conformes.events",
     # ...
 ]
 ```

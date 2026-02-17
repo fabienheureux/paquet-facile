@@ -4,21 +4,21 @@ from dsfr.constants import COLOR_CHOICES
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.api import APIField
 from wagtail.fields import RichTextField, StreamField
-from wagtail_dsfr.content_manager.fields import DynamicStreamField
+from sites_conformes.content_manager.fields import DynamicStreamField
 from wagtail.images import get_image_model_string
 from wagtail.images.api.fields import ImageRenditionField
 from wagtail.models import Page
 from wagtail.search import index
 
-from wagtail_dsfr.content_manager.blocks.buttons_links import ButtonsHorizontalListBlock
-from wagtail_dsfr.content_manager.blocks.streamfield_callables import get_common_streamfield_blocks, get_hero_streamfield_blocks
-from wagtail_dsfr.content_manager.utils import get_streamfield_raw_text
+from sites_conformes.content_manager.blocks.buttons_links import ButtonsHorizontalListBlock
+from sites_conformes.content_manager.blocks.streamfield_callables import get_common_streamfield_blocks, get_hero_streamfield_blocks
+from sites_conformes.content_manager.utils import get_streamfield_raw_text
 
 
 class SitesFacilesBasePage(Page):
     """
     This class defines a base page model that will be used
-    by all pages in Sites Faciles
+    by all pages in the site.
     """
 
     hero = DynamicStreamField(get_hero_streamfield_blocks, blank=True, use_json_field=True, max_num=1)
@@ -61,10 +61,8 @@ class SitesFacilesBasePage(Page):
             (
                 "buttons",
                 ButtonsHorizontalListBlock(
-                    help_text=_(
-                        """Please use only one primary button.
-                        If you use icons, use them on all buttons and align them on the same side."""
-                    ),
+                    help_text=_("""Please use only one primary button.
+                        If you use icons, use them on all buttons and align them on the same side."""),
                     label=_("Buttons"),
                 ),
             ),

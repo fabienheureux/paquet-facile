@@ -203,11 +203,11 @@ rules:
   # ---------- DynamicStreamField transformations ----------
   # NOTE: Run with -j 1 flag to avoid race conditions when multiple rules target same file
   # - search: "from wagtail.fields import RichTextField, StreamField"
-  #   replace: "from wagtail.fields import RichTextField, StreamField\nfrom wagtail_dsfr.content_manager.fields import DynamicStreamField"
+  #   replace: "from wagtail.fields import RichTextField, StreamField\nfrom sites_conformes.content_manager.fields import DynamicStreamField"
   #   literal: true
   #   scope: all
-  # - search: "from wagtail_dsfr.content_manager.blocks.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS"
-  #   replace: "from wagtail_dsfr.content_manager.blocks.streamfield_callables import get_common_streamfield_blocks, get_hero_streamfield_blocks"
+  # - search: "from sites_conformes.content_manager.blocks.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS"
+  #   replace: "from sites_conformes.content_manager.blocks.streamfield_callables import get_common_streamfield_blocks, get_hero_streamfield_blocks"
   #   literal: true
   #   scope: all
 

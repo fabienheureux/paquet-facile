@@ -7,7 +7,7 @@ automatically added to STREAMFIELD_COMMON_BLOCKS.
 
 from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail_dsfr.content_manager.registry import register_common_block
+from sites_conformes.content_manager.registry import register_common_block
 
 
 @register_common_block(label="Demo Custom Block", group="Demo Blocks")
