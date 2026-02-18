@@ -8,7 +8,7 @@ from wagtail.test.utils import WagtailPageTestCase
 from wagtailmenus.models.menuitems import FlatMenuItem, MainMenuItem
 from wagtailmenus.models.menus import FlatMenu, MainMenu
 
-from content_manager.models import (
+from sites_conformes.content_manager.models import (
     CatalogIndexPage,
     CmsDsfrConfig,
     ContentPage,
@@ -16,8 +16,8 @@ from content_manager.models import (
     MegaMenuCategory,
     Tag,
 )
-from content_manager.services.accessors import get_or_create_content_page
-from content_manager.utils import get_default_site
+from sites_conformes.content_manager.services.accessors import get_or_create_content_page
+from sites_conformes.content_manager.utils import get_default_site
 
 User = get_user_model()
 
