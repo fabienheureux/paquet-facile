@@ -1,6 +1,6 @@
 [project]
 name = "{package_name_kebab}"
-version = "{version}rc2"
+version = "{version}rc4"
 description = "Gestionnaire de contenu permettant de créer et gérer un site internet basé sur le Système de design de l'État, accessible et responsive"
 readme = "README.md"
 requires-python = "<4.0,>=3.11"
