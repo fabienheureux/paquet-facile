@@ -122,6 +122,10 @@ rules:
     replace: " settings.{package_name}_{app}"
     scope: all
 
+  - search: 'settings.{app}'
+    replace: "settings.{package_name}_{app}"
+    scope: all
+
   - search: '"{app}\.blocks'
     replace: '"{package_name}.{app}.blocks'
     scope: migrations
