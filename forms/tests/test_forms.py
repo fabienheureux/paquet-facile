@@ -2,7 +2,7 @@ from django.core.management import call_command
 from django.urls import reverse
 from wagtail.test.utils import WagtailPageTestCase
 
-from forms.models import FormPage
+from sites_conformes.forms.models import FormPage
 
 
 class FormsTestCase(WagtailPageTestCase):
