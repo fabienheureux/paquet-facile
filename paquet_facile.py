@@ -435,6 +435,7 @@ def _cleanup_package_dir(package_dir: Path) -> None:
         ".git",
         ".github",
         ".gitignore",
+        ".dockerignore",
         ".pre-commit-config.yaml",
         # Upstream project docs / housekeeping
         "ONBOARDING.md",
