@@ -434,6 +434,7 @@ def _cleanup_package_dir(package_dir: Path) -> None:
         # Version control & CI
         ".git",
         ".github",
+        ".gitignore",
         ".pre-commit-config.yaml",
         # Upstream project docs / housekeeping
         "ONBOARDING.md",
@@ -731,11 +732,11 @@ def run_sync(
     # Process all templates to create package files
     _process_templates(package_dir, package_root, package_name, tag, config)
 
-    # Create release branch, commit changes, and push (must be done before cleanup)
-    _create_release_branch(package_root, tag, config, repo_url, fork_url, dry_run)
-
-    # Cleanup unwanted files and directories
+    # Cleanup unwanted files and directories before committing
     _cleanup_package_dir(package_dir)
+
+    # Create release branch, commit changes, and push
+    _create_release_branch(package_root, tag, config, repo_url, fork_url, dry_run)
 
     logging.warning("✅ Sync completed successfully!")
 
