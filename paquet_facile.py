@@ -448,6 +448,7 @@ def _cleanup_package_dir(package_dir: Path) -> None:
         "uv.lock",
         # Upstream environment files
         ".env",
+        ".env.example",
         ".env.template",
         ".env.test",
         # Locale config at project root
