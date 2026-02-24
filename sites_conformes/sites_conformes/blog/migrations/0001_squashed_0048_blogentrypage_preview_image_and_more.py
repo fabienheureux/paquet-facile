@@ -917,7 +917,7 @@ class Migration(migrations.Migration):
                                     "required": False,
                                 },
                             ),
-                            50: ("sites_conformes.content_manager.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
+                            50: ("sites_conformes.core.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
                             51: (
                                 "wagtail.blocks.ChoiceBlock",
                                 [],
@@ -1385,7 +1385,7 @@ class Migration(migrations.Migration):
                             ),
                             109: (
                                 "wagtail.snippets.blocks.SnippetChooserBlock",
-                                ("sites_conformes_content_manager.Tag",),
+                                ("sites_conformes_core.Tag",),
                                 {"label": "Filter by tag", "required": False},
                             ),
                             110: (
@@ -1556,7 +1556,7 @@ class Migration(migrations.Migration):
                             ),
                             135: ("wagtail.blocks.CharBlock", (), {"label": "Top detail: text", "required": False}),
                             136: (
-                                "sites_conformes.content_manager.blocks.IconPickerBlock",
+                                "sites_conformes.core.blocks.IconPickerBlock",
                                 (),
                                 {"label": "Top detail: icon", "required": False},
                             ),
@@ -1570,7 +1570,7 @@ class Migration(migrations.Migration):
                                 },
                             ),
                             138: (
-                                "sites_conformes.content_manager.blocks.IconPickerBlock",
+                                "sites_conformes.core.blocks.IconPickerBlock",
                                 (),
                                 {"label": "Bottom detail: icon", "required": False},
                             ),
@@ -2262,7 +2262,7 @@ class Migration(migrations.Migration):
                             "required": False,
                         },
                     ),
-                    36: ("sites_conformes.content_manager.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
+                    36: ("sites_conformes.core.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
                     37: (
                         "wagtail.blocks.ChoiceBlock",
                         [],
@@ -2685,7 +2685,7 @@ class Migration(migrations.Migration):
                     ),
                     93: ("wagtail.blocks.CharBlock", (), {"label": "Top detail: text", "required": False}),
                     94: (
-                        "sites_conformes.content_manager.blocks.IconPickerBlock",
+                        "sites_conformes.core.blocks.IconPickerBlock",
                         (),
                         {"label": "Top detail: icon", "required": False},
                     ),
@@ -2706,7 +2706,7 @@ class Migration(migrations.Migration):
                         },
                     ),
                     99: (
-                        "sites_conformes.content_manager.blocks.IconPickerBlock",
+                        "sites_conformes.core.blocks.IconPickerBlock",
                         (),
                         {"label": "Bottom detail: icon", "required": False},
                     ),
@@ -2853,7 +2853,7 @@ class Migration(migrations.Migration):
                     ),
                     122: (
                         "wagtail.snippets.blocks.SnippetChooserBlock",
-                        ("sites_conformes_content_manager.Tag",),
+                        ("sites_conformes_core.Tag",),
                         {"label": "Filter by tag", "required": False},
                     ),
                     123: (
@@ -3460,7 +3460,7 @@ class Migration(migrations.Migration):
                             "admin_text": "A simple, alphabetical list of the subpages of the current page.",
                             "group": "Website structure",
                             "label": "Subpages list",
-                            "template": "sites_conformes_content_manager/blocks/subpages_list.html",
+                            "template": "sites_conformes_core/blocks/subpages_list.html",
                         },
                     ),
                 },
@@ -3804,7 +3804,7 @@ class Migration(migrations.Migration):
                                     "required": False,
                                 },
                             ),
-                            36: ("sites_conformes.content_manager.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
+                            36: ("sites_conformes.core.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
                             37: (
                                 "wagtail.blocks.ChoiceBlock",
                                 [],
@@ -4254,7 +4254,7 @@ class Migration(migrations.Migration):
                             ),
                             93: ("wagtail.blocks.CharBlock", (), {"label": "Top detail: text", "required": False}),
                             94: (
-                                "sites_conformes.content_manager.blocks.IconPickerBlock",
+                                "sites_conformes.core.blocks.IconPickerBlock",
                                 (),
                                 {"label": "Top detail: icon", "required": False},
                             ),
@@ -4275,7 +4275,7 @@ class Migration(migrations.Migration):
                                 },
                             ),
                             99: (
-                                "sites_conformes.content_manager.blocks.IconPickerBlock",
+                                "sites_conformes.core.blocks.IconPickerBlock",
                                 (),
                                 {"label": "Bottom detail: icon", "required": False},
                             ),
@@ -4446,7 +4446,7 @@ class Migration(migrations.Migration):
                             ),
                             122: (
                                 "wagtail.snippets.blocks.SnippetChooserBlock",
-                                ("sites_conformes_content_manager.Tag",),
+                                ("sites_conformes_core.Tag",),
                                 {"label": "Filter by tag", "required": False},
                             ),
                             123: (
@@ -5087,7 +5087,7 @@ class Migration(migrations.Migration):
                                     "admin_text": "A simple, alphabetical list of the subpages of the current page.",
                                     "group": "Website structure",
                                     "label": "Subpages list",
-                                    "template": "sites_conformes_content_manager/blocks/subpages_list.html",
+                                    "template": "sites_conformes_core/blocks/subpages_list.html",
                                 },
                             ),
                         },
@@ -5205,7 +5205,7 @@ class Migration(migrations.Migration):
                                     "required": False,
                                 },
                             ),
-                            5: ("sites_conformes.content_manager.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
+                            5: ("sites_conformes.core.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
                             6: (
                                 "wagtail.blocks.ChoiceBlock",
                                 [],
@@ -5370,7 +5370,7 @@ class Migration(migrations.Migration):
                             "required": False,
                         },
                     ),
-                    5: ("sites_conformes.content_manager.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
+                    5: ("sites_conformes.core.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
                     6: (
                         "wagtail.blocks.ChoiceBlock",
                         [],

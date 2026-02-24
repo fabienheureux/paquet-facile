@@ -3181,7 +3181,7 @@ class Migration(migrations.Migration):
                                                                 (
                                                                     "tag_filter",
                                                                     wagtail.snippets.blocks.SnippetChooserBlock(
-                                                                        "sites_conformes_content_manager.Tag",
+                                                                        "sites_conformes_core.Tag",
                                                                         label="Filter by tag",
                                                                         required=False,
                                                                     ),
@@ -5491,7 +5491,7 @@ class Migration(migrations.Migration):
                                                                                         (
                                                                                             "tag_filter",
                                                                                             wagtail.snippets.blocks.SnippetChooserBlock(
-                                                                                                "sites_conformes_content_manager.Tag",
+                                                                                                "sites_conformes_core.Tag",
                                                                                                 label="Filter by tag",
                                                                                                 required=False,
                                                                                             ),
@@ -7596,7 +7596,7 @@ class Migration(migrations.Migration):
                                                                 (
                                                                     "tag_filter",
                                                                     wagtail.snippets.blocks.SnippetChooserBlock(
-                                                                        "sites_conformes_content_manager.Tag",
+                                                                        "sites_conformes_core.Tag",
                                                                         label="Filter by tag",
                                                                         required=False,
                                                                     ),
@@ -8542,7 +8542,7 @@ class Migration(migrations.Migration):
                                     admin_text="A simple, alphabetical list of the subpages of the current page.",
                                     group="Website structure",
                                     label="Subpages list",
-                                    template="sites_conformes_content_manager/blocks/subpages_list.html",
+                                    template="sites_conformes_core/blocks/subpages_list.html",
                                 ),
                             ),
                             (
@@ -8589,7 +8589,7 @@ class Migration(migrations.Migration):
                                         (
                                             "tag_filter",
                                             wagtail.snippets.blocks.SnippetChooserBlock(
-                                                "sites_conformes_content_manager.Tag", label="Filter by tag", required=False
+                                                "sites_conformes_core.Tag", label="Filter by tag", required=False
                                             ),
                                         ),
                                         (
@@ -11965,7 +11965,7 @@ class Migration(migrations.Migration):
                                                                 (
                                                                     "tag_filter",
                                                                     wagtail.snippets.blocks.SnippetChooserBlock(
-                                                                        "sites_conformes_content_manager.Tag",
+                                                                        "sites_conformes_core.Tag",
                                                                         label="Filter by tag",
                                                                         required=False,
                                                                     ),
@@ -14275,7 +14275,7 @@ class Migration(migrations.Migration):
                                                                                         (
                                                                                             "tag_filter",
                                                                                             wagtail.snippets.blocks.SnippetChooserBlock(
-                                                                                                "sites_conformes_content_manager.Tag",
+                                                                                                "sites_conformes_core.Tag",
                                                                                                 label="Filter by tag",
                                                                                                 required=False,
                                                                                             ),
@@ -16380,7 +16380,7 @@ class Migration(migrations.Migration):
                                                                 (
                                                                     "tag_filter",
                                                                     wagtail.snippets.blocks.SnippetChooserBlock(
-                                                                        "sites_conformes_content_manager.Tag",
+                                                                        "sites_conformes_core.Tag",
                                                                         label="Filter by tag",
                                                                         required=False,
                                                                     ),
@@ -17326,7 +17326,7 @@ class Migration(migrations.Migration):
                                     admin_text="A simple, alphabetical list of the subpages of the current page.",
                                     group="Website structure",
                                     label="Subpages list",
-                                    template="sites_conformes_content_manager/blocks/subpages_list.html",
+                                    template="sites_conformes_core/blocks/subpages_list.html",
                                 ),
                             ),
                             (
@@ -17373,7 +17373,7 @@ class Migration(migrations.Migration):
                                         (
                                             "tag_filter",
                                             wagtail.snippets.blocks.SnippetChooserBlock(
-                                                "sites_conformes_content_manager.Tag", label="Filter by tag", required=False
+                                                "sites_conformes_core.Tag", label="Filter by tag", required=False
                                             ),
                                         ),
                                         (

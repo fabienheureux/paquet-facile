@@ -27,9 +27,9 @@ from wagtail.snippets.models import register_snippet
 
 from sites_conformes.blog.blocks import COLOPHON_BLOCKS
 from sites_conformes.blog.managers import CategoryManager
-from sites_conformes.content_manager.abstract import SitesFacilesBasePage
-from sites_conformes.content_manager.constants import LIMITED_RICHTEXTFIELD_FEATURES
-from sites_conformes.content_manager.models import Tag
+from sites_conformes.core.abstract import SitesFacilesBasePage
+from sites_conformes.core.constants import LIMITED_RICHTEXTFIELD_FEATURES
+from sites_conformes.core.models import Tag
 
 User = get_user_model()
 

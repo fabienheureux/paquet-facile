@@ -12,6 +12,11 @@ apps:
   - proconnect
   - dashboard
 
+# App directory renames applied after all text transformations.
+# The app dir and its namespaced template subdir are both renamed.
+app_renames:
+  content_manager: core
+
 # Named scopes (rules can reference these by name)
 scopes:
   migrations: "**/migrations/**"
@@ -204,14 +209,34 @@ rules:
     scope: all
     literal: true
 
+  # ---------- Rename content_manager → core (post-namespacing) ----------
+  # These run after all generic rules have already transformed upstream's
+  # "content_manager" into "{package_name}.content_manager" / "{package_name}_content_manager".
+  # They rename the result to "{package_name}.core" / "{package_name}_core".
+
+  - search: "from {package_name}.content_manager"
+    replace: "from {package_name}.core"
+    scope: all
+    literal: true
+
+  - search: '"{package_name}.content_manager'
+    replace: '"{package_name}.core'
+    scope: all
+    literal: true
+
+  - search: "{package_name}_content_manager"
+    replace: "{package_name}_core"
+    scope: all
+    literal: true
+
   # ---------- DynamicStreamField transformations ----------
   # NOTE: Run with -j 1 flag to avoid race conditions when multiple rules target same file
   # - search: "from wagtail.fields import RichTextField, StreamField"
-  #   replace: "from wagtail.fields import RichTextField, StreamField\nfrom sites_conformes.content_manager.fields import DynamicStreamField"
+  #   replace: "from wagtail.fields import RichTextField, StreamField\nfrom sites_conformes.core.fields import DynamicStreamField"
   #   literal: true
   #   scope: all
-  # - search: "from sites_conformes.content_manager.blocks.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS"
-  #   replace: "from sites_conformes.content_manager.blocks.streamfield_callables import get_common_streamfield_blocks, get_hero_streamfield_blocks"
+  # - search: "from sites_conformes.core.blocks.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS"
+  #   replace: "from sites_conformes.core.blocks.streamfield_callables import get_common_streamfield_blocks, get_hero_streamfield_blocks"
   #   literal: true
   #   scope: all
 

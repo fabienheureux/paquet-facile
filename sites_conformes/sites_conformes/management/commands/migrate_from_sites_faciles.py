@@ -19,6 +19,19 @@ class Command(BaseCommand):
     # Apps to migrate (from search-and-replace.yml)
     APPS_TO_MIGRATE = ["blog", "events", "forms", "content_manager", "config", "proconnect", "dashboard"]
 
+    # Apps whose upstream name differs from their sites_conformes_ label.
+    # Maps upstream app name → final app label (without the sites_conformes_ prefix).
+    # e.g. "content_manager" is renamed to "core", so its tables go directly
+    # from "content_manager_*" to "sites_conformes_core_*".
+    APP_RENAMES = {
+        "content_manager": "core",
+    }
+
+    def _new_app_label(self, app: str) -> str:
+        """Return the final sites_conformes_<label> for a given upstream app name."""
+        label = self.APP_RENAMES.get(app, app)
+        return "sites_conformes_" + label
+
     def add_arguments(self, parser):
         parser.add_argument(
             "--dry-run",
@@ -67,7 +80,16 @@ class Command(BaseCommand):
             )
             table_renames = []
             for (table_name,) in tables_to_rename:
-                new_name = "sites_conformes_" + table_name
+                # Determine which upstream app owns this table and apply any rename
+                owning_app = next(
+                    (app for app in self.APPS_TO_MIGRATE if table_name.startswith(f"{app}_")),
+                    None,
+                )
+                if owning_app:
+                    suffix = table_name[len(owning_app):]  # e.g. "_mymodel"
+                    new_name = self._new_app_label(owning_app) + suffix
+                else:
+                    new_name = "sites_conformes_" + table_name
                 table_renames.append((table_name, new_name))
                 self.stdout.write(f"  - {table_name} → {new_name}")
 
@@ -101,7 +123,7 @@ class Command(BaseCommand):
                 )
                 migration_updates = []
                 for app, count in migrations_to_update:
-                    new_app = "sites_conformes_" + app
+                    new_app = self._new_app_label(app)
                     migration_updates.append((app, new_app, count))
                     self.stdout.write(f"  - {app}: {count} migration(s) → {new_app}")
 
@@ -143,16 +165,15 @@ class Command(BaseCommand):
             if migration_updates:
                 self.stdout.write("\n5. Updating django_migrations table...")
 
-                # Build the IN clause dynamically from APPS_TO_MIGRATE
-                apps_in_clause = ", ".join([f"'{app}'" for app in self.APPS_TO_MIGRATE])
-
-                query = f"""
-                    UPDATE django_migrations
-                    SET app = 'sites_conformes_' || app
-                    WHERE app IN ({apps_in_clause});
-                """
-                cursor.execute(query)
-                updated_rows = cursor.rowcount
+                updated_rows = 0
+                for app, new_app, _count in migration_updates:
+                    query = f"""
+                        UPDATE django_migrations
+                        SET app = '{new_app}'
+                        WHERE app = '{app}';
+                    """
+                    cursor.execute(query)
+                    updated_rows += cursor.rowcount
                 self.stdout.write(
                     self.style.SUCCESS(f"  ✓ Updated {updated_rows} migration records")
                 )
@@ -160,15 +181,16 @@ class Command(BaseCommand):
             # Step 6: Update django_content_type
             self.stdout.write("\n6. Updating django_content_type table...")
 
-            apps_in_clause = ", ".join([f"'{app}'" for app in self.APPS_TO_MIGRATE])
-
-            query = f"""
-                UPDATE django_content_type
-                SET app_label = 'sites_conformes_' || app_label
-                WHERE app_label IN ({apps_in_clause});
-            """
-            cursor.execute(query)
-            updated_content_types = cursor.rowcount
+            updated_content_types = 0
+            for app in self.APPS_TO_MIGRATE:
+                new_app = self._new_app_label(app)
+                query = f"""
+                    UPDATE django_content_type
+                    SET app_label = '{new_app}'
+                    WHERE app_label = '{app}';
+                """
+                cursor.execute(query)
+                updated_content_types += cursor.rowcount
             self.stdout.write(
                 self.style.SUCCESS(
                     f"  ✓ Updated {updated_content_types} content type records"

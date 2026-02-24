@@ -42,6 +42,6 @@ if settings.DEBUG or settings.TESTING:
 
 urlpatterns += i18n_patterns(
     path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
-    path("", include("sites_conformes.content_manager.urls")),
+    path("", include("sites_conformes.core.urls")),
     prefix_default_language=False,
 )

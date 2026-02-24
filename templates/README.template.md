@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     "dsfr",
     "{package_name}",
     "{package_name}.blog",
-    "{package_name}.content_manager",
+    "{package_name}.core",
     "{package_name}.events",
     "wagtail.contrib.settings",
     "wagtail.contrib.typed_table_block",
@@ -43,8 +43,8 @@ Ajoutez les context processors nécessaires :
 TEMPLATES[0]["OPTIONS"]["context_processors"].extend(
     [
         "wagtailmenus.context_processors.wagtailmenus",
-        "{package_name}.content_manager.context_processors.skiplinks",
-        "{package_name}.content_manager.context_processors.mega_menus",
+        "{package_name}.core.context_processors.skiplinks",
+        "{package_name}.core.context_processors.mega_menus",
     ]
 )
 ```
@@ -79,7 +79,7 @@ Si vous migrez un site existant depuis le dépôt Sites Faciles vers ce package,
    ```
 
    Cette commande va :
-   - Identifier tous les ContentTypes de l'ancienne structure (blog, events, forms, content_manager, config)
+   - Identifier tous les ContentTypes de l'ancienne structure (blog, events, forms, core, config)
    - Mettre à jour toutes les pages Wagtail pour pointer vers les nouveaux ContentTypes
    - Supprimer les anciens ContentTypes
 

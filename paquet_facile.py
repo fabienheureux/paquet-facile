@@ -296,6 +296,50 @@ def rename_template_dirs(
                 logging.error("❌ Failed to move %s → %s: %s", src, dst, exc)
 
 
+def rename_app_dirs(
+    app_renames: dict[str, str], package_name: str, dry_run: bool = False
+) -> None:
+    """Rename app directories: {old_app}/ → {new_app}/, including template subdirs.
+
+    Also renames the namespaced template subdir inside the new app:
+    {new_app}/templates/{package_name}_{old_app}/ → {new_app}/templates/{package_name}_{new_app}/
+    """
+    for old_app, new_app in app_renames.items():
+        src = Path(old_app)
+        dst = Path(new_app)
+
+        if not src.exists():
+            logging.debug("⏭️  No app dir to rename for %r: %s", old_app, src)
+            continue
+
+        if dst.exists():
+            logging.warning("⚠️  Destination already exists, skipping: %s", dst)
+            continue
+
+        if dry_run:
+            logging.info("[DRY-RUN] Would rename app dir: %s → %s", src, dst)
+        else:
+            logging.info("📂 Renaming app dir: %s → %s", src, dst)
+            try:
+                shutil.move(str(src), str(dst))
+            except Exception as exc:
+                logging.error("❌ Failed to rename %s → %s: %s", src, dst, exc)
+                continue
+
+        # Also rename the namespaced template subdir inside the (now-moved) app
+        old_tpl = dst / "templates" / f"{package_name}_{old_app}"
+        new_tpl = dst / "templates" / f"{package_name}_{new_app}"
+        if old_tpl.exists():
+            if dry_run:
+                logging.info("[DRY-RUN] Would rename template dir: %s → %s", old_tpl, new_tpl)
+            else:
+                logging.info("📂 Renaming template dir: %s → %s", old_tpl, new_tpl)
+                try:
+                    shutil.move(str(old_tpl), str(new_tpl))
+                except Exception as exc:
+                    logging.error("❌ Failed to rename %s → %s: %s", old_tpl, new_tpl, exc)
+
+
 # -- Refactoring Logic --------------------------------------------------------
 
 
@@ -374,6 +418,11 @@ def _apply_transformations(config_path: Path, dry_run: bool, jobs: int | None) -
     package_name: str = config.get("package_name", "sites_faciles")
     if apps:
         rename_template_dirs(apps, package_name, dry_run)
+
+    # Rename app directories (e.g. content_manager → core)
+    app_renames: dict[str, str] = config.get("app_renames", {})
+    if app_renames:
+        rename_app_dirs(app_renames, package_name, dry_run)
 
 
 # -- Sync Command -------------------------------------------------------------
