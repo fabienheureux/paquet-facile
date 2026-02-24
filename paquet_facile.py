@@ -552,59 +552,105 @@ def _process_templates(
     logging.info("✅ Template processing completed")
 
 
-def _create_and_push_git_branch(package_dir: Path, tag: str) -> None:
-    """Create a git branch with transformations and push to remote."""
-    git_dir = package_dir / ".git"
-    if not git_dir.exists():
-        logging.warning("⚠️  No .git directory found, skipping git operations")
+def _create_release_branch(
+    package_root: Path,
+    tag: str,
+    config: dict[str, Any],
+    repo_url: str,
+    fork_url: str,
+    dry_run: bool = False,
+) -> None:
+    """Clone upstream main, inject the built package, and push a release branch to fork."""
+    branch_name = f"{tag}-release"
+    release_dir = Path("release_temp")
+
+    if dry_run:
+        logging.warning(
+            "🎬 DRY-RUN: Would clone %s@main into %s", repo_url, release_dir
+        )
+        logging.warning(
+            "🎬 DRY-RUN: Would remove app dirs: %s", config.get("apps", [])
+        )
+        logging.warning(
+            "🎬 DRY-RUN: Would copy %s into %s/%s",
+            package_root,
+            release_dir,
+            package_root.name,
+        )
+        logging.warning(
+            "🎬 DRY-RUN: Would patch pyproject.toml with editable source for ./%s",
+            package_root.name,
+        )
+        logging.warning(
+            "🎬 DRY-RUN: Would create branch %s, commit, and force-push to %s",
+            branch_name,
+            fork_url,
+        )
         return
 
-    branch_name = f"{tag}-paquet-facile"
+    # 1. Clone upstream main into a fresh temp dir
+    if release_dir.exists():
+        shutil.rmtree(release_dir)
+    logging.info("📥 Cloning %s@main into %s", repo_url, release_dir)
+    run_command(
+        ["git", "clone", "--depth", "1", "--branch", "main", repo_url, str(release_dir)]
+    )
+
+    # 2. Remove raw app directories from the clone
+    for app in config.get("apps", []):
+        app_dir = release_dir / app
+        if app_dir.exists():
+            logging.debug("🗑️  Removing app dir %s", app_dir)
+            shutil.rmtree(app_dir)
+
+    # 3. Copy the fully-built package into the clone root
+    # Strip inner .git dir first to avoid git treating it as a submodule
+    inner_git = package_root / package_root.name / ".git"
+    if inner_git.exists():
+        shutil.rmtree(inner_git)
+    dest = release_dir / package_root.name
+    logging.info("📂 Copying %s → %s", package_root, dest)
+    shutil.copytree(str(package_root), str(dest))
+
+    # 4. Add editable uv dependency via `uv add --editable`.
+    # The clone's pyproject.toml name was already transformed to match the package
+    # name, so temporarily rename it to avoid a self-dependency error.
+    package_name_kebab = package_root.name.replace("_", "-")
+    clone_pyproject = release_dir / "pyproject.toml"
+    pyproject_text = clone_pyproject.read_text(encoding="utf-8")
+
+    temp_name = "sites-faciles-release"
+    clone_pyproject.write_text(
+        pyproject_text.replace(f'name = "{package_name_kebab}"', f'name = "{temp_name}"', 1),
+        encoding="utf-8",
+    )
+
+    logging.info("📦 Adding editable dependency for ./%s", package_root.name)
+    run_command(["uv", "add", "--editable", f"./{package_root.name}"], cwd=release_dir)
+
+    # Restore original project name
+    final_text = clone_pyproject.read_text(encoding="utf-8")
+    clone_pyproject.write_text(
+        final_text.replace(f'name = "{temp_name}"', f'name = "{package_name_kebab}"', 1),
+        encoding="utf-8",
+    )
+
+    # 5. Create branch, commit, and force-push to fork
     logging.info("🌿 Creating branch %s", branch_name)
+    run_command(["git", "checkout", "-b", branch_name], cwd=release_dir)
+    run_command(["git", "add", "-A"], cwd=release_dir)
+    run_command(
+        ["git", "commit", "-m", f"Add sites_conformes package for {tag}"],
+        cwd=release_dir,
+    )
+    logging.info("📡 Adding fork remote: %s", fork_url)
+    run_command(["git", "remote", "add", "fork", fork_url], cwd=release_dir)
+    logging.info("🚀 Force-pushing branch %s to fork", branch_name)
+    run_command(["git", "push", "-f", "fork", branch_name], cwd=release_dir)
 
-    try:
-        # Create new branch
-        run_command(["git", "checkout", "-b", branch_name], cwd=package_dir)
-
-        # Stage all changes
-        run_command(["git", "add", "-A"], cwd=package_dir)
-
-        # Commit transformations
-        commit_msg = f"Apply paquet-facile transformations for {tag}"
-        run_command(["git", "commit", "-m", commit_msg], cwd=package_dir)
-
-        # Get remote URL from main repository
-        result = run_command(["git", "remote", "get-url", "origin"], check=False)
-        if result.returncode == 0:
-            main_repo_remote = result.stdout.strip()
-            logging.info(
-                "📡 Adding remote 'paquet-facile' pointing to %s", main_repo_remote
-            )
-
-            # Add the main repo as a new remote
-            run_command(
-                ["git", "remote", "add", "paquet-facile", main_repo_remote],
-                cwd=package_dir,
-                check=False,
-            )
-
-            # Push the new branch to the remote
-            logging.info("🚀 Pushing branch %s to paquet-facile remote", branch_name)
-            push_result = run_command(
-                ["git", "push", "-f", "paquet-facile", branch_name],
-                cwd=package_dir,
-                check=False,
-            )
-
-            if push_result.returncode == 0:
-                logging.info("✅ Successfully pushed branch to remote")
-            else:
-                logging.warning("⚠️  Failed to push branch: %s", push_result.stderr)
-        else:
-            logging.warning("⚠️  Could not get main repository remote URL")
-
-    except Exception as exc:
-        logging.warning("⚠️  Failed to create/push branch: %s", exc)
+    # 6. Cleanup
+    shutil.rmtree(release_dir)
+    logging.info("✅ Release branch %s pushed successfully", branch_name)
 
 
 def run_sync(
@@ -613,6 +659,7 @@ def run_sync(
     dry_run: bool,
     jobs: int | None,
     repo_url: str = "git@github.com:numerique-gouv/sites-faciles.git",
+    fork_url: str = "git@github.com:fabienheureux/sites-faciles.git",
 ) -> None:
     """Sync sites-faciles from upstream and apply refactoring."""
     # Load config to get package_name
@@ -660,8 +707,8 @@ def run_sync(
     # Process all templates to create package files
     _process_templates(package_dir, package_root, package_name, tag, config)
 
-    # Create git branch, commit changes, and push (must be done LAST)
-    _create_and_push_git_branch(package_dir, tag)
+    # Create release branch, commit changes, and push (must be done before cleanup)
+    _create_release_branch(package_root, tag, config, repo_url, fork_url, dry_run)
 
     # Cleanup unwanted files and directories
     _cleanup_package_dir(package_dir)
@@ -695,6 +742,11 @@ def main() -> None:
         help="Repository URL to clone from",
     )
     parser.add_argument(
+        "--fork",
+        default="git@github.com:fabienheureux/sites-faciles.git",
+        help="Fork URL to push the release branch to (default: fabienheureux/sites-faciles)",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Show changes without modifying files",
@@ -724,6 +776,7 @@ def main() -> None:
         dry_run=args.dry_run,
         jobs=args.jobs,
         repo_url=args.repo,
+        fork_url=args.fork,
     )
 
 
