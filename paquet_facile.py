@@ -440,12 +440,16 @@ def _cleanup_package_dir(package_dir: Path) -> None:
         "DOD.md",
         "README.md",
         "LICENSE",
+        "CONTRIBUTING.md",
         # Deployment / runtime artefacts
         "Makefile",
         "Dockerfile",
         "Procfile",
+        "Aptfile",
         # Upstream dependency lock (not ours)
         "uv.lock",
+        # Python version pin (upstream-specific)
+        ".python-version",
         # Upstream environment files
         ".env",
         ".env.example",
