@@ -430,22 +430,41 @@ def _apply_transformations(config_path: Path, dry_run: bool, jobs: int | None) -
 
 def _cleanup_package_dir(package_dir: Path) -> None:
     """Remove unwanted directories and build files from the package."""
-    # Cleanup unwanted directories and files
-    for path in [".git", ".github"]:
-        full_path = package_dir / path
+    unwanted = [
+        # Version control & CI
+        ".git",
+        ".github",
+        ".pre-commit-config.yaml",
+        # Upstream project docs / housekeeping
+        "ONBOARDING.md",
+        "DOD.md",
+        "README.md",
+        "LICENSE",
+        # Deployment / runtime artefacts
+        "Makefile",
+        "Dockerfile",
+        "Procfile",
+        # Upstream dependency lock (not ours)
+        "uv.lock",
+        # Upstream environment files
+        ".env",
+        ".env.template",
+        ".env.test",
+        # Locale config at project root
+        ".locales",
+        # Upstream build files (we generate our own via templates)
+        "pyproject.toml",
+        "setup.py",
+        "setup.cfg",
+    ]
+    for rel in unwanted:
+        full_path = package_dir / rel
         if full_path.exists():
             logging.debug("Removing %s", full_path)
             if full_path.is_dir():
                 shutil.rmtree(full_path)
             else:
                 full_path.unlink()
-
-    # Remove upstream's build files (we'll create our own)
-    for build_file in ["pyproject.toml", "setup.py", "setup.cfg"]:
-        build_path = package_dir / build_file
-        if build_path.exists():
-            logging.debug("Removing upstream %s", build_file)
-            build_path.unlink()
 
 
 def _process_templates(
