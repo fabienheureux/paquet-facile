@@ -448,6 +448,7 @@ def _cleanup_package_dir(package_dir: Path) -> None:
         "Dockerfile",
         "Procfile",
         "Aptfile",
+        ".buildpacks",
         # Upstream dependency lock (not ours)
         "uv.lock",
         # Python version pin (upstream-specific)
