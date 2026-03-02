@@ -342,7 +342,7 @@ class Migration(migrations.Migration):
                         },
                     ),
                     35: (
-                        "sites_conformes.core.blocks.buttons_links.IconPickerBlock",
+                        "sites_conformes.content_manager.blocks.buttons_links.IconPickerBlock",
                         (),
                         {"label": "Icon", "required": False},
                     ),
@@ -747,7 +747,7 @@ class Migration(migrations.Migration):
                     ),
                     88: ("wagtail.blocks.CharBlock", (), {"label": "Top detail: text", "required": False}),
                     89: (
-                        "sites_conformes.core.blocks.buttons_links.IconPickerBlock",
+                        "sites_conformes.content_manager.blocks.buttons_links.IconPickerBlock",
                         (),
                         {"label": "Top detail: icon", "required": False},
                     ),
@@ -768,7 +768,7 @@ class Migration(migrations.Migration):
                         },
                     ),
                     94: (
-                        "sites_conformes.core.blocks.buttons_links.IconPickerBlock",
+                        "sites_conformes.content_manager.blocks.buttons_links.IconPickerBlock",
                         (),
                         {"label": "Bottom detail: icon", "required": False},
                     ),
@@ -973,7 +973,7 @@ class Migration(migrations.Migration):
                     ),
                     123: (
                         "wagtail.snippets.blocks.SnippetChooserBlock",
-                        ("sites_conformes_core.Tag",),
+                        ("sites_conformes_content_manager.Tag",),
                         {"label": "Filter by tag", "required": False},
                     ),
                     124: (
@@ -1661,7 +1661,7 @@ class Migration(migrations.Migration):
                             "admin_text": "A simple, alphabetical list of the subpages of the current page.",
                             "group": "4. Website structure",
                             "label": "Subpages list",
-                            "template": "sites_conformes_core/blocks/subpages_list.html",
+                            "template": "sites_conformes_content_manager/blocks/subpages_list.html",
                         },
                     ),
                     188: (
@@ -1805,7 +1805,7 @@ class Migration(migrations.Migration):
                     ),
                     202: ("wagtail.blocks.StructBlock", [[("image", 10), ("title", 200), ("text", 201)]], {}),
                     203: (
-                        "sites_conformes.core.blocks.sections.ImageAndTextListBlock",
+                        "sites_conformes.content_manager.blocks.sections.ImageAndTextListBlock",
                         (202,),
                         {"collapsed": True, "label": "Items"},
                     ),
@@ -2331,7 +2331,7 @@ class Migration(migrations.Migration):
                         },
                     ),
                     35: (
-                        "sites_conformes.core.blocks.buttons_links.IconPickerBlock",
+                        "sites_conformes.content_manager.blocks.buttons_links.IconPickerBlock",
                         (),
                         {"label": "Icon", "required": False},
                     ),
@@ -2736,7 +2736,7 @@ class Migration(migrations.Migration):
                     ),
                     88: ("wagtail.blocks.CharBlock", (), {"label": "Top detail: text", "required": False}),
                     89: (
-                        "sites_conformes.core.blocks.buttons_links.IconPickerBlock",
+                        "sites_conformes.content_manager.blocks.buttons_links.IconPickerBlock",
                         (),
                         {"label": "Top detail: icon", "required": False},
                     ),
@@ -2757,7 +2757,7 @@ class Migration(migrations.Migration):
                         },
                     ),
                     94: (
-                        "sites_conformes.core.blocks.buttons_links.IconPickerBlock",
+                        "sites_conformes.content_manager.blocks.buttons_links.IconPickerBlock",
                         (),
                         {"label": "Bottom detail: icon", "required": False},
                     ),
@@ -2962,7 +2962,7 @@ class Migration(migrations.Migration):
                     ),
                     123: (
                         "wagtail.snippets.blocks.SnippetChooserBlock",
-                        ("sites_conformes_core.Tag",),
+                        ("sites_conformes_content_manager.Tag",),
                         {"label": "Filter by tag", "required": False},
                     ),
                     124: (
@@ -3650,7 +3650,7 @@ class Migration(migrations.Migration):
                             "admin_text": "A simple, alphabetical list of the subpages of the current page.",
                             "group": "4. Website structure",
                             "label": "Subpages list",
-                            "template": "sites_conformes_core/blocks/subpages_list.html",
+                            "template": "sites_conformes_content_manager/blocks/subpages_list.html",
                         },
                     ),
                     188: (
@@ -3794,7 +3794,7 @@ class Migration(migrations.Migration):
                     ),
                     202: ("wagtail.blocks.StructBlock", [[("image", 10), ("title", 200), ("text", 201)]], {}),
                     203: (
-                        "sites_conformes.core.blocks.sections.ImageAndTextListBlock",
+                        "sites_conformes.content_manager.blocks.sections.ImageAndTextListBlock",
                         (202,),
                         {"collapsed": True, "label": "Items"},
                     ),

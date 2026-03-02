@@ -3,7 +3,7 @@ from wagtail import blocks
 from wagtail.blocks import BooleanBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
 
-from sites_conformes.core.constants import (
+from sites_conformes.content_manager.constants import (
     HEADING_CHOICES_2_5,
 )
 
@@ -95,7 +95,7 @@ class BlogRecentEntriesBlock(blocks.StructBlock):
         label=_("Number of entries"), required=False, min_value=1, max_value=8, default=3
     )
     category_filter = SnippetChooserBlock("sites_conformes_blog.Category", label=_("Filter by category"), required=False)
-    tag_filter = SnippetChooserBlock("sites_conformes_core.Tag", label=_("Filter by tag"), required=False)
+    tag_filter = SnippetChooserBlock("sites_conformes_content_manager.Tag", label=_("Filter by tag"), required=False)
     author_filter = SnippetChooserBlock("sites_conformes_blog.Person", label=_("Filter by author"), required=False)
     source_filter = SnippetChooserBlock(
         "sites_conformes_blog.Organization",
@@ -107,7 +107,7 @@ class BlogRecentEntriesBlock(blocks.StructBlock):
 
     class Meta:
         icon = "placeholder"
-        template = ("sites_conformes_core/blocks/blog_recent_entries.html",)
+        template = ("sites_conformes_content_manager/blocks/blog_recent_entries.html",)
         value_class = RecentEntriesStructValue
 
 
@@ -125,7 +125,7 @@ class EventsRecentEntriesBlock(blocks.StructBlock):
         label=_("Number of entries"), required=False, min_value=1, max_value=8, default=3
     )
     category_filter = SnippetChooserBlock("sites_conformes_blog.Category", label=_("Filter by category"), required=False)
-    tag_filter = SnippetChooserBlock("sites_conformes_core.Tag", label=_("Filter by tag"), required=False)
+    tag_filter = SnippetChooserBlock("sites_conformes_content_manager.Tag", label=_("Filter by tag"), required=False)
     author_filter = SnippetChooserBlock("sites_conformes_blog.Person", label=_("Filter by author"), required=False)
     source_filter = SnippetChooserBlock(
         "sites_conformes_blog.Organization",
@@ -137,5 +137,5 @@ class EventsRecentEntriesBlock(blocks.StructBlock):
 
     class Meta:
         icon = "placeholder"
-        template = ("sites_conformes_core/blocks/events_recent_entries.html",)
+        template = ("sites_conformes_content_manager/blocks/events_recent_entries.html",)
         value_class = RecentEntriesStructValue

@@ -8,7 +8,7 @@ from wagtail.admin.telepath import register
 from wagtail.blocks import StructValue
 from wagtail.blocks.struct_block import StructBlockAdapter, StructBlockValidationError
 
-from sites_conformes.core.constants import (
+from sites_conformes.content_manager.constants import (
     ALIGN_HORIZONTAL_CHOICES_EXTENDED,
     ALIGN_VERTICAL_CHOICES,
     MEDIA_WIDTH_CHOICES,
@@ -118,7 +118,7 @@ class HeroImageAndTextBlock(blocks.StructBlock):
 
     class Meta:
         icon = "minus"
-        template = "sites_conformes_core/heros/hero_image_text.html"
+        template = "sites_conformes_content_manager/heros/hero_image_text.html"
 
 
 class HeroWideImageAndTextBlock(blocks.StructBlock):
@@ -137,7 +137,7 @@ class HeroWideImageAndTextBlock(blocks.StructBlock):
 
     class Meta:
         icon = "minus"
-        template = "sites_conformes_core/heros/hero_wide_image_text.html"
+        template = "sites_conformes_content_manager/heros/hero_wide_image_text.html"
 
 
 class HeroBackgroundImageBlock(blocks.StructBlock):
@@ -170,7 +170,7 @@ class HeroBackgroundImageBlock(blocks.StructBlock):
 
     class Meta:
         icon = "minus"
-        template = "sites_conformes_core/heros/hero_background_image_text.html"
+        template = "sites_conformes_content_manager/heros/hero_background_image_text.html"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -256,4 +256,4 @@ class OldHero(blocks.StructBlock):
             "This block allows you to create a fully configurable header.\n"
             "It corresponds to the historical header block used since the beginning of the project."
         )
-        template = "sites_conformes_core/heros/old_hero.html"
+        template = "sites_conformes_content_manager/heros/old_hero.html"

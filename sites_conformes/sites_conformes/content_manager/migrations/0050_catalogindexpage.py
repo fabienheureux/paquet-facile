@@ -9,7 +9,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("sites_conformes_core", "0049_alter_contentpage_body"),
+        ("sites_conformes_content_manager", "0049_alter_contentpage_body"),
         ("wagtailcore", "0094_alter_page_locale"),
         ("wagtailimages", "0027_image_description"),
     ]
@@ -313,7 +313,7 @@ class Migration(migrations.Migration):
                                 [[("title", 28), ("accordion", 30)]],
                                 {"group": "DSFR components", "label": "Accordions"},
                             ),
-                            32: ("sites_conformes.core.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
+                            32: ("sites_conformes.content_manager.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
                             33: (
                                 "wagtail.blocks.RichTextBlock",
                                 (),
@@ -684,7 +684,7 @@ class Migration(migrations.Migration):
                             ),
                             77: ("wagtail.blocks.CharBlock", (), {"label": "Top detail: text", "required": False}),
                             78: (
-                                "sites_conformes.core.blocks.IconPickerBlock",
+                                "sites_conformes.content_manager.blocks.IconPickerBlock",
                                 (),
                                 {"label": "Top detail: icon", "required": False},
                             ),
@@ -705,7 +705,7 @@ class Migration(migrations.Migration):
                                 },
                             ),
                             83: (
-                                "sites_conformes.core.blocks.IconPickerBlock",
+                                "sites_conformes.content_manager.blocks.IconPickerBlock",
                                 (),
                                 {"label": "Bottom detail: icon", "required": False},
                             ),
@@ -975,7 +975,7 @@ class Migration(migrations.Migration):
                             ),
                             119: (
                                 "wagtail.snippets.blocks.SnippetChooserBlock",
-                                ("sites_conformes_core.Tag",),
+                                ("sites_conformes_content_manager.Tag",),
                                 {"label": "Filter by tag", "required": False},
                             ),
                             120: (
@@ -1467,7 +1467,7 @@ class Migration(migrations.Migration):
                                     "admin_text": "A simple, alphabetical list of the subpages of the current page.",
                                     "group": "Website structure",
                                     "label": "Subpages list",
-                                    "template": "sites_conformes_core/blocks/subpages_list.html",
+                                    "template": "sites_conformes_content_manager/blocks/subpages_list.html",
                                 },
                             ),
                             165: (
@@ -1572,7 +1572,7 @@ class Migration(migrations.Migration):
                                     "required": False,
                                 },
                             ),
-                            5: ("sites_conformes.core.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
+                            5: ("sites_conformes.content_manager.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
                             6: (
                                 "wagtail.blocks.ChoiceBlock",
                                 [],

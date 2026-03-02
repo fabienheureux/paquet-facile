@@ -12,7 +12,7 @@ import sites_conformes.content_manager.blocks
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("sites_conformes_core", "0024_alter_socialmediaitem_options"),
+        ("sites_conformes_content_manager", "0024_alter_socialmediaitem_options"),
     ]
 
     operations = [

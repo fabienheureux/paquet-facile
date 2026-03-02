@@ -6,7 +6,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("sites_conformes_core", "0041_alter_contentpage_body"),
+        ("sites_conformes_content_manager", "0041_alter_contentpage_body"),
     ]
 
     operations = [
@@ -282,7 +282,7 @@ class Migration(migrations.Migration):
                         [[("title", 23), ("description", 24), ("level", 25), ("heading_tag", 26)]],
                         {"label": "Alert message"},
                     ),
-                    28: ("sites_conformes.core.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
+                    28: ("sites_conformes.content_manager.blocks.IconPickerBlock", (), {"label": "Icon", "required": False}),
                     29: (
                         "wagtail.blocks.RichTextBlock",
                         (),
@@ -613,7 +613,7 @@ class Migration(migrations.Migration):
                     ),
                     68: ("wagtail.blocks.CharBlock", (), {"label": "Top detail: text", "required": False}),
                     69: (
-                        "sites_conformes.core.blocks.IconPickerBlock",
+                        "sites_conformes.content_manager.blocks.IconPickerBlock",
                         (),
                         {"label": "Top detail: icon", "required": False},
                     ),
@@ -634,7 +634,7 @@ class Migration(migrations.Migration):
                         },
                     ),
                     74: (
-                        "sites_conformes.core.blocks.IconPickerBlock",
+                        "sites_conformes.content_manager.blocks.IconPickerBlock",
                         (),
                         {"label": "Bottom detail: icon", "required": False},
                     ),
@@ -981,7 +981,7 @@ class Migration(migrations.Migration):
                     ),
                     128: (
                         "wagtail.snippets.blocks.SnippetChooserBlock",
-                        ("sites_conformes_core.Tag",),
+                        ("sites_conformes_content_manager.Tag",),
                         {"label": "Filter by tag", "required": False},
                     ),
                     129: (
@@ -1281,7 +1281,7 @@ class Migration(migrations.Migration):
                             "admin_text": "A simple, alphabetical list of the subpages of the current page.",
                             "group": "Website structure",
                             "label": "Subpages list",
-                            "template": "sites_conformes_core/blocks/subpages_list.html",
+                            "template": "sites_conformes_content_manager/blocks/subpages_list.html",
                         },
                     ),
                     155: (

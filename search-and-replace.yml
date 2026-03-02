@@ -214,20 +214,20 @@ rules:
   # "content_manager" into "{package_name}.content_manager" / "{package_name}_content_manager".
   # They rename the result to "{package_name}.core" / "{package_name}_core".
 
-  - search: "from {package_name}.content_manager"
-    replace: "from {package_name}.core"
-    scope: all
-    literal: true
+  # - search: "from {package_name}.content_manager"
+  #   replace: "from {package_name}.core"
+  #   scope: all
+  #   literal: true
 
-  - search: '"{package_name}.content_manager'
-    replace: '"{package_name}.core'
-    scope: all
-    literal: true
+  # - search: '"{package_name}.content_manager'
+  #   replace: '"{package_name}.core'
+  #   scope: all
+  #   literal: true
 
-  - search: "{package_name}_content_manager"
-    replace: "{package_name}_core"
-    scope: all
-    literal: true
+  # - search: "{package_name}_content_manager"
+  #   replace: "{package_name}_core"
+  #   scope: all
+  #   literal: true
 
   # ---------- DynamicStreamField transformations ----------
   # NOTE: Run with -j 1 flag to avoid race conditions when multiple rules target same file

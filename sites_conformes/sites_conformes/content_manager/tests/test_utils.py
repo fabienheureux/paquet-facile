@@ -1,7 +1,7 @@
 from wagtail.images.models import Image
 from wagtail.test.utils import WagtailPageTestCase
 
-from sites_conformes.core.utils import import_image
+from sites_conformes.content_manager.utils import import_image
 
 
 class UtilsTestCase(WagtailPageTestCase):

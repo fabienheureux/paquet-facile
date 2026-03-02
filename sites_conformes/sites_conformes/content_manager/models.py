@@ -23,10 +23,10 @@ from wagtail.images import get_image_model_string
 from wagtail.models import Orderable
 from wagtail.snippets.models import register_snippet
 
-from sites_conformes.core.abstract import SitesFacilesBasePage
-from sites_conformes.core.constants import LIMITED_RICHTEXTFIELD_FEATURES
-from sites_conformes.core.managers import TagManager
-from sites_conformes.core.widgets import DsfrIconPickerWidget
+from sites_conformes.content_manager.abstract import SitesFacilesBasePage
+from sites_conformes.content_manager.constants import LIMITED_RICHTEXTFIELD_FEATURES
+from sites_conformes.content_manager.managers import TagManager
+from sites_conformes.content_manager.widgets import DsfrIconPickerWidget
 
 
 class ContentPage(SitesFacilesBasePage):
@@ -96,7 +96,7 @@ class CatalogIndexPage(RoutablePageMixin, SitesFacilesBasePage):
         ),
     ]
 
-    subpage_types = ["sites_conformes_core.ContentPage"]
+    subpage_types = ["sites_conformes_content_manager.ContentPage"]
 
     class Meta:
         verbose_name = _("Catalog index page")
@@ -269,7 +269,7 @@ class CatalogIndexPage(RoutablePageMixin, SitesFacilesBasePage):
                 "extra_title": extra_title,
                 "extra_breadcrumbs": extra_breadcrumbs,
             },
-            template="sites_conformes_core/tags_list_page.html",
+            template="sites_conformes_content_manager/tags_list_page.html",
         )
 
 
@@ -657,7 +657,7 @@ class SocialMediaItem(Orderable):
 
 # Mega-Menus
 class MegaMenuCategory(Orderable):
-    mega_menu = ParentalKey("sites_conformes_core.MegaMenu", related_name="categories", on_delete=models.CASCADE)
+    mega_menu = ParentalKey("sites_conformes_content_manager.MegaMenu", related_name="categories", on_delete=models.CASCADE)
     category = models.ForeignKey("wagtailmenus.FlatMenu", on_delete=models.CASCADE, verbose_name=_("Category"))
 
     class Meta:

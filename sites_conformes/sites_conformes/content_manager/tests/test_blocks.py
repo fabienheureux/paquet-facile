@@ -5,8 +5,8 @@ from wagtail.rich_text import RichText
 from wagtail.test.utils import WagtailPageTestCase
 
 from sites_conformes.blog.models import BlogEntryPage, BlogIndexPage
-from sites_conformes.core.models import ContentPage
-from sites_conformes.core.utils import import_image
+from sites_conformes.content_manager.models import ContentPage
+from sites_conformes.content_manager.utils import import_image
 from sites_conformes.events.models import EventEntryPage, EventsIndexPage
 
 # Tests for blocks that have a value_class

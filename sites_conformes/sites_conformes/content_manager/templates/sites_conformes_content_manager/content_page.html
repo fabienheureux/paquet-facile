@@ -3,7 +3,7 @@
 {% load static dsfr_tags wagtailcore_tags wagtailimages_tags wagtail_dsfr_tags i18n %}
 
 {% block title %}
-  <title>{{ page.seo_title|default:page.title }} — {{ settings.sites_conformes_core.CmsDsfrConfig.site_title }}</title>
+  <title>{{ page.seo_title|default:page.title }} — {{ settings.sites_conformes_content_manager.CmsDsfrConfig.site_title }}</title>
 {% endblock title %}
 
 {% block description %}
@@ -34,21 +34,21 @@
 {% endblock social_media %}
 
 {% block content %}
-  {% include "sites_conformes_core/blocks/heading.html" %}
+  {% include "sites_conformes_content_manager/blocks/heading.html" %}
   <div class="fr-container fr-pt-4w">
-    {% include "sites_conformes_core/blocks/breadcrumbs.html" %}
+    {% include "sites_conformes_content_manager/blocks/breadcrumbs.html" %}
     
     {% if page.show_title %}
       <h1>
         {{ page.title }}
-        {% include "sites_conformes_core/blocks/page_visibility.html" %}
+        {% include "sites_conformes_content_manager/blocks/page_visibility.html" %}
       </h1>
     {% endif %}
   </div>
 
-  {% include "sites_conformes_core/blocks/messages.html" %}
+  {% include "sites_conformes_content_manager/blocks/messages.html" %}
 
-  {% include "sites_conformes_core/blocks/blocks_stream.html" with stream=page.body %}
+  {% include "sites_conformes_content_manager/blocks/blocks_stream.html" with stream=page.body %}
 
   <div class="fr-container fr-my-4w">
     {% for tag in page.tags.all|dictsort:"slug" %}
@@ -56,7 +56,7 @@
     {% endfor %}
   </div>
 
-  {% if settings.sites_conformes_core.CmsDsfrConfig.show_share_links and settings.sites_conformes_core.CmsDsfrConfig.share_links_content_pages %}
+  {% if settings.sites_conformes_content_manager.CmsDsfrConfig.show_share_links and settings.sites_conformes_content_manager.CmsDsfrConfig.share_links_content_pages %}
     {% include "blocks/share.html" %}
   {% endif %}
 

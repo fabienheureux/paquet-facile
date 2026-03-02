@@ -6,7 +6,7 @@
 {% block children %}
   {{ value.text| richtext_p_add_class:"fr-text--lead" }}
   {% if value.button %}
-    {% include "sites_conformes_core/blocks/button.html" with button=value.button %}
+    {% include "sites_conformes_content_manager/blocks/button.html" with button=value.button %}
   {% endif %}
 
 {% endblock children %}

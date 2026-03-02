@@ -12,7 +12,7 @@ import sites_conformes.content_manager.blocks
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("sites_conformes_core", "0028_alter_contentpage_body"),
+        ("sites_conformes_content_manager", "0028_alter_contentpage_body"),
     ]
 
     operations = [

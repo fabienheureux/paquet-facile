@@ -1,4 +1,4 @@
-from sites_conformes.core.models import MegaMenu
+from sites_conformes.content_manager.models import MegaMenu
 
 
 def skiplinks(request) -> dict:

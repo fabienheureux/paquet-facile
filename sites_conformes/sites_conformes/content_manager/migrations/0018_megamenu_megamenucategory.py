@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("sites_conformes_core", "0017_tag_contentpage_header_cta_text_and_more"),
+        ("sites_conformes_content_manager", "0017_tag_contentpage_header_cta_text_and_more"),
         ("wagtailmenus", "0023_remove_use_specific"),
     ]
 
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                     modelcluster.fields.ParentalKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="categories",
-                        to="sites_conformes_core.megamenu",
+                        to="sites_conformes_content_manager.megamenu",
                     ),
                 ),
             ],

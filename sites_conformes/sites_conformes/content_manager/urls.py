@@ -2,7 +2,7 @@ from django.urls import include, path
 from django.utils.translation import gettext as _
 from wagtail import urls as wagtail_urls
 
-from sites_conformes.core.views import SearchResultsView, SiteMapView, TagsListView, TagView
+from sites_conformes.content_manager.views import SearchResultsView, SiteMapView, TagsListView, TagView
 
 urlpatterns = [
     path(_("search/"), SearchResultsView.as_view(), name="cms_search"),

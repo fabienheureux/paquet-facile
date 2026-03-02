@@ -10,7 +10,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("sites_conformes_core", "0012_alter_contentpage_body"),
+        ("sites_conformes_content_manager", "0012_alter_contentpage_body"),
     ]
 
     operations = [

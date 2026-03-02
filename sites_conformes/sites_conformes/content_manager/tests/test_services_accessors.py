@@ -2,12 +2,12 @@ from wagtail.models import Collection, PageViewRestriction
 from wagtail.test.utils import WagtailPageTestCase
 from wagtailmenus.models.menus import FlatMenu
 
-from sites_conformes.core.services.accessors import (
+from sites_conformes.content_manager.services.accessors import (
     get_or_create_collection,
     get_or_create_content_page,
     get_or_create_footer_menu,
 )
-from sites_conformes.core.utils import import_image
+from sites_conformes.content_manager.utils import import_image
 
 
 class FooterMenuAccessorTestCase(WagtailPageTestCase):

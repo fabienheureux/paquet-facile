@@ -30,5 +30,5 @@ class Command(shell.Command):
             "django.db.models.OuterRef",
             "django.db.models.Subquery",
             # Project-related custom imports
-            "sites_conformes.core.utils.get_default_site",
+            "sites_conformes.content_manager.utils.get_default_site",
         ]

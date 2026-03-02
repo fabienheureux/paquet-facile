@@ -6,9 +6,9 @@ from wagtail.models import Page
 from wagtail.rich_text import RichText
 from wagtailmenus.models.menuitems import FlatMenuItem, MainMenuItem
 
-from sites_conformes.core.models import ContentPage
-from sites_conformes.core.services.accessors import get_or_create_footer_menu, get_or_create_main_menu
-from sites_conformes.core.utils import get_default_site
+from sites_conformes.content_manager.models import ContentPage
+from sites_conformes.content_manager.services.accessors import get_or_create_footer_menu, get_or_create_main_menu
+from sites_conformes.content_manager.utils import get_default_site
 from sites_conformes.forms.models import FormField, FormPage
 
 ALL_ALLOWED_SLUGS = ["home", "mentions-legales", "accessibilite", "contact"]

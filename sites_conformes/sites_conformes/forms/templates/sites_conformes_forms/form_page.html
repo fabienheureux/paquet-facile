@@ -6,17 +6,17 @@
 {% endblock extra_css %}
 
 {% block title %}
-  <title>{{ page.seo_title|default:page.title }} — {{ settings.sites_conformes_core.CmsDsfrConfig.site_title }}</title>
+  <title>{{ page.seo_title|default:page.title }} — {{ settings.sites_conformes_content_manager.CmsDsfrConfig.site_title }}</title>
 {% endblock title %}
 
 {% block content %}
   {% translate "Submit form" as submit_form %}
   <div class="fr-container fr-pt-4w">
-    {% include "sites_conformes_core/blocks/breadcrumbs.html" %}
+    {% include "sites_conformes_content_manager/blocks/breadcrumbs.html" %}
     <h1>{{ page.title }}</h1>
   </div>
 
-  {% include "sites_conformes_core/blocks/messages.html" %}
+  {% include "sites_conformes_content_manager/blocks/messages.html" %}
 
   <div class="fr-container fr-pb-6w">
     {{ page.intro|richtext }}

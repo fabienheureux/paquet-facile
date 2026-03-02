@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("sites_conformes_core", "0039_rename_notice_cmsdsfrconfig_notice_title"),
+        ("sites_conformes_content_manager", "0039_rename_notice_cmsdsfrconfig_notice_title"),
     ]
 
     operations = [

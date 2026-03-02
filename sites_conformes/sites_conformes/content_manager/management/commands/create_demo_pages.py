@@ -10,9 +10,9 @@ from wagtailmenus.models.menuitems import FlatMenuItem, MainMenuItem
 from wagtailmenus.models.menus import FlatMenu, MainMenu
 
 from sites_conformes.blog.models import BlogIndexPage
-from sites_conformes.core.models import ContentPage, MegaMenu, MegaMenuCategory
-from sites_conformes.core.services.accessors import get_or_create_catalog_index_page, get_or_create_content_page
-from sites_conformes.core.utils import get_default_site, import_image
+from sites_conformes.content_manager.models import ContentPage, MegaMenu, MegaMenuCategory
+from sites_conformes.content_manager.services.accessors import get_or_create_catalog_index_page, get_or_create_content_page
+from sites_conformes.content_manager.utils import get_default_site, import_image
 from sites_conformes.forms.models import FormField, FormPage
 
 ALL_ALLOWED_SLUGS = ["blog_index", "publications", "menu_page", "form", "common_blocks", "hero_blocks"]

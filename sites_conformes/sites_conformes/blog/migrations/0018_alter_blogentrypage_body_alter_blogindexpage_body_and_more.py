@@ -7283,7 +7283,7 @@ class Migration(migrations.Migration):
                             admin_text="A simple, alphabetical list of the subpages of the current page.",
                             group="Website structure",
                             label="Subpages list",
-                            template="sites_conformes_core/blocks/subpages_list.html",
+                            template="sites_conformes_content_manager/blocks/subpages_list.html",
                         ),
                     ),
                     (
@@ -14564,7 +14564,7 @@ class Migration(migrations.Migration):
                             admin_text="A simple, alphabetical list of the subpages of the current page.",
                             group="Website structure",
                             label="Subpages list",
-                            template="sites_conformes_core/blocks/subpages_list.html",
+                            template="sites_conformes_content_manager/blocks/subpages_list.html",
                         ),
                     ),
                     (

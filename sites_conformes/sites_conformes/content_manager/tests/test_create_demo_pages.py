@@ -16,9 +16,9 @@ from django.core.management import call_command
 from django.test import SimpleTestCase
 from wagtail.test.utils import WagtailPageTestCase
 
-from sites_conformes.core.blocks.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS
-from sites_conformes.core.blocks.utils import block_to_sample_dict
-from sites_conformes.core.models import ContentPage
+from sites_conformes.content_manager.blocks.core import HERO_STREAMFIELD_BLOCKS, STREAMFIELD_COMMON_BLOCKS
+from sites_conformes.content_manager.blocks.utils import block_to_sample_dict
+from sites_conformes.content_manager.models import ContentPage
 
 
 class BlockValidationTestCase(SimpleTestCase):

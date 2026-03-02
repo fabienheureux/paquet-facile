@@ -13,12 +13,12 @@
               <h1 {% if block.value.large %}class="fr-display--sm"{% endif %}>
                 {{ page.title }}
                 {% if extra_title %}: {{ extra_title }}{% endif %}
-                {% include "sites_conformes_core/blocks/page_visibility.html" %}
+                {% include "sites_conformes_content_manager/blocks/page_visibility.html" %}
               </h1>
             {% endif %}
             {% if value.header_cta_text %}{{ value.header_cta_text|richtext }}{% endif %}
             {% if value.header_cta_buttons %}
-              {% include "sites_conformes_core/blocks/buttons_horizontal_list.html" with block=value.header_cta_buttons %}
+              {% include "sites_conformes_content_manager/blocks/buttons_horizontal_list.html" with block=value.header_cta_buttons %}
             {% endif %}
           </div>
         </div>
