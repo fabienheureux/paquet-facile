@@ -14,8 +14,8 @@ apps:
 
 # App directory renames applied after all text transformations.
 # The app dir and its namespaced template subdir are both renamed.
-app_renames:
-  content_manager: core
+# app_renames:
+#   content_manager: core
 
 # Named scopes (rules can reference these by name)
 scopes:
