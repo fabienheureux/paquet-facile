@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-23 11:56+0100\n"
+"POT-Creation-Date: 2025-08-21 15:35+0200\n"
 "PO-Revision-Date: 2025-08-21 15:57+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -89,8 +89,7 @@ msgstr "Notification par e-mail quand une réponse est envoyée"
 
 #: forms/models.py:102
 msgid "Optional, will only work if SMTP parameters have been set."
-msgstr ""
-"Optionnel, ne fonctionnera que si les paramètres SMTP ont été configurés."
+msgstr "Optionnel, ne fonctionnera que si les paramètres SMTP ont été configurés."
 
 #: forms/models.py:109
 msgid "Reduce Form Spam"
@@ -104,35 +103,31 @@ msgstr "Page de formulaire"
 msgid "Form pages"
 msgstr "Pages de formulaire"
 
-#: forms/templates/sites_conformes_forms/form_page.html:13
+#: forms/templates/forms/form_page.html:13
 msgid "Submit form"
 msgstr "Envoyer le formulaire"
 
-#: forms/templates/sites_conformes_forms/form_page.html:27
+#: forms/templates/forms/form_page.html:27
 msgid "All fields are mandatory."
 msgstr "Tous les champs sont obligatoires."
 
-#: forms/templates/sites_conformes_forms/form_page.html:29
+#: forms/templates/forms/form_page.html:29
 msgid "Fields marked with an asterisk (*) are mandatory."
 msgstr "Les champs marqués d’un astérisque (*) sont obligatoires."
 
-#: forms/templates/sites_conformes_forms/form_page_landing.html:22
+#: forms/templates/forms/form_page_landing.html:22
 msgid "Your form has been successfully submitted. Thank you!"
 msgstr "Votre formulaire a été envoyé avec succès. Merci !"
 
 #~ msgid ""
-#~ "If all fields are mandatory, this intro must contain the text \"All "
-#~ "fields are mandatory.\"\n"
+#~ "If all fields are mandatory, this intro must contain the text \"All fields are mandatory.\"\n"
 #~ "            If some fields are optional,\n"
-#~ "            this intro must contain the text \"Fields marked with an "
-#~ "asterisk (*) are mandatory.\"\n"
+#~ "            this intro must contain the text \"Fields marked with an asterisk (*) are mandatory.\"\n"
 #~ "            "
 #~ msgstr ""
-#~ "Si tous les champs sont obligatoires, cette introduction doit contenir la "
-#~ "mention « Tous les champs sont obligatoires. »\n"
+#~ "Si tous les champs sont obligatoires, cette introduction doit contenir la mention « Tous les champs sont obligatoires. »\n"
 #~ "            Si certains champs sont optionnels,\n"
-#~ "            cette introduction doit contenir la mention « Les champs "
-#~ "marqués d’un astérisque (*) sont obligatoires. »\n"
+#~ "            cette introduction doit contenir la mention « Les champs marqués d’un astérisque (*) sont obligatoires. »\n"
 #~ "            "
 
 #~ msgid "Single line text"
