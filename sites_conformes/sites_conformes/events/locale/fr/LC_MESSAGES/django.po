@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-06 15:20+0100\n"
+"POT-Creation-Date: 2026-03-23 11:56+0100\n"
 "PO-Revision-Date: 2025-10-28 13:47+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -31,19 +31,23 @@ msgstr "Date de fin"
 msgid "Events per page"
 msgstr "Événements par page"
 
-#: events/models.py:35 events/templates/events/events_index_page.html:99
+#: events/models.py:35
+#: events/templates/sites_conformes_events/events_index_page.html:99
 msgid "Filter by category"
 msgstr "Filtrer par catégorie"
 
-#: events/models.py:36 events/templates/events/events_index_page.html:117
+#: events/models.py:36
+#: events/templates/sites_conformes_events/events_index_page.html:117
 msgid "Filter by tag"
 msgstr "Filtrer par étiquette"
 
-#: events/models.py:37 events/templates/events/events_index_page.html:135
+#: events/models.py:37
+#: events/templates/sites_conformes_events/events_index_page.html:135
 msgid "Filter by author"
 msgstr "Filtrer par auteur"
 
-#: events/models.py:39 events/templates/events/events_index_page.html:151
+#: events/models.py:39
+#: events/templates/sites_conformes_events/events_index_page.html:151
 msgid "Filter by source"
 msgstr "Filtrer par source"
 
@@ -135,91 +139,91 @@ msgstr "Page d’événement"
 msgid "Category"
 msgstr "Catégorie"
 
-#: events/templates/events/blocks/events_index_posts_list.html:45
+#: events/templates/sites_conformes_events/blocks/events_index_posts_list.html:45
 msgid "No event found."
 msgstr "Aucun événement trouvé."
 
-#: events/templates/events/event_entry_page.html:82
+#: events/templates/sites_conformes_events/event_entry_page.html:82
 msgid "Posted by:"
 msgstr "Écrit par :"
 
-#: events/templates/events/event_entry_page.html:107
+#: events/templates/sites_conformes_events/event_entry_page.html:107
 msgid "Date:"
 msgstr "Date :"
 
-#: events/templates/events/event_entry_page.html:110
+#: events/templates/sites_conformes_events/event_entry_page.html:110
 msgid "Location:"
 msgstr "Lieu :"
 
-#: events/templates/events/event_entry_page.html:114
+#: events/templates/sites_conformes_events/event_entry_page.html:114
 msgid "Registration link:"
 msgstr "Lien d’inscription :"
 
-#: events/templates/events/event_entry_page.html:133
-#: events/templates/events/events_index_page.html:170
+#: events/templates/sites_conformes_events/event_entry_page.html:133
+#: events/templates/sites_conformes_events/events_index_page.html:170
 msgid "Add to your calendar (iCal)"
 msgstr "Ajouter à votre calendrier (iCal)"
 
-#: events/templates/events/events_archive_page.html:9
+#: events/templates/sites_conformes_events/events_archive_page.html:9
 msgid "Year:"
 msgstr "Année :"
 
-#: events/templates/events/events_archive_page.html:73
-#: events/templates/events/events_index_page.html:89
+#: events/templates/sites_conformes_events/events_archive_page.html:73
+#: events/templates/sites_conformes_events/events_index_page.html:89
 msgid "Filters"
 msgstr "Filtres"
 
-#: events/templates/events/events_archive_page.html:75
-#: events/templates/events/events_index_page.html:91
+#: events/templates/sites_conformes_events/events_archive_page.html:75
+#: events/templates/sites_conformes_events/events_index_page.html:91
 msgid "Filters and export"
 msgstr "Filtres et export"
 
-#: events/templates/events/events_archive_page.html:78
+#: events/templates/sites_conformes_events/events_archive_page.html:78
 msgid "Filter by year"
 msgstr "Filtrer par année"
 
-#: events/templates/events/events_archive_page.html:97
-#: events/templates/events/events_index_page.html:191
+#: events/templates/sites_conformes_events/events_archive_page.html:97
+#: events/templates/sites_conformes_events/events_index_page.html:191
 msgid "Events"
 msgstr "Événements"
 
-#: events/templates/events/events_index_page.html:9
+#: events/templates/sites_conformes_events/events_index_page.html:9
 msgid "Category:"
 msgstr "Catégorie :"
 
-#: events/templates/events/events_index_page.html:12
+#: events/templates/sites_conformes_events/events_index_page.html:12
 msgid "Tag:"
 msgstr "Étiquette :"
 
-#: events/templates/events/events_index_page.html:15
+#: events/templates/sites_conformes_events/events_index_page.html:15
 msgid "Author:"
 msgstr "Auteur :"
 
-#: events/templates/events/events_index_page.html:18
+#: events/templates/sites_conformes_events/events_index_page.html:18
 msgid "Source:"
 msgstr "Source :"
 
-#: events/templates/events/events_index_page.html:21
+#: events/templates/sites_conformes_events/events_index_page.html:21
 msgid "Start date:"
 msgstr "Date de début :"
 
-#: events/templates/events/events_index_page.html:24
+#: events/templates/sites_conformes_events/events_index_page.html:24
 msgid "End date:"
 msgstr "Date de fin :"
 
-#: events/templates/events/events_index_page.html:93
+#: events/templates/sites_conformes_events/events_index_page.html:93
 msgid "Filter by date"
 msgstr "Filtrer par date"
 
-#: events/templates/events/events_index_page.html:165
+#: events/templates/sites_conformes_events/events_index_page.html:165
 msgid "Export"
 msgstr "Export"
 
-#: events/templates/events/events_index_page.html:175
+#: events/templates/sites_conformes_events/events_index_page.html:175
 msgid "Archives"
 msgstr "Archives"
 
-#: events/templates/events/events_index_page.html:180
+#: events/templates/sites_conformes_events/events_index_page.html:180
 msgid "See archives"
 msgstr "Voir les archives"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-05 18:31+0200\n"
+"POT-Creation-Date: 2026-03-23 11:56+0100\n"
 "PO-Revision-Date: 2025-04-24 11:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,6 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.4.2\n"
+
+#: apps.py:8
+msgid "Sites Conformes"
+msgstr ""
 
 #: templates/404.html:5
 msgid "Error 404 — Page not found"

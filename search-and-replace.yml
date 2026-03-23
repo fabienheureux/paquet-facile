@@ -209,6 +209,11 @@ rules:
     scope: all
     literal: true
 
+  - search: 'gettext as _'
+    replace: 'gettext_lazy as _'
+    scope: all
+    literal: true
+
   # ---------- Rename content_manager → core (post-namespacing) ----------
   # These run after all generic rules have already transformed upstream's
   # "content_manager" into "{package_name}.content_manager" / "{package_name}_content_manager".

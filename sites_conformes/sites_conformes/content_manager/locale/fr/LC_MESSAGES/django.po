@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-05 11:39+0100\n"
+"POT-Creation-Date: 2026-03-23 11:56+0100\n"
 "PO-Revision-Date: 2026-02-05 11:42+0100\n"
 "Last-Translator: Sylvain Boissel <sylvain@boissel.dev>\n"
 "Language-Team: \n"
@@ -445,7 +445,7 @@ msgstr "Informations de contact"
 #: content_manager/blocks/basics.py:373 content_manager/models.py:230
 #: content_manager/models.py:246 content_manager/models.py:260
 #: content_manager/models.py:266
-#: content_manager/templates/content_manager/tags_list_page.html:47
+#: content_manager/templates/sites_conformes_content_manager/tags_list_page.html:47
 #: content_manager/views.py:69 content_manager/views.py:103
 msgid "Tags"
 msgstr "Étiquettes"
@@ -1194,33 +1194,33 @@ msgstr "Nombre d’articles"
 
 #: content_manager/blocks/related_entries.py:97
 #: content_manager/blocks/related_entries.py:127
-#: content_manager/templates/content_manager/blocks/blog_recent_entries.html:11
-#: content_manager/templates/content_manager/blocks/events_recent_entries.html:11
-#: content_manager/templates/content_manager/catalog_index_page.html:93
+#: content_manager/templates/sites_conformes_content_manager/blocks/blog_recent_entries.html:11
+#: content_manager/templates/sites_conformes_content_manager/blocks/events_recent_entries.html:11
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:93
 msgid "Filter by category"
 msgstr "Filtrer par catégorie"
 
 #: content_manager/blocks/related_entries.py:98
 #: content_manager/blocks/related_entries.py:128 content_manager/models.py:59
-#: content_manager/templates/content_manager/blocks/blog_recent_entries.html:28
-#: content_manager/templates/content_manager/blocks/events_recent_entries.html:28
-#: content_manager/templates/content_manager/catalog_index_page.html:111
+#: content_manager/templates/sites_conformes_content_manager/blocks/blog_recent_entries.html:28
+#: content_manager/templates/sites_conformes_content_manager/blocks/events_recent_entries.html:28
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:111
 msgid "Filter by tag"
 msgstr "Filtrer par étiquette"
 
 #: content_manager/blocks/related_entries.py:99
 #: content_manager/blocks/related_entries.py:129
-#: content_manager/templates/content_manager/blocks/blog_recent_entries.html:45
-#: content_manager/templates/content_manager/blocks/events_recent_entries.html:45
-#: content_manager/templates/content_manager/catalog_index_page.html:156
+#: content_manager/templates/sites_conformes_content_manager/blocks/blog_recent_entries.html:45
+#: content_manager/templates/sites_conformes_content_manager/blocks/events_recent_entries.html:45
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:156
 msgid "Filter by author"
 msgstr "Filtrer par auteur"
 
 #: content_manager/blocks/related_entries.py:102
 #: content_manager/blocks/related_entries.py:132
-#: content_manager/templates/content_manager/blocks/blog_recent_entries.html:60
-#: content_manager/templates/content_manager/blocks/events_recent_entries.html:60
-#: content_manager/templates/content_manager/catalog_index_page.html:172
+#: content_manager/templates/sites_conformes_content_manager/blocks/blog_recent_entries.html:60
+#: content_manager/templates/sites_conformes_content_manager/blocks/events_recent_entries.html:60
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:172
 msgid "Filter by source"
 msgstr "Filtrer par source"
 
@@ -1825,187 +1825,187 @@ msgstr "Maximum 4 catégories, chacune contenant maximum 8 liens."
 msgid "Mega menu"
 msgstr "Méga menu"
 
-#: content_manager/templates/content_manager/blocks/blog_recent_entries.html:107
-#: content_manager/templates/content_manager/blocks/events_recent_entries.html:107
+#: content_manager/templates/sites_conformes_content_manager/blocks/blog_recent_entries.html:107
+#: content_manager/templates/sites_conformes_content_manager/blocks/events_recent_entries.html:107
 msgid "No article found."
 msgstr "Aucun article trouvé."
 
-#: content_manager/templates/content_manager/blocks/blog_recent_entries.html:111
+#: content_manager/templates/sites_conformes_content_manager/blocks/blog_recent_entries.html:111
 msgid "See all posts"
 msgstr "Voir tous les articles"
 
-#: content_manager/templates/content_manager/blocks/breadcrumbs.html:2
+#: content_manager/templates/sites_conformes_content_manager/blocks/breadcrumbs.html:2
 msgid "you are here:"
 msgstr "vous êtes ici :"
 
-#: content_manager/templates/content_manager/blocks/breadcrumbs.html:9
+#: content_manager/templates/sites_conformes_content_manager/blocks/breadcrumbs.html:9
 msgid "See breadcrumb"
 msgstr "Voir le fil d’Ariane"
 
-#: content_manager/templates/content_manager/blocks/breadcrumbs.html:15
+#: content_manager/templates/sites_conformes_content_manager/blocks/breadcrumbs.html:15
 msgid "Home page"
 msgstr "Accueil"
 
-#: content_manager/templates/content_manager/blocks/button.html:6
-#: content_manager/templates/content_manager/blocks/card_horizontal.html:12
-#: content_manager/templates/content_manager/blocks/card_vertical.html:11
-#: content_manager/templates/content_manager/blocks/contact_card_vertical.html:14
-#: content_manager/templates/content_manager/blocks/link.html:9
-#: content_manager/templates/content_manager/blocks/tile.html:12
+#: content_manager/templates/sites_conformes_content_manager/blocks/button.html:6
+#: content_manager/templates/sites_conformes_content_manager/blocks/card_horizontal.html:11
+#: content_manager/templates/sites_conformes_content_manager/blocks/card_vertical.html:11
+#: content_manager/templates/sites_conformes_content_manager/blocks/contact_card_vertical.html:14
+#: content_manager/templates/sites_conformes_content_manager/blocks/link.html:9
+#: content_manager/templates/sites_conformes_content_manager/blocks/tile.html:12
 msgid "Opens a new window"
 msgstr "Ouvre une nouvelle fenêtre"
 
-#: content_manager/templates/content_manager/blocks/catalog_index_entries_list.html:37
+#: content_manager/templates/sites_conformes_content_manager/blocks/catalog_index_entries_list.html:37
 msgid "No page found."
 msgstr "Aucune page trouvée."
 
-#: content_manager/templates/content_manager/blocks/download_info.html:5
+#: content_manager/templates/sites_conformes_content_manager/blocks/download_info.html:5
 msgid "Unknown file format"
 msgstr "Format de fichier inconnu"
 
-#: content_manager/templates/content_manager/blocks/download_info.html:11
+#: content_manager/templates/sites_conformes_content_manager/blocks/download_info.html:11
 msgid "Unknown file size"
 msgstr "Taille de fichier inconnue"
 
-#: content_manager/templates/content_manager/blocks/events_recent_entries.html:111
+#: content_manager/templates/sites_conformes_content_manager/blocks/events_recent_entries.html:111
 msgid "See all events"
 msgstr "Voir tous les événements"
 
-#: content_manager/templates/content_manager/blocks/full_width_background_with_sidemenu.html:16
+#: content_manager/templates/sites_conformes_content_manager/blocks/full_width_background_with_sidemenu.html:16
 msgid "In this section"
 msgstr "Dans cette rubrique"
 
-#: content_manager/templates/content_manager/blocks/image.html:12
+#: content_manager/templates/sites_conformes_content_manager/blocks/image.html:12
 msgid "Go to page"
 msgstr "Aller à la page"
 
-#: content_manager/templates/content_manager/blocks/page_visibility.html:4
+#: content_manager/templates/sites_conformes_content_manager/blocks/page_visibility.html:4
 msgid "Page visibility restricted to logged in users only"
 msgstr "Visibilité de la page restreinte aux utilisateurs connectés"
 
-#: content_manager/templates/content_manager/blocks/page_visibility.html:6
+#: content_manager/templates/sites_conformes_content_manager/blocks/page_visibility.html:6
 msgid "Page visibility restricted by group"
 msgstr "Visibilité de la page restreinte par groupe"
 
-#: content_manager/templates/content_manager/blocks/page_visibility.html:8
+#: content_manager/templates/sites_conformes_content_manager/blocks/page_visibility.html:8
 msgid "Page visibility restricted by password"
 msgstr "Visibilité de la page restreinte par mot de passe"
 
-#: content_manager/templates/content_manager/blocks/page_visibility.html:10
+#: content_manager/templates/sites_conformes_content_manager/blocks/page_visibility.html:10
 msgid "Page with restricted visibility"
 msgstr "Visibilité de la page restreinte"
 
-#: content_manager/templates/content_manager/blocks/sitemap_entry.html:2
+#: content_manager/templates/sites_conformes_content_manager/blocks/sitemap_entry.html:2
 msgid "Restricted access"
 msgstr "Accès restreint"
 
-#: content_manager/templates/content_manager/blocks/stepper.html:8
+#: content_manager/templates/sites_conformes_content_manager/blocks/stepper.html:8
 #, python-format
 msgid "Step %(current_step)s of %(total_steps)s"
 msgstr "Étape %(current_step)s sur %(total_steps)s"
 
-#: content_manager/templates/content_manager/blocks/tabs.html:3
+#: content_manager/templates/sites_conformes_content_manager/blocks/tabs.html:3
 msgid "Tabs group"
 msgstr "Groupe d’onglets"
 
-#: content_manager/templates/content_manager/blocks/video.html:10
+#: content_manager/templates/sites_conformes_content_manager/blocks/video.html:10
 msgid "Watch on the site"
 msgstr "Voir sur le site"
 
-#: content_manager/templates/content_manager/catalog_index_page.html:8
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:8
 msgid "Category:"
 msgstr "Catégorie :"
 
-#: content_manager/templates/content_manager/catalog_index_page.html:11
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:11
 msgid "Tags:"
 msgstr "Étiquettes:"
 
-#: content_manager/templates/content_manager/catalog_index_page.html:18
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:18
 msgid "Author:"
 msgstr "Auteur :"
 
-#: content_manager/templates/content_manager/catalog_index_page.html:21
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:21
 msgid "Source:"
 msgstr "Source :"
 
-#: content_manager/templates/content_manager/catalog_index_page.html:88
-#: content_manager/templates/content_manager/catalog_index_page.html:90
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:88
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:90
 msgid "Filters"
 msgstr "Filtres"
 
-#: content_manager/templates/content_manager/catalog_index_page.html:191
-#: content_manager/templates/content_manager/catalog_index_page.html:202
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:191
+#: content_manager/templates/sites_conformes_content_manager/catalog_index_page.html:202
 msgid "Pages"
 msgstr "Pages"
 
-#: content_manager/templates/content_manager/menus/mega_menu.html:7
+#: content_manager/templates/sites_conformes_content_manager/menus/mega_menu.html:7
 msgid "Close"
 msgstr "Fermer"
 
-#: content_manager/templates/content_manager/menus/mega_menu.html:15
+#: content_manager/templates/sites_conformes_content_manager/menus/mega_menu.html:15
 msgid "See the whole section"
 msgstr "Voir toute la rubrique"
 
-#: content_manager/templates/content_manager/password_required.html:5
-#: content_manager/templates/content_manager/password_required.html:15
+#: content_manager/templates/sites_conformes_content_manager/password_required.html:5
+#: content_manager/templates/sites_conformes_content_manager/password_required.html:15
 msgid "Password required"
 msgstr "Mot de passe requis"
 
-#: content_manager/templates/content_manager/password_required.html:24
+#: content_manager/templates/sites_conformes_content_manager/password_required.html:24
 msgid "You need a password to access this page."
 msgstr "L’accès à cette page nécessite un mot de passe."
 
-#: content_manager/templates/content_manager/password_required.html:35
+#: content_manager/templates/sites_conformes_content_manager/password_required.html:35
 msgid "Password:"
 msgstr "Mot de passe :"
 
-#: content_manager/templates/content_manager/password_required.html:42
+#: content_manager/templates/sites_conformes_content_manager/password_required.html:42
 msgid "Show password"
 msgstr "Afficher le mot de passe"
 
-#: content_manager/templates/content_manager/password_required.html:47
+#: content_manager/templates/sites_conformes_content_manager/password_required.html:47
 msgid "Show"
 msgstr "Afficher"
 
-#: content_manager/templates/content_manager/password_required.html:60
+#: content_manager/templates/sites_conformes_content_manager/password_required.html:60
 msgid "Continue"
 msgstr "Continuer"
 
-#: content_manager/templates/content_manager/search_results.html:8
-#: content_manager/templates/content_manager/search_results.html:27
+#: content_manager/templates/sites_conformes_content_manager/search_results.html:8
+#: content_manager/templates/sites_conformes_content_manager/search_results.html:27
 msgid "result"
 msgstr "résultat"
 
-#: content_manager/templates/content_manager/search_results.html:10
-#: content_manager/templates/content_manager/search_results.html:29
+#: content_manager/templates/sites_conformes_content_manager/search_results.html:10
+#: content_manager/templates/sites_conformes_content_manager/search_results.html:29
 msgid "No results"
 msgstr "Aucun résultat"
 
-#: content_manager/templates/content_manager/search_results.html:12
-#: content_manager/templates/content_manager/search_results.html:31
+#: content_manager/templates/sites_conformes_content_manager/search_results.html:12
+#: content_manager/templates/sites_conformes_content_manager/search_results.html:31
 #, python-format
 msgid "for query \"%(query)s\""
 msgstr "pour la recherche « %(query)s »"
 
-#: content_manager/templates/content_manager/search_results.html:48
+#: content_manager/templates/sites_conformes_content_manager/search_results.html:48
 msgid "We did not find any content matching your search."
 msgstr "Nous n’avons trouvé aucun contenu correspondant à votre recherche."
 
-#: content_manager/templates/content_manager/search_results.html:49
+#: content_manager/templates/sites_conformes_content_manager/search_results.html:49
 msgid "To continue your visit, you can consult our home page."
 msgstr ""
 "Pour continuer votre visite, vous pouvez consulter notre page d’accueil."
 
-#: content_manager/templates/content_manager/search_results.html:51
+#: content_manager/templates/sites_conformes_content_manager/search_results.html:51
 msgid "Back to home page"
 msgstr "Retourner à l’accueil"
 
-#: content_manager/templates/content_manager/sitemap_page.html:16
+#: content_manager/templates/sites_conformes_content_manager/sitemap_page.html:16
 #: content_manager/views.py:128
 msgid "Sitemap"
 msgstr "Plan du site"
 
-#: content_manager/templates/content_manager/widgets/dsfr-icon-picker-widget.html:9
+#: content_manager/templates/sites_conformes_content_manager/widgets/dsfr-icon-picker-widget.html:9
 msgid "Select icon"
 msgstr "Sélectionner une icône"
 
