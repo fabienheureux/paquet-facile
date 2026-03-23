@@ -1,3 +1,5 @@
+from functools import partial
+
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
@@ -35,8 +37,8 @@ if settings.PROCONNECT_ACTIVATED:
 
 if settings.DEBUG or settings.TESTING:
     urlpatterns += i18n_patterns(
-        path("404/", page_not_found, kwargs={"exception": Exception("Page not Found")}),
-        path("500/", server_error),
+        path("404/", page_not_found, kwargs={"exception": Exception("Page not Found"), "template_name": "sites_conformes_core/404.html"}),
+        path("500/", partial(server_error, template_name="sites_conformes_core/500.html")),
         prefix_default_language=False,
     )
 

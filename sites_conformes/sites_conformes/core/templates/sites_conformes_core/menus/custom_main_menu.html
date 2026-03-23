@@ -13,7 +13,7 @@
                 aria-expanded="false"
                 {% if item.active_class %}aria-current="true"{% endif %}
                 aria-controls="menu-{{ item.link_page.pk }}">{{ item.text }}</button>
-        {% sub_menu item template="menus/custom_sub_menu.html" %}
+        {% sub_menu item template="sites_conformes_core/menus/custom_sub_menu.html" %}
       {% else %}
         <a href="{{ item.href }}"
            class="fr-nav__link"

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "sites_conformes_core/base.html" %}
 
 {% load i18n static dsfr_tags wagtailcore_tags wagtailimages_tags wagtailroutablepage_tags wagtail_dsfr_tags %}
 
@@ -32,7 +32,7 @@
         content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}" />
   <meta name="twitter:description" content="{{ page.search_description }}" />
 
-  {% include "blocks/socialmedia_preview_image.html" %}
+  {% include "sites_conformes_core/blocks/socialmedia_preview_image.html" %}
 {% endblock social_media %}
 
 {% block content %}
@@ -151,6 +151,6 @@
     </div>
   </div>
   {% if settings.sites_conformes_content_manager.CmsDsfrConfig.show_share_links and settings.sites_conformes_content_manager.CmsDsfrConfig.share_links_events %}
-    {% include "blocks/share.html" %}
+    {% include "sites_conformes_core/blocks/share.html" %}
   {% endif %}
 {% endblock content %}
