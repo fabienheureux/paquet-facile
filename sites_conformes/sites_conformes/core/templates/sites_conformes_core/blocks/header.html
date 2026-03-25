@@ -42,7 +42,7 @@
 
 {% block header_tools %}
   {% if request %}
-    {% flat_menu handle="header_tools" template="menus/custom_flat_menu.html" %}
+    {% flat_menu handle="header_tools" template="sites_conformes_core/menus/custom_flat_menu.html" %}
   {% endif %}
   {% if user.is_authenticated %}
     <li>
@@ -121,7 +121,7 @@
         {% translate "Main menu" as main_menu_label %}
 
         <nav class="fr-nav" id="fr-navigation" aria-label="{{ main_menu_label }}">
-          {% main_menu max_levels=2 template="menus/custom_main_menu.html" sub_menu_template="menus/custom_sub_menu.html" %}
+          {% main_menu max_levels=2 template="sites_conformes_core/menus/custom_main_menu.html" sub_menu_template="sites_conformes_core/menus/custom_sub_menu.html" %}
         </nav>
       </div>
     </div>
