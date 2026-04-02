@@ -340,6 +340,36 @@ def rename_app_dirs(
                     logging.error("❌ Failed to rename %s → %s: %s", old_tpl, new_tpl, exc)
 
 
+def move_root_templates_to_core(package_name: str, dry_run: bool = False) -> None:
+    """Move root templates/ dir into core/templates/{package_name}_core/.
+
+    Upstream keeps base templates at {package_name}/templates/ (root level).
+    After namespacing they should live at core/templates/{package_name}_core/
+    so they can be referenced as "{package_name}_core/base.html" etc.
+    """
+    src = Path("templates")
+    dst = Path("core") / "templates" / f"{package_name}_core"
+
+    if not src.exists():
+        logging.debug("⏭️  No root templates dir to move: %s", src)
+        return
+
+    if dst.exists():
+        logging.warning("⚠️  Destination already exists, skipping: %s", dst)
+        return
+
+    if dry_run:
+        logging.info("[DRY-RUN] Would move: %s → %s", src, dst)
+        return
+
+    logging.info("📂 Moving root templates: %s → %s", src, dst)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        shutil.move(str(src), str(dst))
+    except Exception as exc:
+        logging.error("❌ Failed to move %s → %s: %s", src, dst, exc)
+
+
 # -- Refactoring Logic --------------------------------------------------------
 
 
@@ -418,6 +448,9 @@ def _apply_transformations(config_path: Path, dry_run: bool, jobs: int | None) -
     package_name: str = config.get("package_name", "sites_faciles")
     if apps:
         rename_template_dirs(apps, package_name, dry_run)
+
+    # Move root templates/ → core/templates/{package_name}_core/
+    move_root_templates_to_core(package_name, dry_run)
 
     # Rename app directories (e.g. content_manager → core)
     app_renames: dict[str, str] = config.get("app_renames", {})

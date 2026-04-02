@@ -234,6 +234,67 @@ rules:
   #   scope: all
   #   literal: true
 
+  # ---------- Root template references → {package_name}_core/ ----------
+  # After move_root_templates_to_core() runs, all bare template references
+  # (extends/include "base.html", "blocks/foo.html", "menus/foo.html") must be
+  # updated to use the namespaced core path.
+
+  - search: '{% extends "base.html" %}'
+    replace: '{% extends "{package_name}_core/base.html" %}'
+    scope: templates
+    literal: true
+
+  - search: "{% extends 'base.html' %}"
+    replace: "{% extends '{package_name}_core/base.html' %}"
+    scope: templates
+    literal: true
+
+  - search: '{% include "blocks/'
+    replace: '{% include "{package_name}_core/blocks/'
+    scope: templates
+    literal: true
+
+  - search: "{% include 'blocks/"
+    replace: "{% include '{package_name}_core/blocks/"
+    scope: templates
+    literal: true
+
+  - search: 'template="menus/'
+    replace: 'template="{package_name}_core/menus/'
+    scope: templates
+    literal: true
+
+  - search: "template='menus/"
+    replace: "template='{package_name}_core/menus/"
+    scope: templates
+    literal: true
+
+  - search: 'sub_menu_template="menus/'
+    replace: 'sub_menu_template="{package_name}_core/menus/'
+    scope: templates
+    literal: true
+
+  - search: "sub_menu_template='menus/"
+    replace: "sub_menu_template='{package_name}_core/menus/"
+    scope: templates
+    literal: true
+
+  # urls.py: inject template_name into error handler calls
+  - search: 'path("404/", page_not_found, kwargs={"exception": Exception("Page not Found")})'
+    replace: 'path("404/", page_not_found, kwargs={"exception": Exception("Page not Found"), "template_name": "{package_name}_core/404.html"})'
+    scope: all
+    literal: true
+
+  - search: "path(\"500/\", server_error),"
+    replace: "path(\"500/\", partial(server_error, template_name=\"{package_name}_core/500.html\")),"
+    scope: all
+    literal: true
+
+  - search: "from django.views.defaults import page_not_found, server_error"
+    replace: "from functools import partial\n\nfrom django.views.defaults import page_not_found, server_error"
+    scope: all
+    literal: true
+
   # ---------- DynamicStreamField transformations ----------
   # NOTE: Run with -j 1 flag to avoid race conditions when multiple rules target same file
   # - search: "from wagtail.fields import RichTextField, StreamField"
