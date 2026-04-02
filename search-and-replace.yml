@@ -241,42 +241,42 @@ rules:
 
   - search: '{% extends "base.html" %}'
     replace: '{% extends "{package_name}_core/base.html" %}'
-    scope: templates
+    scope: all
     literal: true
 
   - search: "{% extends 'base.html' %}"
     replace: "{% extends '{package_name}_core/base.html' %}"
-    scope: templates
+    scope: all
     literal: true
 
   - search: '{% include "blocks/'
     replace: '{% include "{package_name}_core/blocks/'
-    scope: templates
+    scope: all
     literal: true
 
   - search: "{% include 'blocks/"
     replace: "{% include '{package_name}_core/blocks/"
-    scope: templates
+    scope: all
     literal: true
 
   - search: 'template="menus/'
     replace: 'template="{package_name}_core/menus/'
-    scope: templates
+    scope: all
     literal: true
 
   - search: "template='menus/"
     replace: "template='{package_name}_core/menus/"
-    scope: templates
+    scope: all
     literal: true
 
   - search: 'sub_menu_template="menus/'
     replace: 'sub_menu_template="{package_name}_core/menus/'
-    scope: templates
+    scope: all
     literal: true
 
   - search: "sub_menu_template='menus/"
     replace: "sub_menu_template='{package_name}_core/menus/"
-    scope: templates
+    scope: all
     literal: true
 
   # urls.py: inject template_name into error handler calls
