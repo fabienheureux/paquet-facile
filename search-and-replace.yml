@@ -290,6 +290,11 @@ rules:
     scope: all
     literal: true
 
+  - search: 'template_name="robots.txt"'
+    replace: 'template_name="{package_name}_core/robots.txt"'
+    scope: all
+    literal: true
+
   - search: "from django.views.defaults import page_not_found, server_error"
     replace: "from functools import partial\n\nfrom django.views.defaults import page_not_found, server_error"
     scope: all

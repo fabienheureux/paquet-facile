@@ -346,6 +346,9 @@ def move_root_templates_to_core(package_name: str, dry_run: bool = False) -> Non
     Upstream keeps base templates at {package_name}/templates/ (root level).
     After namespacing they should live at core/templates/{package_name}_core/
     so they can be referenced as "{package_name}_core/base.html" etc.
+
+    If the destination already exists, individual files are moved so that
+    non-HTML files (e.g. robots.txt) are not silently skipped.
     """
     src = Path("templates")
     dst = Path("core") / "templates" / f"{package_name}_core"
@@ -354,20 +357,37 @@ def move_root_templates_to_core(package_name: str, dry_run: bool = False) -> Non
         logging.debug("⏭️  No root templates dir to move: %s", src)
         return
 
-    if dst.exists():
-        logging.warning("⚠️  Destination already exists, skipping: %s", dst)
+    if not dst.exists():
+        if dry_run:
+            logging.info("[DRY-RUN] Would move: %s → %s", src, dst)
+            return
+        logging.info("📂 Moving root templates: %s → %s", src, dst)
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            shutil.move(str(src), str(dst))
+        except Exception as exc:
+            logging.error("❌ Failed to move %s → %s: %s", src, dst, exc)
         return
 
-    if dry_run:
-        logging.info("[DRY-RUN] Would move: %s → %s", src, dst)
-        return
-
-    logging.info("📂 Moving root templates: %s → %s", src, dst)
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        shutil.move(str(src), str(dst))
-    except Exception as exc:
-        logging.error("❌ Failed to move %s → %s: %s", src, dst, exc)
+    # Destination exists: move any remaining files individually so nothing is skipped.
+    logging.debug("⚠️  Destination already exists, merging files: %s → %s", src, dst)
+    for file in src.rglob("*"):
+        if file.is_dir():
+            continue
+        rel = file.relative_to(src)
+        target = dst / rel
+        if target.exists():
+            logging.debug("⏭️  Already at destination, skipping: %s", target)
+            continue
+        if dry_run:
+            logging.info("[DRY-RUN] Would move: %s → %s", file, target)
+            continue
+        logging.info("📂 Moving: %s → %s", file, target)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            shutil.move(str(file), str(target))
+        except Exception as exc:
+            logging.error("❌ Failed to move %s → %s: %s", file, target, exc)
 
 
 # -- Refactoring Logic --------------------------------------------------------

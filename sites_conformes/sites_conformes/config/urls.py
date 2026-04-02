@@ -1,9 +1,9 @@
-from functools import partial
-
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.urls import include, path
+from functools import partial
+
 from django.views.defaults import page_not_found, server_error
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.i18n import JavaScriptCatalog
@@ -22,7 +22,7 @@ urlpatterns = [
     path("favicon.ico", RedirectView.as_view(url="/static/dsfr/dist/favicon/favicon.ico", permanent=True)),
     path(
         "robots.txt",
-        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+        TemplateView.as_view(template_name="sites_conformes_core/robots.txt", content_type="text/plain"),
     ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
