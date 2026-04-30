@@ -7,7 +7,7 @@ from wagtail.models import Collection, Page, PageViewRestriction
 from sites_conformes.content_manager.constants import HEADER_FIELDS
 from sites_conformes.content_manager.models import CatalogIndexPage, ContentPage
 from sites_conformes.content_manager.utils import get_default_site
-from menus.models import FooterBottomMenu, MainMenu
+from sites_conformes.menus.models import FooterBottomMenu, MainMenu
 
 style = color_style()
 

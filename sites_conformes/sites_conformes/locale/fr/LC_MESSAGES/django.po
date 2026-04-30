@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-05 17:42+0100\n"
-"PO-Revision-Date: 2026-02-05 17:46+0100\n"
+"POT-Creation-Date: 2026-04-09 13:08+0200\n"
+"PO-Revision-Date: 2026-04-09 13:09+0200\n"
 "Last-Translator: Sylvain Boissel <sylvain@boissel.dev>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Error 404 — Page not found"
 msgstr "Erreur 404 — Page non trouvée"
@@ -98,15 +98,6 @@ msgstr "Ce site est fait avec"
 msgid "Home page"
 msgstr "Accueil"
 
-msgid "Hello"
-msgstr "Bonjour"
-
-msgid "Log out"
-msgstr "Déconnexion"
-
-msgid "Log in"
-msgstr "Connexion"
-
 msgid "Search"
 msgstr "Rechercher"
 
@@ -145,6 +136,21 @@ msgstr "Adresse de la page copiée dans le presse-papiers."
 
 msgid "Copy to clipboard"
 msgstr "Copier dans le presse-papiers"
+
+msgid "My user space"
+msgstr "Mon espace"
+
+msgid "Account settings"
+msgstr "Paramètres du compte"
+
+msgid "Log out"
+msgstr "Déconnexion"
+
+msgid "Log in"
+msgstr "Connexion"
+
+#~ msgid "Hello"
+#~ msgstr "Bonjour"
 
 #, fuzzy
 #~| msgid "Main menu"

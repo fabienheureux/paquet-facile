@@ -8,7 +8,7 @@ from sites_conformes.content_manager.services.accessors import (
     get_or_create_main_menu,
 )
 from sites_conformes.content_manager.utils import get_default_site, import_image
-from menus.models import FooterBottomMenu, MainMenu
+from sites_conformes.menus.models import FooterBottomMenu, MainMenu
 
 
 class MainMenuAccessorTestCase(WagtailPageTestCase):

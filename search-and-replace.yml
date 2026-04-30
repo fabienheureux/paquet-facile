@@ -11,6 +11,7 @@ apps:
   - config
   - proconnect
   - dashboard
+  - menus
 
 # App directory renames applied after all text transformations.
 # The app dir and its namespaced template subdir are both renamed.

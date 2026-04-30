@@ -1,6 +1,7 @@
 from django.core.management import call_command
 from django.urls import reverse
 from wagtail.test.utils import WagtailPageTestCase
+from wagtail_localize.models import TranslationSource
 
 from sites_conformes.forms.models import FormPage
 
@@ -54,6 +55,14 @@ class FormsTestCase(WagtailPageTestCase):
             r"<li class=\"fr-error-text\">(\\n)?\s*(Ce champ est requis|Ce champ est obligatoire)\.(\\n)?\s*<\/li>",
         )
         # Updates sometimes mess with the order of the translations and so the displayed translation. Both are fine.
+
+    def test_form_field_labels_are_translatable(self):
+        form_page = FormPage.objects.first()
+        source, _ = TranslationSource.update_or_create_from_instance(form_page)
+        source_strings = {segment.context.path for segment in source.stringsegment_set.select_related("context")}
+
+        label_paths = [path for path in source_strings if path.endswith(".label")]
+        self.assertTrue(label_paths, "Form field labels should be extracted as translatable string segments")
 
     def test_form_page_is_found_in_search_results(self):
         call_command("update_index")

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-05 16:18+0100\n"
-"PO-Revision-Date: 2026-02-05 15:41+0100\n"
+"POT-Creation-Date: 2026-04-13 15:41+0200\n"
+"PO-Revision-Date: 2026-04-13 15:42+0200\n"
 "Last-Translator: Sylvain Boissel <sylvain@boissel.dev>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -58,6 +58,16 @@ msgid "For imported pages, to allow updates. Max length: 2000 characters."
 msgstr ""
 "Utilisé pour les pages importées, pour permettre les mises à jour. Longueur "
 "maximum : 2000 caractères."
+
+msgid "Exclude from sitemap"
+msgstr "Exclure du plan du site"
+
+msgid ""
+"If checked, this page will be excluded from sitemap.xml, the plan du site "
+"page, and will have a noindex meta tag."
+msgstr ""
+"Si cochée, cette page sera exclue du sitemap.xml, la page plan du site et "
+"aura la metatag noindex"
 
 msgid "Preview image"
 msgstr "Image de prévisualisation"
@@ -1231,6 +1241,32 @@ msgstr "URL d‘inscription à la lettre d’information"
 msgid "Max length: 2000 characters."
 msgstr "Longueur maximum : 2000 caractères."
 
+msgid "Activate the language selector in the header."
+msgstr "Activer l’affichage du sélecteur de langues dans l’en-tête."
+
+msgid "In simple mode, the list of languages is automatically generated."
+msgstr "Dans le mode simple, la liste des langues est générée automatiquement."
+
+msgid "In manual mode, you can define it manually below."
+msgstr "Dans le mode manuel, vous pouvez la définir manuellement ci-dessous."
+
+msgid ""
+"The manual mode is useful if each language uses a completely separated site."
+msgstr "Le mode manuel est utile s'il y a un site séparé pour chaque langue."
+
+msgid "Language selector"
+msgstr "Sélecteur de langues"
+
+msgctxt "Language selector disabled"
+msgid "Disabled"
+msgstr "Désactivé"
+
+msgid "Simple"
+msgstr "Simple"
+
+msgid "Manual"
+msgstr "Manuel"
+
 msgid "Activate share links on content_pages"
 msgstr "Activer les liens de partage sur les pages de contenu"
 
@@ -1268,6 +1304,9 @@ msgstr ""
 "information primordiale et temporaire.  (Une utilisation excessive ou "
 "continue risque de “noyer” le message)"
 
+msgid "Language selector items"
+msgstr "Entrées du sélecteur de langues"
+
 msgid "Advanced settings"
 msgstr "Paramètres avancés"
 
@@ -1297,6 +1336,45 @@ msgstr "Bloc-marque"
 
 msgid "Newsletter, social media and share links"
 msgstr "Lettre d’information, réseaux sociaux et liens de partage"
+
+msgid "You must enter a page or an external URL."
+msgstr "Vous devez saisir une page ou une URL externe."
+
+msgid "You have selected the “Page” type but have not selected a page."
+msgstr ""
+"Vous avez sélectionné le type « Page », mais vous n'avez pas sélectionné de "
+"page."
+
+msgid "You have selected the “External URL” type but have not entered a URL."
+msgstr ""
+"Vous avez sélectionné le type « URL externe », mais vous n'avez pas saisi "
+"d'URL."
+
+msgid "Language code"
+msgstr "Code langue"
+
+msgid "The language code (examples: fr, de, en)"
+msgstr "Le code langue (par exemple : fr, de, en)"
+
+msgid "Language name"
+msgstr "Nom de la langue"
+
+msgid ""
+"The name of the language in said language (examples: Français, Deutsch, "
+"English)"
+msgstr ""
+"Le nom de la langue dans cette langue (par exemple : Français, Deutsch, "
+"English)"
+
+msgid "Link to a page on this site. Use either this or the external URL."
+msgstr ""
+"Lien vers une page du site. Utilisez soit ce champ soit le champ URL externe."
+
+msgid "Link to an external URL. Use either this or the page."
+msgstr "Lien vers une page externe. Utilisez soit ce champ soit le champ Page."
+
+msgid "Language selector item"
+msgstr "Entrée du sélecteur de langues"
 
 msgid "URL"
 msgstr "URL"
@@ -1457,6 +1535,9 @@ msgstr "Plan du site"
 msgid "Select icon"
 msgstr "Sélectionner une icône"
 
+msgid "Select language"
+msgstr "Sélectionner une langue"
+
 msgid "search/"
 msgstr "recherche/"
 
@@ -1479,6 +1560,13 @@ msgstr "Pages avec l’étiquette {tag}"
 #, python-brace-format
 msgid "List of pages tagged with {tag}"
 msgstr "Liste de pages avec l’étiquette {tag}"
+
+#~ msgid ""
+#~ "The name of the language in said language (exemples: Français, Deutsch, "
+#~ "English)"
+#~ msgstr ""
+#~ "Le nom de la langue dans cette langue (par exemple : Français, Deutsch, "
+#~ "English)"
 
 #~ msgid "Common page configuration"
 #~ msgstr "Configuration commune"

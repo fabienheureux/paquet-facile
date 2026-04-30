@@ -2,7 +2,7 @@ from wagtail.models import Page, Site
 from wagtail.test.utils import WagtailPageTestCase
 
 from sites_conformes.content_manager.models import ContentPage
-from menus.models import FooterBottomMenu, MainMenu, TopMenu
+from sites_conformes.menus.models import FooterBottomMenu, MainMenu, TopMenu
 
 
 class TopMenuLinkBlockTestCase(WagtailPageTestCase):

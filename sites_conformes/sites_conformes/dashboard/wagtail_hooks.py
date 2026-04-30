@@ -5,9 +5,10 @@ from django.utils.html import escape, format_html
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
+from wagtail.admin.ui.components import Component
 from wagtail.rich_text import LinkHandler
 
-from .views import ShortcutsPanel, TutorialsPanel
+from sites_conformes.dashboard.views import ShortcutsPanel, TutorialsPanel
 
 
 @hooks.register("insert_global_admin_css")
@@ -26,9 +27,11 @@ def insert_custom_editor_scripts():
         """
         <script src="{}"></script>
         <script src="{}"></script>
+        <script src="{}"></script>
         """,
         static("js/admin_editor.js"),
         static("js/open_preview_panel.js"),
+        static("js/language-selector-admin.js"),
     )
 
 
@@ -43,12 +46,13 @@ def register_site_menu_item():
     )
 
 
-class UserbarPageAPILinkItem:
+class UserbarPageAPILinkItem(Component):
     """
     When on a Wagtail page, add a link to the Page API for admin users in the wagtail toolbar
     """
 
-    def render(self, request) -> str:
+    def render_html(self, parent_context) -> str:
+        request = parent_context["request"]  # type: ignore
         if hasattr(request, "_wagtail_route_for_request") and hasattr(request._wagtail_route_for_request, "page"):
             page = request._wagtail_route_for_request.page
             page_url = reverse("wagtailapi:pages:detail", kwargs={"pk": page.id})

@@ -10,12 +10,14 @@ from wagtail.contrib.forms.forms import BaseForm, FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
 from wagtail.fields import RichTextField
+from wagtail.models import TranslatableMixin
 from wagtail_honeypot.models import HoneypotFormMixin, HoneypotFormSubmissionMixin
+from wagtail_localize.fields import SynchronizedField
 
 from sites_conformes.forms.widgets import CustomEmailInputWidget
 
 
-class FormField(AbstractFormField):
+class FormField(TranslatableMixin, AbstractFormField):
     CHOICES = (
         ("singleline", _("Text field")),
         ("multiline", _("Text area")),
@@ -35,7 +37,13 @@ class FormField(AbstractFormField):
 
     field_type = models.CharField(verbose_name=_("Field type"), max_length=16, choices=CHOICES)
 
-    class Meta(AbstractFormField.Meta):
+    # clean_name is a technical slug derived from the label and used as the HTML field name.
+    # It must stay identical across locales so form submissions can be processed correctly.
+    override_translatable_fields = [
+        SynchronizedField("clean_name", overridable=False),
+    ]
+
+    class Meta(TranslatableMixin.Meta, AbstractFormField.Meta):
         verbose_name = _("Form field")
         verbose_name_plural = _("Form fields")
 
