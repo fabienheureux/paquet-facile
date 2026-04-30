@@ -1,0 +1,196 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-09 13:08+0200\n"
+"PO-Revision-Date: 2026-04-09 13:09+0200\n"
+"Last-Translator: Sylvain Boissel <sylvain@boissel.dev>\n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.9\n"
+
+msgid "Error 404 — Page not found"
+msgstr "Erreur 404 — Page non trouvée"
+
+msgid "Page not found"
+msgstr "Page non trouvée"
+
+msgid ""
+"The page you are looking for could not be found. We apologize for any "
+"inconvenience."
+msgstr ""
+"La page que vous cherchez est introuvable. Veuillez nous excuser pour la "
+"gêne occasionnée."
+
+msgid ""
+"If you typed the web address into your browser, check that it is correct. "
+"The page may no longer be available."
+msgstr ""
+"Si vous avez tapé l’adresse web dans le navigateur, vérifiez qu’elle est "
+"correcte. La page n’est peut-être plus disponible."
+
+msgid "In this case, to continue your visit, you can consult our home page."
+msgstr ""
+"Dans ce cas, pour continuer votre visite, vous pouvez consulter notre page "
+"d’accueil."
+
+msgid "Back to home page"
+msgstr "Retourner à l’accueil"
+
+msgid "Error 500 — Unexpected error"
+msgstr "Erreur 500 — Erreur inattendue"
+
+msgid "Unexpected error"
+msgstr "Erreur inattendue"
+
+msgid "Error 500"
+msgstr "Erreur 500"
+
+msgid "Please try refreshing the page or try again later."
+msgstr "Essayez de rafraîchir la page ou bien ressayez plus tard."
+
+msgid ""
+"Sorry, there is an issue with the service, we are working to resolve it as "
+"quickly as possible."
+msgstr ""
+"Désolé, le service rencontre un problème, nous travaillons pour le résoudre "
+"le plus rapidement possible."
+
+msgctxt "Section title"
+msgid "Subscribe to our newsletter"
+msgstr "Abonnez-vous à notre lettre d’information"
+
+msgctxt "Button title"
+msgid "Subscribe to our newsletter"
+msgstr "S'abonner à notre lettre d’information"
+
+msgid "Subscribe"
+msgstr "S’abonner"
+
+msgid "Follow us <br /> on social media"
+msgstr "Suivez-nous<br />sur les réseaux sociaux"
+
+msgid "Sitemap"
+msgstr "Plan du site"
+
+msgid "Cookie settings"
+msgstr "Gestion des cookies"
+
+msgid "Display settings"
+msgstr "Paramètres d’affichage"
+
+msgid "Opens a new window"
+msgstr "Ouvre une nouvelle fenêtre"
+
+msgid "This website is made with"
+msgstr "Ce site est fait avec"
+
+msgid "Home page"
+msgstr "Accueil"
+
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Main menu"
+msgstr "Menu principal"
+
+msgid "Hide message"
+msgstr "Masquer le message"
+
+msgid "Consultation link"
+msgstr "Lien de consultation"
+
+msgid "Share this page"
+msgstr "Partager cette page"
+
+msgid "Share on Facebook"
+msgstr "Partager sur Facebook"
+
+msgid "Share on X (previously Twitter)"
+msgstr "Partager sur X (anciennement Twitter)"
+
+msgid "Share on LinkedIn"
+msgstr "Partager sur LinkedIn"
+
+msgid "Share via email"
+msgstr "Partager par email"
+
+msgid "Page URL copied to clipboard."
+msgstr "Adresse de la page copiée dans le presse-papiers."
+
+msgid "Copy to clipboard"
+msgstr "Copier dans le presse-papiers"
+
+msgid "My user space"
+msgstr "Mon espace"
+
+msgid "Account settings"
+msgstr "Paramètres du compte"
+
+msgid "Log out"
+msgstr "Déconnexion"
+
+msgid "Log in"
+msgstr "Connexion"
+
+#~ msgid "Hello"
+#~ msgstr "Bonjour"
+
+#, fuzzy
+#~| msgid "Main menu"
+#~ msgid "Main link"
+#~ msgstr "Menu principal"
+
+#, fuzzy
+#~| msgid "Main menu"
+#~ msgid "Mega menu"
+#~ msgstr "Menu principal"
+
+#, fuzzy
+#~| msgid "Sitemap"
+#~ msgid "Site"
+#~ msgstr "Plan du site"
+
+#, fuzzy
+#~| msgid "Main menu"
+#~ msgid "Main menus"
+#~ msgstr "Menu principal"
+
+#~ msgid "Invalid response format or token verification failed"
+#~ msgstr "Format de réponse invalide ou vérification du jeton échouée"
+
+#~ msgid "User account is disabled"
+#~ msgstr "Compte utilisateur désactivé"
+
+#~ msgid "sub"
+#~ msgstr "sub"
+
+#~ msgid ""
+#~ "Required. 255 characters or fewer. Letters, numbers, and @/./+/-/_/: "
+#~ "characters only."
+#~ msgstr ""
+#~ "Obligatoire. 255 caractères ou moins, parmi lettres, nombres et @/./+/-/"
+#~ "_/: uniquement."
+
+#~ msgid ""
+#~ "Enter a valid sub. This value may contain only letters, numbers, and @/./"
+#~ "+/-/_/: characters."
+#~ msgstr ""
+#~ "Entrez un sub valide. Cette valeur ne peut contenir que des lettres, "
+#~ "nombres et @/./+/-/_/: uniquement."
