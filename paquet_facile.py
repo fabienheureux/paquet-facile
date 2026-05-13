@@ -234,32 +234,42 @@ def apply_rule_to_text(text: str, rule: dict[str, Any]) -> tuple[str, int]:
         return text, 0
 
 
-def apply_rule_to_file(path: Path, rule: dict[str, Any], dry_run: bool) -> bool:
-    """
-    Apply a single rule to a single file.
-    Returns True if file would be/was changed.
+def apply_rules_to_file(
+    path: Path, rules: list[dict[str, Any]], dry_run: bool
+) -> bool:
+    """Apply an ordered list of rules to a single file in one read/write cycle.
+
+    Each rule is applied to the in-memory text produced by the previous rule,
+    so chained transformations (e.g. `content_manager` → `sites_conformes.content_manager`
+    → `sites_conformes.core`) work as authored in the YAML.
+
+    Returns True if the file was changed.
     """
     try:
-        text = path.read_text(encoding="utf-8")
+        original = path.read_text(encoding="utf-8")
     except Exception as exc:
         logging.error("❌ Failed to read %s: %s", path, exc)
         return False
 
-    new_text, count = apply_rule_to_text(text, rule)
+    text = original
+    for rule in rules:
+        new_text, count = apply_rule_to_text(text, rule)
+        if count > 0:
+            logging.info(
+                "✏️  %s — %d replacement(s) for %r → %r",
+                path, count, rule["search"], rule["replace"],
+            )
+            text = new_text
 
-    if count <= 0:
+    if text == original:
         return False
-
-    search = rule["search"]
-    replace = rule["replace"]
-    logging.info("✏️  %s — %d replacement(s) for %r → %r", path, count, search, replace)
 
     if dry_run:
         logging.debug("DRY-RUN: not writing changes to %s", path)
         return True
 
     try:
-        path.write_text(new_text, encoding="utf-8")
+        path.write_text(text, encoding="utf-8")
     except Exception as exc:
         logging.error("Failed to write %s: %s", path, exc)
         return False
@@ -420,34 +430,32 @@ def _apply_transformations(config_path: Path, dry_run: bool, jobs: int | None) -
     # Expand rules
     expanded_rules = expand_rules(config)
 
-    # Process files: apply each rule to all matching files
+    # Group rules per file so each file is processed by exactly one worker.
+    # This preserves rule ordering on every file and avoids the lost-write race
+    # we had when multiple workers wrote the same path concurrently.
+    rules_per_file: dict[Path, list[dict[str, Any]]] = {}
+    for rule in expanded_rules:
+        for f in get_files_for_rule(rule, scopes):
+            path = Path(f)
+            if not is_text_file(path, text_exts):
+                continue
+            rules_per_file.setdefault(path, []).append(rule)
+
+    scanned_files = len(rules_per_file)
     total_files_changed = 0
-    scanned_files = 0
-    all_files_processed = set()
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as executor:
-        futures: list[concurrent.futures.Future[bool]] = []
+        future_to_path = {
+            executor.submit(apply_rules_to_file, path, rules, dry_run): path
+            for path, rules in rules_per_file.items()
+        }
 
-        for rule in expanded_rules:
-            files = get_files_for_rule(rule, scopes)
-
-            for f in files:
-                path = Path(f)
-                if not is_text_file(path, text_exts):
-                    continue
-
-                all_files_processed.add(path)
-                future = executor.submit(apply_rule_to_file, path, rule, dry_run)
-                futures.append(future)
-
-        scanned_files = len(all_files_processed)
-
-        for future in concurrent.futures.as_completed(futures):
+        for future in concurrent.futures.as_completed(future_to_path):
             try:
                 if future.result():
                     total_files_changed += 1
             except Exception as exc:
-                logging.error("Worker failed: %s", exc)
+                logging.error("Worker failed for %s: %s", future_to_path[future], exc)
 
     logging.warning(
         "🎬 Finished replacements %s: scanned %d files, %d file(s) changed",

@@ -28,7 +28,11 @@ app_renames:
 scopes:
   migrations: "**/migrations/**"
   templates: "**/templates/**"
-  settings: "**/config/settings*.py"
+  # git ls-files pathspec: `**/X` does NOT anchor against the repo root, so
+  # `**/config/settings*.py` would miss `config/settings.py` at root. We list
+  # the two locations the file can occupy: at upstream root, or one level
+  # deep if we ever nest config/.
+  settings: "config/settings*.py"
   all: "**/*"
 
 # File extensions considered "text" (configurable)
@@ -277,14 +281,29 @@ rules:
   # "content_manager" into "{package_name}.content_manager" / "{package_name}_content_manager".
   # They rename the result to "{package_name}.core" (import path matching the
   # app_renames target dir) and "{package_name}_core" (Django app label).
+  #
+  # We cover four forms that appear across the codebase:
+  #   * `from {package_name}.content_manager...`   (Python import statements)
+  #   * `import {package_name}.content_manager...` (also import statements — Django
+  #                                                 migrations always use this form)
+  #   * `{package_name}.content_manager.X`         (bare attribute refs in
+  #                                                 migrations, and quoted "X.Y" strings)
+  #   * `{package_name}_content_manager`           (Django app label / table prefix)
 
   - search: "from {package_name}.content_manager"
     replace: "from {package_name}.core"
     scope: all
     literal: true
 
-  - search: '"{package_name}.content_manager'
-    replace: '"{package_name}.core'
+  - search: "import {package_name}.content_manager"
+    replace: "import {package_name}.core"
+    scope: all
+    literal: true
+
+  # Catches both bare `{package_name}.content_manager.X(...)` attribute refs
+  # (Django migrations) and quoted `"{package_name}.content_manager.X"` strings.
+  - search: "{package_name}.content_manager."
+    replace: "{package_name}.core."
     scope: all
     literal: true
 

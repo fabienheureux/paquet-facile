@@ -9,7 +9,7 @@ sites_conformes/pyproject.toml — e.g. version "3.2.0rc1" clones tag v3.2.0
 into a release branch v3.2.0rc1-namespaced-folder. Both can be overridden
 with --tag and --branch.
 
-The branch contains two commits:
+The branch contains three commits:
 
 Commit 1 — file-level namespacing:
   1. Clone numerique-gouv/sites-conformes @ <tag> into a temp dir.
@@ -20,7 +20,12 @@ Commit 1 — file-level namespacing:
   5. Copy .github/workflows/publish.yml into the temp dir's .github/workflows/.
 
 Commit 2 — folder namespacing:
-  6. Move every entry from commit 1 into a new sites_conformes/ subdirectory.
+  6. Move every entry from commit 1 into a new sites_conformes/ subdirectory
+     (except Django project files listed in KEEP_AT_ROOT).
+
+Commit 3 — uv.lock refresh:
+  7. Run `uv lock` so the lockfile reflects the final layout and the editable
+     install of the namespaced sites_conformes package.
 
 Then: force-push to the fork and open a PR against production.
 """
@@ -344,6 +349,25 @@ def phase_two_folder(
     commit_all(temp_dir, f"Move namespaced sources into {PACKAGE_DIR_NAME}/ for {tag}")
 
 
+def phase_three_lock(temp_dir: Path, tag: str) -> None:
+    """Regenerate uv.lock against the final layout and commit as a third commit.
+
+    Runs `uv lock` from the release-branch root so the lockfile reflects:
+      * the refreshed dep set from our pyproject template
+      * the editable sites_conformes/ package (installed via the root pyproject)
+
+    Fails the release if `uv` is missing or the lock step errors — a broken
+    lockfile would silently propagate to CI and downstream consumers.
+    """
+    if shutil.which("uv") is None:
+        logging.error("`uv` not found on PATH — install it before running release.py")
+        sys.exit(2)
+
+    logging.info("🔒 Running `uv lock` to refresh lockfile")
+    run(["uv", "lock"], cwd=temp_dir)
+    commit_all(temp_dir, f"Refresh uv.lock for {tag}")
+
+
 def build_release(
     repo_root: Path,
     tag: str,
@@ -363,6 +387,7 @@ def build_release(
 
     package_entries = phase_one_files(repo_root, temp_dir, tag, branch)
     phase_two_folder(temp_dir, package_entries, tag)
+    phase_three_lock(temp_dir, tag)
     force_push(temp_dir, "fork", branch)
 
     if skip_prs:
