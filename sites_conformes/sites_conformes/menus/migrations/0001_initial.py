@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
                                     "help_text": "Extra query parameters at the end of the link, e.g. filtering options.",
                                     "label": "Extra query parameters",
                                     "required": False,
-                                    "validators": [content_manager.validators.validate_query_string],
+                                    "validators": [sites_conformes.content_manager.validators.validate_query_string],
                                 },
                             ),
                             6: (
@@ -230,7 +230,7 @@ class Migration(migrations.Migration):
                                     "help_text": "Extra query parameters at the end of the link, e.g. filtering options.",
                                     "label": "Extra query parameters",
                                     "required": False,
-                                    "validators": [content_manager.validators.validate_query_string],
+                                    "validators": [sites_conformes.content_manager.validators.validate_query_string],
                                 },
                             ),
                             6: (
@@ -426,7 +426,7 @@ class Migration(migrations.Migration):
                                     "help_text": "Extra query parameters at the end of the link, e.g. filtering options.",
                                     "label": "Extra query parameters",
                                     "required": False,
-                                    "validators": [content_manager.validators.validate_query_string],
+                                    "validators": [sites_conformes.content_manager.validators.validate_query_string],
                                 },
                             ),
                             6: (

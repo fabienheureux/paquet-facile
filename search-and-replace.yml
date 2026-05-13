@@ -145,6 +145,22 @@ rules:
     replace: "{package_name}.content_manager.models.MonospaceField"
     scope: migrations
 
+  # Bare `content_manager.validators.<x>` references inside migration dict
+  # literals (e.g. `"validators": [content_manager.validators.validate_query_string]`).
+  # The `import sites_conformes.content_manager.validators` line is rewritten by
+  # the generic `import {app}` rule, but use-sites in dict values are not, so
+  # they remain bare and raise NameError at import time.
+  - search: '\[content_manager\.validators\.'
+    replace: "[{package_name}.content_manager.validators."
+    scope: migrations
+
+  # Raw SQL table names inside RunSQL — Django prefixes DB tables with the app
+  # label, so `forms_formfield` becomes `{package_name}_forms_formfield` after
+  # namespacing. Generic rules don't touch raw SQL strings.
+  - search: '(\b(?:UPDATE|FROM|JOIN|INTO|TABLE)\s+){app}_'
+    replace: '\1{package_name}_{app}_'
+    scope: migrations
+
   - search: " content_manager.blocks.IconPickerBlock"
     replace: " {package_name}.content_manager.blocks.IconPickerBlock"
     scope: migrations
