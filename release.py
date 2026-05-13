@@ -2,7 +2,7 @@
 """
 release.py
 Build a release branch on the sites-faciles fork from the namespaced sources
-and open a single PR against numerique-gouv/sites-conformes:production.
+and open a single PR against numerique-gouv/sites-conformes:main.
 
 The upstream tag and branch name are derived from the version in
 sites_conformes/pyproject.toml — e.g. version "3.2.0rc1" clones tag v3.2.0
@@ -27,7 +27,7 @@ Commit 3 — uv.lock refresh:
   7. Run `uv lock` so the lockfile reflects the final layout and the editable
      install of the namespaced sites_conformes package.
 
-Then: force-push to the fork and open a PR against production.
+Then: force-push to the fork and open a PR against main.
 """
 
 from __future__ import annotations
@@ -393,19 +393,22 @@ def build_release(
     if skip_prs:
         logging.warning("⏭️  --skip-prs set; not opening PR")
     else:
+        version_display = tag.lstrip("v")
         open_pr(
             temp_dir,
             target_slug=upstream_slug,
             head_branch=branch,
             base_branch=base_branch,
             head_owner=fork_owner,
-            title=f"Namespaced release for {tag}",
+            title=f"Packagification de Sites Conformes v{version_display}",
             body=(
-                f"Namespacing for `{tag}`.\n\n"
-                f"Two commits:\n"
+                f"Packagification for `{tag}`.\n\n"
+                f"Three commits:\n"
                 f"1. File-level namespacing (rewrites existing files in place).\n"
                 f"2. Move all namespaced sources into `{PACKAGE_DIR_NAME}/` so the package "
-                f"lives in its own subdirectory."
+                f"lives in its own subdirectory.\n"
+                f"3. Refresh `uv.lock` against the final layout and the editable "
+                f"`{PACKAGE_DIR_NAME}` install."
             ),
         )
 
@@ -434,8 +437,8 @@ def main() -> None:
     parser.add_argument("--fork-owner", default=FORK_OWNER, help="Fork owner used as PR head prefix")
     parser.add_argument(
         "--base-branch",
-        default="production",
-        help="Base branch on upstream for the PR (default: production)",
+        default="main",
+        help="Base branch on upstream for the PR (default: main)",
     )
     parser.add_argument("--skip-prs", action="store_true", help="Push branch but don't open a PR")
     parser.add_argument("--keep-temp", action="store_true", help="Keep the temp clone after pushing")

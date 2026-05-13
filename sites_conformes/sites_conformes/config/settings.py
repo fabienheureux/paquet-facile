@@ -103,7 +103,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "widget_tweaks",
     "dsfr",
-    "sites_conformes.content_manager",
+    "sites_conformes.core",
     "sites_conformes.blog",
     "sites_conformes.events",
     "sites_conformes.forms",
