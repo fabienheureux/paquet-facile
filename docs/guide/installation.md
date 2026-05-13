@@ -1,8 +1,6 @@
 # Installation
 
 Ce guide explique comment ajouter `sites-conformes` à un projet Django existant.
-Si vous voulez **migrer un site Sites Conformes existant** vers la version
-packagée, consultez plutôt {doc}`../migration`.
 
 ## Prérequis
 
@@ -140,4 +138,3 @@ python manage.py collectstatic
 ## Prochaines étapes
 
 - {doc}`configuration` : réglages spécifiques
-- {doc}`../migration` : migration depuis un site Sites Conformes existant

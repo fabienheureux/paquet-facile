@@ -27,7 +27,6 @@ caption: Documentation
 ---
 guide/installation
 guide/configuration
-migration
 changelog
 ```
 

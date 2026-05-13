@@ -15,7 +15,6 @@ open _build/html/index.html  # Mac
 
 - `guide/` : guides d'utilisation (installation, configuration)
 - `index.md` : page d'accueil
-- `migration.md` : guide de migration vers la version packagée
 - `changelog.md` : pointeurs vers les releases GitHub
 
 ## Publication
