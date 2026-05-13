@@ -14,10 +14,8 @@ casser l'historique des migrations.
 
 ## 1. Sauvegarder
 
-```bash
-python manage.py dumpdata > backup.json
-```
-
+Avant de toucher quoi que ce soit, faites une copie de la base de données de
+production (via votre outil habituel : `pg_dump`, snapshot du provider, etc.).
 Sauvegardez aussi vos médias (filesystem ou bucket S3) si nécessaire.
 
 ## 2. Installer le package
@@ -25,10 +23,6 @@ Sauvegardez aussi vos médias (filesystem ou bucket S3) si nécessaire.
 ```bash
 uv add sites-conformes
 ```
-
-Pour les détails de configuration `INSTALLED_APPS`, `TEMPLATES`, context
-processors, voir {doc}`guide/installation`. Ce qui suit suppose que cette
-étape est faite.
 
 ## 3. Supprimer les apps locales que le package fournit maintenant
 
@@ -53,7 +47,6 @@ Une fois la sauvegarde des personnalisations effectuée :
 
 ```bash
 git rm -r blog/ events/ forms/ menus/ dashboard/ proconnect/ content_manager/
-# (gardez core/ et db_storage/ si vous y aviez ajouté du code local)
 ```
 
 Ajustez ensuite `INSTALLED_APPS` pour utiliser les versions namespacées :
@@ -102,8 +95,7 @@ Elle gère :
 
 À noter : l'app `content_manager` est renommée en `core` dans le package,
 donc ses tables vont de `content_manager_*` directement à
-`sites_conformes_core_*`. Cette table de correspondance est définie dans
-`APP_RENAMES` au sein de la commande (voir « Référence » plus bas).
+`sites_conformes_core_*`.
 
 ## 5. Appliquer les migrations restantes
 
@@ -128,27 +120,3 @@ sous leur nouveau nom).
   ```
   Tous les labels doivent être préfixés.
 
-## Dépannage
-
-**`ProgrammingError: relation "blog_xxx" does not exist`**
-Une référence ContentType pointe encore vers l'ancien label. Relancez
-`migrate_from_sites_faciles` ou corrigez manuellement la ligne fautive dans
-`django_content_type`.
-
-**Templates introuvables (`TemplateDoesNotExist: sites_conformes_core/...`)**
-Vérifiez que `TEMPLATES[0]["DIRS"]` contient bien le répertoire `templates/`
-du package. Voir {doc}`guide/installation` (section « Templates et fichiers
-statiques »).
-
-**Static manquants (`staticfiles.W004`)**
-Même cause côté statiques : vérifiez que `STATICFILES_DIRS` inclut le
-`static/` du package.
-
-## Référence
-
-La commande `migrate_from_sites_faciles` se trouve dans
-`sites_conformes/management/commands/migrate_from_sites_faciles.py`. Ses
-listes `APPS_TO_MIGRATE` et `APP_RENAMES` sont **figées à la construction
-du package** : elles sont rendues à partir de `search-and-replace.yml` lors
-de la génération (par `paquet_facile.py`), puis incluses dans la
-distribution. La commande ne lit pas le YAML à l'exécution.
