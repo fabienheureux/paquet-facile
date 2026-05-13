@@ -19,7 +19,7 @@ from sites_conformes.core.constants import HEADER_FIELDS
 from sites_conformes.core.models import ContentPage
 from sites_conformes.core.services.accessors import get_or_create_collection, get_or_create_content_page
 
-PAGE_TEMPLATES_ROOT = settings.BASE_DIR / "content_manager/page_templates"
+PAGE_TEMPLATES_ROOT = settings.BASE_DIR / "sites_conformes/core/page_templates"
 TEMPLATES_DATA_FILE = PAGE_TEMPLATES_ROOT / "pages_data.json"
 IMAGES_FOLDER = PAGE_TEMPLATES_ROOT / "img"
 

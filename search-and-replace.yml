@@ -28,6 +28,7 @@ app_renames:
 scopes:
   migrations: "**/migrations/**"
   templates: "**/templates/**"
+  tests: "**/tests/**"
   # git ls-files pathspec: `**/X` does NOT anchor against the repo root, so
   # `**/config/settings*.py` would miss `config/settings.py` at root. We list
   # the two locations the file can occupy: at upstream root, or one level
@@ -290,6 +291,41 @@ rules:
   - search: 'os.path.join(BASE_DIR, "static")'
     replace: 'os.path.join(BASE_DIR, "{package_name}/static")'
     scope: settings
+    literal: true
+
+  # 6. LOCALE_PATHS — bare relative "locale" doesn't resolve after packagification.
+  #    Point it at the package's locale dir.
+  - search: 'LOCALE_PATHS = ["locale"]'
+    replace: 'LOCALE_PATHS = [os.path.join(BASE_DIR, "{package_name}/locale")]'
+    scope: settings
+    literal: true
+
+  # ---------- Tests: dotted "app.X" references in @patch targets ----------
+  # Tests use string targets like @patch("db_storage.tasks.upload_to_s3") that
+  # bypass normal import rewriting. Mirror the settings.py dotted-ref rule
+  # here so test paths get namespaced.
+  - search: '"{app}.'
+    replace: '"{package_name}.{app}.'
+    scope: tests
+    literal: true
+
+  # ---------- Bare BASE_DIR / "content_manager/..." paths ----------
+  # services/import_export.py has `settings.BASE_DIR / "content_manager/page_templates"`.
+  # After app rename + packagification this lives at sites_conformes/core/page_templates/.
+  - search: 'settings.BASE_DIR / "content_manager/'
+    replace: 'settings.BASE_DIR / "{package_name}/core/'
+    scope: all
+    literal: true
+
+  # ---------- Template extends/include with bare "content_manager/" prefix ----------
+  # Some shipped templates inside core/templates/sites_conformes_core/blocks/
+  # extend "content_manager/blocks/sections/base_section.html" — should be the
+  # namespaced path. The earlier "Rename content_manager" block doesn't catch
+  # this because it operates on {package_name}.content_manager, not the bare
+  # "content_manager/" template-namespace form.
+  - search: '"content_manager/'
+    replace: '"{package_name}_core/'
+    scope: templates
     literal: true
 
   # ---------- Bare static/ subpath references (management cmds, tests) ----------

@@ -249,7 +249,7 @@ WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ("fr", "Français"),
 ]
 
-LOCALE_PATHS = ["locale"]
+LOCALE_PATHS = [os.path.join(BASE_DIR, "sites_conformes/locale")]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/

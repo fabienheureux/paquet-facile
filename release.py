@@ -9,7 +9,7 @@ sites_conformes/pyproject.toml — e.g. version "3.2.0rc1" clones tag v3.2.0
 into a release branch v3.2.0rc1-namespaced-folder. Both can be overridden
 with --tag and --branch.
 
-The branch contains three commits:
+The branch contains up to four commits:
 
 Commit 1 — file-level namespacing:
   1. Clone numerique-gouv/sites-conformes @ <tag> into a temp dir.
@@ -17,14 +17,22 @@ Commit 1 — file-level namespacing:
      entry in the temp dir.
   3. Copy sites_conformes/sites_conformes/ into the temp dir.
   4. Copy sites_conformes/pyproject.toml into the temp dir.
-  5. Copy .github/workflows/publish.yml into the temp dir's .github/workflows/.
+  5. Copy our .github/workflows/{publish,ci-check-i18n}.yml into the temp dir
+     (the i18n workflow overrides upstream's so the locale-path checks point
+     at the packaged sites_conformes/locale/ instead of repo-root locale/).
 
 Commit 2 — folder namespacing:
   6. Move every entry from commit 1 into a new sites_conformes/ subdirectory
      (except Django project files listed in KEEP_AT_ROOT).
 
-Commit 3 — uv.lock refresh:
-  7. Run `uv lock` so the lockfile reflects the final layout and the editable
+Commit 3 — pre-commit auto-fixes (skipped if nothing to fix):
+  7. Run upstream's pre-commit hooks (ruff/black/uv-lock) on the namespaced
+     tree. Our search-and-replace passes can produce lines that exceed the
+     project's line length or otherwise diverge from black formatting; this
+     pass normalizes them so CI's Quality job stays green.
+
+Commit 4 — uv.lock refresh (skipped if already up to date):
+  8. Run `uv lock` so the lockfile reflects the final layout and the editable
      install of the namespaced sites_conformes package.
 
 Then: force-push to the fork and open a PR against main.
@@ -271,8 +279,11 @@ def phase_one_files(
     source_pkg = repo_root / "sites_conformes" / "sites_conformes"
     source_pyproject = repo_root / "sites_conformes" / "pyproject.toml"
     source_publish_yml = repo_root / ".github" / "workflows" / "publish.yml"
+    # Override upstream's i18n check workflow because it greps the wrong locale
+    # path after packagification (upstream uses `git diff locale/` at repo root).
+    source_i18n_yml = repo_root / ".github" / "workflows" / "ci-check-i18n.yml"
 
-    for required in (source_pkg, source_pyproject, source_publish_yml):
+    for required in (source_pkg, source_pyproject, source_publish_yml, source_i18n_yml):
         if not required.exists():
             logging.error("Required path missing: %s", required)
             sys.exit(2)
@@ -306,6 +317,7 @@ def phase_one_files(
 
     copy_file(source_pyproject, temp_dir / "pyproject.toml")
     copy_file(source_publish_yml, temp_dir / ".github" / "workflows" / "publish.yml")
+    copy_file(source_i18n_yml, temp_dir / ".github" / "workflows" / "ci-check-i18n.yml")
 
     commit_all(temp_dir, f"Namespaced release for {tag} (files)")
     return package_entries
@@ -349,8 +361,44 @@ def phase_two_folder(
     commit_all(temp_dir, f"Move namespaced sources into {PACKAGE_DIR_NAME}/ for {tag}")
 
 
-def phase_three_lock(temp_dir: Path, tag: str) -> None:
-    """Regenerate uv.lock against the final layout and commit as a third commit.
+def phase_three_precommit(temp_dir: Path, tag: str) -> None:
+    """Run pre-commit hooks (ruff/black/uv-lock) and commit any auto-fixes.
+
+    Upstream's CI Quality check runs the same hooks with `--check`-style
+    semantics, so any unformatted output from our namespacing pipeline shows
+    up as a CI failure (line-length overflows, slice spacing, etc.). Running
+    pre-commit here normalizes the tree before the branch is pushed.
+
+    All configured hooks are auto-fixers, so we run pre-commit twice:
+      1. First pass: hooks may modify files and exit non-zero. That's expected;
+         we ignore the exit code.
+      2. Second pass: if hooks STILL fail, they're flagging something they
+         couldn't auto-fix. That's a real lint error — fail the release.
+    """
+    if shutil.which("uv") is None:
+        logging.error("`uv` not found on PATH — install it before running release.py")
+        sys.exit(2)
+
+    config = temp_dir / ".pre-commit-config.yaml"
+    if not config.exists():
+        logging.warning("⏭️  No .pre-commit-config.yaml in clone, skipping format step")
+        return
+
+    logging.info("🎨 Running pre-commit (first pass — may auto-fix)")
+    subprocess.run(
+        ["uv", "run", "--with", "pre-commit", "pre-commit", "run", "--all-files"],
+        cwd=temp_dir,
+        check=False,
+    )
+
+    logging.info("🎨 Running pre-commit (verification pass)")
+    run(["uv", "run", "--with", "pre-commit", "pre-commit", "run", "--all-files"], cwd=temp_dir)
+
+    commit_all(temp_dir, f"Apply pre-commit auto-fixes for {tag}")
+
+
+def phase_four_lock(temp_dir: Path, tag: str) -> None:
+    """Regenerate uv.lock against the final layout and commit as the final commit.
 
     Runs `uv lock` from the release-branch root so the lockfile reflects:
       * the refreshed dep set from our pyproject template
@@ -387,7 +435,8 @@ def build_release(
 
     package_entries = phase_one_files(repo_root, temp_dir, tag, branch)
     phase_two_folder(temp_dir, package_entries, tag)
-    phase_three_lock(temp_dir, tag)
+    phase_three_precommit(temp_dir, tag)
+    phase_four_lock(temp_dir, tag)
     force_push(temp_dir, "fork", branch)
 
     if skip_prs:
