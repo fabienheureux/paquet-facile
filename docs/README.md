@@ -13,17 +13,17 @@ open _build/html/index.html  # Mac
 
 ## Structure
 
-- `guide/` - Guides d'utilisation
-- `tutoriels/` - Tutoriels pas à pas
-- `reference/` - Documentation technique de référence
-- `developpement/` - Documentation pour les contributeurs
+- `guide/` : guides d'utilisation (installation, configuration)
+- `index.md` : page d'accueil
+- `migration.md` : guide de migration vers la version packagée
+- `changelog.md` : pointeurs vers les releases GitHub
 
 ## Publication
 
-La documentation est automatiquement publiée sur GitHub Pages lors d'un push sur `main`.
+La publication automatique (par exemple via GitHub Pages) n'est pas encore configurée. Construisez la documentation localement avec `make html` en attendant qu'une action CI dédiée soit ajoutée.
 
 ## Technologies
 
 - [Sphinx](https://www.sphinx-doc.org/)
 - [sphinx-wagtail-theme](https://github.com/wagtail/sphinx-wagtail-theme)
-- [MyST Parser](https://myst-parser.readthedocs.io/) - Support Markdown
+- [MyST Parser](https://myst-parser.readthedocs.io/) (support Markdown)

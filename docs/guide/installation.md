@@ -111,8 +111,8 @@ TEMPLATES[0]["DIRS"].append(PACKAGE_DIR / "templates")
 STATICFILES_DIRS = (PACKAGE_DIR / "static",) + tuple(STATICFILES_DIRS)
 ```
 
-(`APP_DIRS = True` couvre déjà les templates spécifiques à chaque app —
-`sites_conformes/blog/templates/`, etc. Les ajouts ci-dessus servent
+(`APP_DIRS = True` couvre déjà les templates spécifiques à chaque app, par
+exemple `sites_conformes/blog/templates/`. Les ajouts ci-dessus servent
 uniquement aux templates au niveau du package.)
 
 ### Réglages divers
@@ -139,5 +139,5 @@ python manage.py collectstatic
 
 ## Prochaines étapes
 
-- {doc}`configuration` — réglages spécifiques
-- {doc}`../migration` — migration depuis un site Sites Conformes existant
+- {doc}`configuration` : réglages spécifiques
+- {doc}`../migration` : migration depuis un site Sites Conformes existant

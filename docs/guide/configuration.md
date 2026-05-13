@@ -76,7 +76,7 @@ Quand `True`, le package ajoute automatiquement `sites_conformes.proconnect`
 
 Stocke les fichiers médias en base de données plutôt que sur le filesystem.
 Utile pour les PaaS avec filesystem éphémère (Scalingo, Heroku). Non
-recommandé au-delà de ~1 Go de médias — privilégiez S3.
+recommandé au-delà de ~1 Go de médias : privilégiez S3.
 
 ```python
 SF_USE_DB_STORAGE = getenv_bool("SF_USE_DB_STORAGE", False)
