@@ -83,7 +83,7 @@ class ContentPageAccessorTestCase(WagtailPageTestCase):
         assert PageViewRestriction.objects.filter(page_id=private.pk).first().restriction_type == "login"
 
     def test_get_or_create_content_page_with_header_fields(self):
-        image_file = "static/artwork/technical-error.svg"
+        image_file = "sites_conformes/static/artwork/technical-error.svg"
         image = import_image(image_file, "Sample image")
 
         header_fields = {

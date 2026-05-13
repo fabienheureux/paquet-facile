@@ -12,8 +12,8 @@ class TagManager(models.Manager):
     def tags_with_usecount(self, min_count=0):
         return self.annotate(
             usecount=Count(
-                "content_manager_tagcontentpage_items",
-                filter=Q(content_manager_tagcontentpage_items__content_object__live=True),
+                "sites_conformes_core_tagcontentpage_items",
+                filter=Q(sites_conformes_core_tagcontentpage_items__content_object__live=True),
                 distinct=True,
             )
         ).filter(usecount__gte=min_count)

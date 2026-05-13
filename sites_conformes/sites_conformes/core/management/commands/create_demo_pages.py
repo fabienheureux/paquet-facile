@@ -328,23 +328,23 @@ class Command(BaseCommand):
 
         # Load images
         img_banner = self.get_or_import_image(
-            "static/illustration/Banner-Sites-Faciles-Dimitri-Iakymuk-unsplash.jpg",
+            "sites_conformes/static/illustration/Banner-Sites-Faciles-Dimitri-Iakymuk-unsplash.jpg",
             "Banner Sites Faciles Dimitri Iakymuk Unsplash",
         )
         img_femme = self.get_or_import_image(
-            "static/illustration/illustration-sites-faciles-femme-ordinateur.png",
+            "sites_conformes/static/illustration/illustration-sites-faciles-femme-ordinateur.png",
             "Illustration Sites Faciles Femme Ordinateur",
         )
         img_homme = self.get_or_import_image(
-            "static/illustration/illustration-sites-faciles-homme-nuages.png",
+            "sites_conformes/static/illustration/illustration-sites-faciles-homme-nuages.png",
             "Illustration Sites Faciles Homme Nuages",
         )
         img_placeholder = self.get_or_import_image(
-            "static/illustration/Placeholder-Sites-Faciles.png",
+            "sites_conformes/static/illustration/Placeholder-Sites-Faciles.png",
             "Placeholder Sites Faciles",
         )
         img_error = self.get_or_import_image(
-            "static/artwork/technical-error.svg",
+            "sites_conformes/static/artwork/technical-error.svg",
             "Technical Error",
         )
 
@@ -1106,11 +1106,11 @@ class Command(BaseCommand):
 
         # Load images
         img_banner = self.get_or_import_image(
-            "static/illustration/Banner-Sites-Faciles-Dimitri-Iakymuk-unsplash.jpg",
+            "sites_conformes/static/illustration/Banner-Sites-Faciles-Dimitri-Iakymuk-unsplash.jpg",
             "Banner Sites Faciles Dimitri Iakymuk Unsplash",
         )
         img_homme = self.get_or_import_image(
-            "static/illustration/illustration-sites-faciles-homme-nuages.png",
+            "sites_conformes/static/illustration/illustration-sites-faciles-homme-nuages.png",
             "Illustration Sites Faciles Homme Nuages",
         )
 

@@ -443,7 +443,7 @@ class TileBlockTestCase(WagtailPageTestCase):
         self.assertNotContains(response, "fr-tile__header")
 
     def test_tile_with_image_has_div(self):
-        image_file = "static/artwork/technical-error.svg"
+        image_file = "sites_conformes/static/artwork/technical-error.svg"
         image = import_image(image_file, "Sample image")
 
         body = [
@@ -468,7 +468,7 @@ class TileBlockTestCase(WagtailPageTestCase):
 
     @override_settings(SF_SCHEME_DEPENDENT_SVGS=True)
     def test_tile_manages_svg_image_if_setting_allows(self):
-        image_file = "static/artwork/technical-error.svg"
+        image_file = "sites_conformes/static/artwork/technical-error.svg"
         image = import_image(image_file, "Sample image")
 
         body = [

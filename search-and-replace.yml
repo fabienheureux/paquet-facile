@@ -292,6 +292,24 @@ rules:
     scope: settings
     literal: true
 
+  # ---------- Bare static/ subpath references (management cmds, tests) ----------
+  # Some upstream code passes relative paths like "static/illustration/foo.png"
+  # to BASE_DIR-joined helpers (e.g. core/management/commands/create_demo_pages.py
+  # `get_or_import_image`) or to `import_image` directly (in tests). After
+  # packagification those assets live under sites_conformes/static/. We rewrite
+  # only the two subdirs we know upstream uses, so `STATIC_URL = "static/"`
+  # (Django URL prefix, NOT a filesystem path) is left untouched.
+
+  - search: '"static/illustration/'
+    replace: '"{package_name}/static/illustration/'
+    scope: all
+    literal: true
+
+  - search: '"static/artwork/'
+    replace: '"{package_name}/static/artwork/'
+    scope: all
+    literal: true
+
   # ---------- Rename content_manager → core (post-namespacing) ----------
   # These run after all generic rules have already transformed upstream's
   # "content_manager" into "{package_name}.content_manager" / "{package_name}_content_manager".
@@ -334,6 +352,17 @@ rules:
 
   - search: "{package_name}_content_manager"
     replace: "{package_name}_core"
+    scope: all
+    literal: true
+
+  # Bare `content_manager_X` form — Django reverse-accessor names (e.g.
+  # `content_manager_tagcontentpage_items`) hardcoded in queryset code. The
+  # generic per-app rules only touch `import`/`from` statements and quoted
+  # strings; reverse-accessor strings in code body slip through. This MUST run
+  # AFTER the `{package_name}_content_manager` rule above so we don't double-
+  # transform `sites_conformes_content_manager_X` → `sites_conformes_sites_conformes_core_X`.
+  - search: "content_manager_"
+    replace: "{package_name}_core_"
     scope: all
     literal: true
 
