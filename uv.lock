@@ -2,6 +2,12 @@ version = 1
 revision = 3
 requires-python = ">=3.12, <4.0"
 
+[manifest]
+members = [
+    "sites-conformes",
+    "sites-faciles-release",
+]
+
 [[package]]
 name = "anyascii"
 version = "0.3.3"
@@ -1621,6 +1627,83 @@ wheels = [
 
 [[package]]
 name = "sites-conformes"
+version = "3.1.0rc4"
+source = { editable = "sites_conformes" }
+dependencies = [
+    { name = "beautifulsoup4" },
+    { name = "dj-database-url" },
+    { name = "dj-static" },
+    { name = "django" },
+    { name = "django-dsfr" },
+    { name = "django-taggit" },
+    { name = "faker" },
+    { name = "gunicorn" },
+    { name = "icalendar" },
+    { name = "mozilla-django-oidc" },
+    { name = "psycopg2-binary" },
+    { name = "python-dotenv" },
+    { name = "pyyaml" },
+    { name = "rust-just" },
+    { name = "unidecode" },
+    { name = "wagtail" },
+    { name = "wagtail-localize" },
+    { name = "wagtail-markdown" },
+    { name = "wagtail-modeladmin" },
+    { name = "wagtailmenus" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "black" },
+    { name = "coverage" },
+    { name = "django-compressor" },
+    { name = "django-debug-toolbar" },
+    { name = "djlint" },
+    { name = "ipython" },
+    { name = "pre-commit" },
+    { name = "ruff" },
+    { name = "tblib" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "beautifulsoup4", specifier = ">=4.13.4" },
+    { name = "dj-database-url", specifier = ">=3.0.0" },
+    { name = "dj-static", specifier = ">=0.0.6" },
+    { name = "django", specifier = ">=5.2.3" },
+    { name = "django-dsfr", specifier = ">=2.4.0" },
+    { name = "django-taggit", specifier = ">=6.1.0" },
+    { name = "faker", specifier = ">=37.4.0" },
+    { name = "gunicorn", specifier = ">=23.0.0" },
+    { name = "icalendar", specifier = ">=6.3.1" },
+    { name = "mozilla-django-oidc", specifier = ">=4.0.1" },
+    { name = "psycopg2-binary", specifier = ">=2.9.10" },
+    { name = "python-dotenv", specifier = ">=1.1.0" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "rust-just", specifier = ">=1.40.0" },
+    { name = "unidecode", specifier = ">=1.4.0" },
+    { name = "wagtail", specifier = ">=7.0.1" },
+    { name = "wagtail-localize", specifier = ">=1.12.1" },
+    { name = "wagtail-markdown", specifier = ">=0.12.1" },
+    { name = "wagtail-modeladmin", specifier = ">=2.2.0" },
+    { name = "wagtailmenus", specifier = ">=4.0.3" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "black", specifier = ">=25.1.0" },
+    { name = "coverage", specifier = ">=7.9.1" },
+    { name = "django-compressor", specifier = ">=4.5.1" },
+    { name = "django-debug-toolbar", specifier = ">=5.2.0" },
+    { name = "djlint", specifier = ">=1.36.4" },
+    { name = "ipython", specifier = ">=9.3.0" },
+    { name = "pre-commit", specifier = ">=4.2.0" },
+    { name = "ruff", specifier = ">=0.12.0" },
+    { name = "tblib", specifier = ">=3.1.0" },
+]
+
+[[package]]
+name = "sites-faciles-release"
 version = "3.1.1"
 source = { virtual = "." }
 dependencies = [
@@ -1639,6 +1722,7 @@ dependencies = [
     { name = "psycopg2-binary" },
     { name = "python-dotenv" },
     { name = "rust-just" },
+    { name = "sites-conformes" },
     { name = "unidecode" },
     { name = "wagtail" },
     { name = "wagtail-honeypot" },
@@ -1680,6 +1764,7 @@ requires-dist = [
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "rust-just", specifier = ">=1.40.0" },
+    { name = "sites-conformes", editable = "sites_conformes" },
     { name = "unidecode", specifier = ">=1.4.0" },
     { name = "wagtail", specifier = ">=7.2.0" },
     { name = "wagtail-honeypot", specifier = ">=1.2.1" },
