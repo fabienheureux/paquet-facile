@@ -276,6 +276,22 @@ rules:
     scope: settings
     literal: true
 
+  # 4. TEMPLATES[0]["DIRS"] points at BASE_DIR/templates (project root), but
+  #    after packagification the templates live inside the installable package
+  #    at sites_conformes/templates/. Rewrite the path so Django's filesystem
+  #    template loader finds them.
+  - search: 'os.path.join(BASE_DIR, "templates")'
+    replace: 'os.path.join(BASE_DIR, "{package_name}/templates")'
+    scope: settings
+    literal: true
+
+  # 5. STATICFILES_DIRS — same situation. Project-level static/ now lives at
+  #    sites_conformes/static/.
+  - search: 'os.path.join(BASE_DIR, "static")'
+    replace: 'os.path.join(BASE_DIR, "{package_name}/static")'
+    scope: settings
+    literal: true
+
   # ---------- Rename content_manager → core (post-namespacing) ----------
   # These run after all generic rules have already transformed upstream's
   # "content_manager" into "{package_name}.content_manager" / "{package_name}_content_manager".

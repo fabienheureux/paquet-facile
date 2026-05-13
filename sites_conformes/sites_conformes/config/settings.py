@@ -174,7 +174,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "dsfr/templates"),
-            os.path.join(BASE_DIR, "templates"),
+            os.path.join(BASE_DIR, "sites_conformes/templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -350,7 +350,7 @@ if SF_PROD_SERVE_STATIC:
 
     WHITENOISE_STATIC_PREFIX = STATIC_URL
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "sites_conformes/static"),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
