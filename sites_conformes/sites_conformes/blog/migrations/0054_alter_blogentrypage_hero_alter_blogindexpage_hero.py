@@ -146,7 +146,7 @@ class Migration(migrations.Migration):
                         },
                     ),
                     11: (
-                        "sites_conformes.content_manager.blocks.buttons_links.IconPickerBlock",
+                        "sites_conformes.core.blocks.buttons_links.IconPickerBlock",
                         (),
                         {"label": "Icon", "required": False},
                     ),
@@ -602,7 +602,7 @@ class Migration(migrations.Migration):
                         },
                     ),
                     11: (
-                        "sites_conformes.content_manager.blocks.buttons_links.IconPickerBlock",
+                        "sites_conformes.core.blocks.buttons_links.IconPickerBlock",
                         (),
                         {"label": "Icon", "required": False},
                     ),

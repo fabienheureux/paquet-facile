@@ -1,7 +1,7 @@
 from wagtail.models import Page, Site
 from wagtail.test.utils import WagtailPageTestCase
 
-from sites_conformes.content_manager.models import ContentPage
+from sites_conformes.core.models import ContentPage
 from sites_conformes.menus.models import FooterBottomMenu, MainMenu, TopMenu
 
 

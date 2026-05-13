@@ -2,7 +2,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from wagtail.blocks import CharBlock, ChoiceBlock, StreamBlock, StructBlock, StructValue
 
-from sites_conformes.content_manager.blocks import IconPickerBlock, LinkStructValue, LinkWithoutLabelBlock
+from sites_conformes.core.blocks import IconPickerBlock, LinkStructValue, LinkWithoutLabelBlock
 
 
 class BaseMenuLinkBlock(LinkWithoutLabelBlock):

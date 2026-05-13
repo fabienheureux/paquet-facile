@@ -16,16 +16,15 @@ from django.db import connection
 class Command(BaseCommand):
     help = "Rename tables and migrations to use {package_name}_ prefix"
 
-    # Apps to migrate (from search-and-replace.yml)
+    # Apps to migrate (from search-and-replace.yml apps:)
     APPS_TO_MIGRATE = {apps_list}
 
-    # Apps whose upstream name differs from their {package_name}_ label.
+    # Apps whose upstream name differs from their {package_name}_ label
+    # (from search-and-replace.yml app_renames:).
     # Maps upstream app name → final app label (without the {package_name}_ prefix).
     # e.g. "content_manager" is renamed to "core", so its tables go directly
     # from "content_manager_*" to "{package_name}_core_*".
-    APP_RENAMES = {
-        "content_manager": "core",
-    }
+    APP_RENAMES = {app_renames}
 
     def _new_app_label(self, app: str) -> str:
         """Return the final {package_name}_<label> for a given upstream app name."""

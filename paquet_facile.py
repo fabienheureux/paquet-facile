@@ -579,6 +579,18 @@ def _process_templates(
     apps: list[str] = config.get("apps", [])
     apps_list = "[" + ", ".join([f'"{app}"' for app in apps]) + "]"
 
+    # Render app_renames as a Python dict literal so templates can embed it
+    # verbatim (e.g. APP_RENAMES = {app_renames}).
+    app_renames: dict[str, str] = config.get("app_renames", {}) or {}
+    if app_renames:
+        app_renames_literal = (
+            "{"
+            + ", ".join(f'"{old}": "{new}"' for old, new in app_renames.items())
+            + "}"
+        )
+    else:
+        app_renames_literal = "{}"
+
     # Define all available placeholders
     placeholders = {
         "{package_name}": package_name,
@@ -588,6 +600,7 @@ def _process_templates(
         "{package_name_upper}": package_name_upper,
         "{version}": version,
         "{apps_list}": apps_list,
+        "{app_renames}": app_renames_literal,
     }
 
     templates_dir = Path("templates")

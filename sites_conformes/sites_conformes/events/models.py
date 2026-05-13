@@ -19,8 +19,8 @@ from wagtail.models.i18n import Locale
 from wagtail.search import index
 
 from sites_conformes.blog.models import Category, CategorySerializer, Organization, Person, PersonSerializer
-from sites_conformes.content_manager.abstract import SitesFacilesBasePage
-from sites_conformes.content_manager.models import CmsDsfrConfig, Tag
+from sites_conformes.core.abstract import SitesFacilesBasePage
+from sites_conformes.core.models import CmsDsfrConfig, Tag
 from sites_conformes.events.forms import EventSearchForm
 
 
