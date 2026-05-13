@@ -3,15 +3,19 @@
 # Package name for namespacing (used in {package_name} placeholder)
 package_name: sites_conformes
 
+# Django apps shipped inside the namespaced package.
+# NOTE: `config` is intentionally absent — it's the Django project (settings,
+# urls, wsgi), not an app, and lives at release-branch root next to manage.py.
 apps:
   - blog
   - events
   - forms
   - content_manager
-  - config
   - proconnect
   - dashboard
   - menus
+  - db_storage
+  
 
 # App directory renames applied after all text transformations.
 # The app dir name stays short ("core") so import paths read
@@ -24,6 +28,7 @@ app_renames:
 scopes:
   migrations: "**/migrations/**"
   templates: "**/templates/**"
+  settings: "**/config/settings*.py"
   all: "**/*"
 
 # File extensions considered "text" (configurable)
@@ -235,6 +240,36 @@ rules:
   - search: 'gettext as _'
     replace: 'gettext_lazy as _'
     scope: all
+    literal: true
+
+  # ---------- settings.py: namespace bare app references ----------
+  # The Django project (config/) lives at release-branch root and imports
+  # apps from the installable sites_conformes package. These rules rewrite
+  # bare upstream references inside settings.py to fully qualified dotted
+  # paths. Scoped to config/settings*.py only so they cannot accidentally
+  # touch other files (e.g. test fixtures that contain "blog" literally).
+  #
+  # These run BEFORE the `content_manager → core` block below so the chain
+  # `"content_manager"` → `"{package_name}.content_manager"` → `"{package_name}.core"`
+  # produces the final namespaced + renamed form.
+
+  # 1. INSTALLED_APPS bare quoted app names: "blog" → "{package_name}.blog"
+  - search: '"{app}"'
+    replace: '"{package_name}.{app}"'
+    scope: settings
+    literal: true
+
+  # 2. Dotted references: "blog.X..." → "{package_name}.blog.X..."
+  #    Covers context_processors, backends, storage, models, etc.
+  - search: '"{app}.'
+    replace: '"{package_name}.{app}.'
+    scope: settings
+    literal: true
+
+  # 3. Template paths in settings: "content_manager/foo.html" → "{package_name}_core/foo.html"
+  - search: '"content_manager/'
+    replace: '"{package_name}_core/'
+    scope: settings
     literal: true
 
   # ---------- Rename content_manager → core (post-namespacing) ----------

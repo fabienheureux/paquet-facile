@@ -4,10 +4,15 @@ release.py
 Build a release branch on the sites-faciles fork from the namespaced sources
 and open a single PR against numerique-gouv/sites-conformes:production.
 
+The upstream tag and branch name are derived from the version in
+sites_conformes/pyproject.toml — e.g. version "3.2.0rc1" clones tag v3.2.0
+into a release branch v3.2.0rc1-namespaced-folder. Both can be overridden
+with --tag and --branch.
+
 The branch contains two commits:
 
 Commit 1 — file-level namespacing:
-  1. Clone numerique-gouv/sites-conformes @ v3.1.1 into a temp dir.
+  1. Clone numerique-gouv/sites-conformes @ <tag> into a temp dir.
   2. For each item in sites_conformes/sites_conformes/, delete the matching
      entry in the temp dir.
   3. Copy sites_conformes/sites_conformes/ into the temp dir.
@@ -24,19 +29,52 @@ from __future__ import annotations
 
 import argparse
 import logging
+import re
 import shutil
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 
 UPSTREAM_REPO = "git@github.com:numerique-gouv/sites-conformes.git"
 UPSTREAM_SLUG = "numerique-gouv/sites-conformes"
 FORK_REPO = "git@github.com:fabienheureux/sites-faciles.git"
 FORK_OWNER = "fabienheureux"
-DEFAULT_TAG = "v3.1.1"
-DEFAULT_BRANCH = "v3.1.1-namespaced"
 PACKAGE_DIR_NAME = "sites_conformes"
 TEMP_DIR_NAME = "sites_conformes_temp"
+
+# PEP 440 pre/post/dev suffix — everything after the base X.Y.Z that we strip
+# to obtain the upstream tag. Matches rc1, rc2, a3, b1, .dev4, .post0, etc.
+_VERSION_SUFFIX_RE = re.compile(r"(?:[._-]?(?:rc|a|b|alpha|beta|dev|post)\d*)+$", re.IGNORECASE)
+
+
+def read_package_version(repo_root: Path) -> tuple[str, str]:
+    """Return (full_version, base_version) read from sites_conformes/pyproject.toml.
+
+    base_version drops any rc/dev/post/a/b suffix so it maps to the upstream
+    git tag. E.g. "3.2.0rc1" -> ("3.2.0rc1", "3.2.0").
+    """
+    pyproject = repo_root / PACKAGE_DIR_NAME / "pyproject.toml"
+    try:
+        with pyproject.open("rb") as fh:
+            data = tomllib.load(fh)
+    except FileNotFoundError:
+        logging.error("Cannot read package version: %s not found", pyproject)
+        sys.exit(2)
+    except tomllib.TOMLDecodeError as exc:
+        logging.error("Failed to parse %s: %s", pyproject, exc)
+        sys.exit(2)
+
+    full = data.get("project", {}).get("version")
+    if not isinstance(full, str) or not full:
+        logging.error("No project.version in %s", pyproject)
+        sys.exit(2)
+
+    base = _VERSION_SUFFIX_RE.sub("", full)
+    if not base:
+        logging.error("Version %r has no base segment after stripping suffix", full)
+        sys.exit(2)
+    return full, base
 
 # Upstream directories that the namespaced package renames (and therefore no
 # longer ships under the same name). They must be explicitly deleted in
@@ -45,6 +83,27 @@ TEMP_DIR_NAME = "sites_conformes_temp"
 RENAMED_UPSTREAM_DIRS = {
     "content_manager": "core",
 }
+
+# Upstream files at the clone root that must be deleted before the release
+# branch is committed. These are legacy/empty build artifacts that conflict
+# with our pyproject.toml — setuptools.build_meta picks up an empty setup.py
+# and fails uv sync with "No distribution was found".
+STRAY_UPSTREAM_FILES = (
+    "setup.py",
+    "setup.cfg",
+)
+
+# Namespaced-package entries that must stay at release-branch ROOT rather than
+# being moved into the sites_conformes/ subdir during phase_two_folder. These
+# are Django project-glue files: the project lives at root and imports apps
+# from the installable sites_conformes package.
+#
+# locale/ stays INSIDE the package — translations ship with sites_conformes so
+# users who `pip install sites-conformes` get them automatically.
+KEEP_AT_ROOT = frozenset({
+    "config",     # Django project package (settings.py, urls.py, wsgi.py)
+    "manage.py",  # Django entrypoint
+})
 
 
 def setup_logger(verbose: int) -> None:
@@ -228,6 +287,15 @@ def phase_one_files(
         else:
             logging.debug("⏭️  Upstream %s not present, skipping", renamed)
 
+    logging.info("🧽 Deleting stray upstream build artifacts that conflict with our pyproject")
+    for name in STRAY_UPSTREAM_FILES:
+        stray = temp_dir / name
+        if stray.exists():
+            logging.info("🗑️  Removing %s", stray)
+            stray.unlink()
+        else:
+            logging.debug("⏭️  %s not present, skipping", stray)
+
     logging.info("📦 Copying namespaced package into temp dir")
     copy_tree_contents(source_pkg, temp_dir)
 
@@ -256,6 +324,9 @@ def phase_two_folder(
     for name in package_entries:
         if name == PACKAGE_DIR_NAME:
             logging.debug("⏭️  Skipping move of %s into itself", name)
+            continue
+        if name in KEEP_AT_ROOT:
+            logging.info("📌 Keeping %s at release-branch root (Django project file)", name)
             continue
         src = temp_dir / name
         if not src.exists():
@@ -322,11 +393,15 @@ def build_release(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--tag", default=DEFAULT_TAG, help=f"Upstream tag (default: {DEFAULT_TAG})")
+    parser.add_argument(
+        "--tag",
+        default=None,
+        help="Upstream tag to clone (default: v<base-version> from sites_conformes/pyproject.toml)",
+    )
     parser.add_argument(
         "--branch",
-        default=DEFAULT_BRANCH,
-        help=f"Release branch name (default: {DEFAULT_BRANCH})",
+        default=None,
+        help="Release branch name (default: v<full-version>-namespaced-folder)",
     )
     parser.add_argument("--upstream", default=UPSTREAM_REPO, help="Upstream repo URL")
     parser.add_argument("--upstream-slug", default=UPSTREAM_SLUG, help="Upstream repo slug for gh")
@@ -346,11 +421,16 @@ def main() -> None:
 
     repo_root = Path(__file__).resolve().parent
 
+    full_version, base_version = read_package_version(repo_root)
+    tag = args.tag or f"v{base_version}"
+    branch = args.branch or f"v{full_version}-namespaced-folder"
+    logging.info("📌 Package version %s → upstream tag %s, branch %s", full_version, tag, branch)
+
     try:
         build_release(
             repo_root=repo_root,
-            tag=args.tag,
-            branch=args.branch,
+            tag=tag,
+            branch=branch,
             upstream=args.upstream,
             upstream_slug=args.upstream_slug,
             fork=args.fork,

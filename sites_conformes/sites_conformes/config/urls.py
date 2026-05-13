@@ -11,7 +11,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
-from sites_conformes.config.api import api_router
+from config.api import api_router
 from sites_conformes.proconnect import urls as oidc_urls
 
 urlpatterns = [
@@ -24,7 +24,14 @@ urlpatterns = [
         "robots.txt",
         TemplateView.as_view(template_name="sites_conformes_core/robots.txt", content_type="text/plain"),
     ),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.SF_USE_DB_STORAGE:
+    urlpatterns += [
+        path("db-storage/", include("sites_conformes.db_storage.urls")),
+    ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Only add this on a dev machine, outside of tests
 if not settings.TESTING and settings.DEBUG and "localhost" in settings.HOST_URL:

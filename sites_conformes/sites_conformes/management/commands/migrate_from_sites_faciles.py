@@ -16,16 +16,15 @@ from django.db import connection
 class Command(BaseCommand):
     help = "Rename tables and migrations to use sites_conformes_ prefix"
 
-    # Apps to migrate (from search-and-replace.yml)
-    APPS_TO_MIGRATE = ["blog", "events", "forms", "content_manager", "config", "proconnect", "dashboard", "menus"]
+    # Apps to migrate (from search-and-replace.yml apps:)
+    APPS_TO_MIGRATE = ["blog", "events", "forms", "content_manager", "proconnect", "dashboard", "menus", "db_storage"]
 
-    # Apps whose upstream name differs from their sites_conformes_ label.
+    # Apps whose upstream name differs from their sites_conformes_ label
+    # (from search-and-replace.yml app_renames:).
     # Maps upstream app name → final app label (without the sites_conformes_ prefix).
     # e.g. "content_manager" is renamed to "core", so its tables go directly
     # from "content_manager_*" to "sites_conformes_core_*".
-    APP_RENAMES = {
-        "content_manager": "core",
-    }
+    APP_RENAMES = {"content_manager": "core"}
 
     def _new_app_label(self, app: str) -> str:
         """Return the final sites_conformes_<label> for a given upstream app name."""

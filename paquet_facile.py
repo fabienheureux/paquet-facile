@@ -301,14 +301,12 @@ def rename_app_dirs(
 ) -> None:
     """Rename app directories: {old_app}/ → {new_app}/.
 
-    After the directory rename, merge the renamed app's templates into the
-    repo-root namespaced templates dir at templates/{new_app}/, then drop the
-    now-empty app-level templates/ dir.
+    Also renames the namespaced template subdir inside the (now-moved) app so
+    its Django template namespace matches the new label:
+    {new_app}/templates/{package_name}_{old_app}/ → {new_app}/templates/{package_name}_{new_app}/
 
-    With the new layout, templates live only at repo-root templates/{new_app}/.
-    The per-app rename_template_dirs() pass already produced
-    {old_app}/templates/{package_name}_{old_app}/ — we hoist those files up
-    into templates/{new_app}/ here.
+    Per-app templates stay inside the app dir. Only the upstream root templates/
+    dir is hoisted (separately) by move_root_templates_to_core().
     """
     for old_app, new_app in app_renames.items():
         src = Path(old_app)
@@ -332,42 +330,19 @@ def rename_app_dirs(
                 logging.error("❌ Failed to rename %s → %s: %s", src, dst, exc)
                 continue
 
-        # Hoist the app's namespaced template subdir up to the repo-root
-        # templates dir under the Django template namespace
-        # ({package_name}_{new_app}), which is independent of the on-disk app
-        # dir name and matches what `apps.py` sets as `label`.
-        app_tpl = dst / "templates" / f"{package_name}_{old_app}"
-        root_tpl = Path("templates") / f"{package_name}_{new_app}"
-
-        if app_tpl.exists():
+        # Rename the namespaced template subdir inside the (now-moved) app so
+        # it matches the new Django app label ({package_name}_{new_app}).
+        old_tpl = dst / "templates" / f"{package_name}_{old_app}"
+        new_tpl = dst / "templates" / f"{package_name}_{new_app}"
+        if old_tpl.exists():
             if dry_run:
-                logging.info(
-                    "[DRY-RUN] Would merge %s into %s", app_tpl, root_tpl
-                )
+                logging.info("[DRY-RUN] Would rename template dir: %s → %s", old_tpl, new_tpl)
             else:
-                logging.info("📂 Merging app templates: %s → %s", app_tpl, root_tpl)
-                root_tpl.mkdir(parents=True, exist_ok=True)
-                for entry in list(app_tpl.iterdir()):
-                    target = root_tpl / entry.name
-                    if target.exists():
-                        logging.debug("⏭️  Already at destination, skipping: %s", target)
-                        continue
-                    try:
-                        shutil.move(str(entry), str(target))
-                    except Exception as exc:
-                        logging.error("❌ Failed to move %s → %s: %s", entry, target, exc)
-
-        # Drop the now-empty app-level templates/ dir.
-        app_tpl_root = dst / "templates"
-        if app_tpl_root.exists():
-            if dry_run:
-                logging.info("[DRY-RUN] Would remove empty app templates dir: %s", app_tpl_root)
-            else:
+                logging.info("📂 Renaming template dir: %s → %s", old_tpl, new_tpl)
                 try:
-                    shutil.rmtree(app_tpl_root)
-                    logging.info("🗑️  Removed app-level templates dir: %s", app_tpl_root)
+                    shutil.move(str(old_tpl), str(new_tpl))
                 except Exception as exc:
-                    logging.error("❌ Failed to remove %s: %s", app_tpl_root, exc)
+                    logging.error("❌ Failed to rename %s → %s: %s", old_tpl, new_tpl, exc)
 
 
 def move_root_templates_to_core(package_name: str, dry_run: bool = False) -> None:
