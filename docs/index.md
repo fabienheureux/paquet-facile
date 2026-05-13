@@ -12,7 +12,6 @@ sites-conformes est un package Python qui étend Wagtail pour créer des sites c
 
 **Fonctionnalités principales :**
 - 📝 Modèles de pages pour blog, événements et contenu
-- 🧩 Blocs StreamField conformes au DSFR
 - 🧭 Gabarits et menus adaptés au DSFR
 - ♿ Accessibilité RGAA intégrée
 
@@ -23,8 +22,6 @@ caption: Documentation
 ---
 guide/installation
 guide/configuration
-guide/blocs-personnalises
-reference/settings
 migration
 changelog
 ```
@@ -33,13 +30,13 @@ changelog
 
 ```bash
 # Installation
-pip install sites-conformes
+uv add sites-conformes
 
 # Ajouter à INSTALLED_APPS
 INSTALLED_APPS = [
     "sites_conformes",
+    "sites_conformes.core",
     "sites_conformes.blog",
-    "sites_conformes.content_manager",
     "sites_conformes.events",
     # ...
 ]

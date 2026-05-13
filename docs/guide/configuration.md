@@ -32,4 +32,5 @@ Active l'authentification ProConnect :
 PROCONNECT_ACTIVATED = True
 ```
 
-Pour plus d'informations sur tous les paramètres disponibles, consultez la [référence des settings](../reference/settings.md).
+Pour les réglages Django et Wagtail, référez-vous à leurs documentations
+officielles : <https://docs.djangoproject.com/> et <https://docs.wagtail.org/>.
