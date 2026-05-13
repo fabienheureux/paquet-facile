@@ -92,6 +92,10 @@ rules:
     replace: "from {package_name}.{app}."
     scope: all
 
+  - search: '@register.inclusion_tag\("{app}'
+    replace: '@register.inclusion_tag("{package_name}_{app}'
+    scope: all
+
   - search: "from {app} import"
     replace: "from {package_name}.{app} import"
     scope: all
