@@ -6,7 +6,7 @@ packagée, consultez plutôt {doc}`../migration`.
 
 ## Prérequis
 
-- Python 3.12 ou supérieur
+- Python 3.12 ou supérieur (testé sur 3.12, 3.13, 3.14)
 - Django 6.0 ou supérieur
 - Wagtail 7.2 ou supérieur
 - PostgreSQL
@@ -23,6 +23,29 @@ uv add sites-conformes
 
 Ajoutez la configuration suivante à votre `config/settings.py`.
 
+### Lecture des variables d'environnement
+
+Plusieurs réglages du package sont pilotés par des variables d'environnement.
+Définissez un petit helper en haut de votre `settings.py` :
+
+```python
+import os
+from pathlib import Path
+
+
+def getenv_bool(key: str, default: bool) -> bool:
+    try:
+        value = os.environ[key]
+    except KeyError:
+        return default
+    return value.casefold() in ("1", "true")
+
+
+SF_USE_DB_STORAGE = getenv_bool("SF_USE_DB_STORAGE", False)
+SF_USE_WHITENOISE = getenv_bool("SF_USE_WHITENOISE", False)
+PROCONNECT_ACTIVATED = os.getenv("PROCONNECT_ACTIVATED", "") in ("1", "True")
+```
+
 ### INSTALLED_APPS
 
 ```python
@@ -37,7 +60,6 @@ INSTALLED_APPS.extend([
     "sites_conformes.forms",
     "sites_conformes.menus",
     "sites_conformes.dashboard",
-    "sites_conformes.proconnect",
     # Dépendances Wagtail/tierces requises
     "wagtail.contrib.settings",
     "wagtail.contrib.typed_table_block",
@@ -48,9 +70,20 @@ INSTALLED_APPS.extend([
     "wagtail_honeypot",
 ])
 
-# Optionnel — stockage des médias en base de données (Scalingo, Heroku, etc.)
+# Stockage des médias en base de données (Scalingo, Heroku, etc.)
 if SF_USE_DB_STORAGE:
     INSTALLED_APPS.append("sites_conformes.db_storage")
+
+# Authentification ProConnect (DGFiP/DINUM)
+if PROCONNECT_ACTIVATED:
+    INSTALLED_APPS += [
+        "mozilla_django_oidc",
+        "sites_conformes.proconnect",
+    ]
+    AUTHENTICATION_BACKENDS = [
+        "django.contrib.auth.backends.ModelBackend",
+        "sites_conformes.proconnect.backends.OIDCAuthenticationBackend",
+    ]
 ```
 
 ### Context processors
@@ -75,7 +108,7 @@ import sites_conformes
 PACKAGE_DIR = Path(sites_conformes.__file__).resolve().parent
 
 TEMPLATES[0]["DIRS"].append(PACKAGE_DIR / "templates")
-STATICFILES_DIRS = (PACKAGE_DIR / "static",) + STATICFILES_DIRS
+STATICFILES_DIRS = (PACKAGE_DIR / "static",) + tuple(STATICFILES_DIRS)
 ```
 
 (`APP_DIRS = True` couvre déjà les templates spécifiques à chaque app —
@@ -85,11 +118,14 @@ uniquement aux templates au niveau du package.)
 ### Réglages divers
 
 ```python
-WAGTAILADMIN_PATH = "admin/"
-HOST_URL = "localhost"
-HOST_PROTO = "http"
+# Chemin d'accès à l'admin Wagtail. Par défaut côté package : "cms-admin/".
+WAGTAILADMIN_PATH = os.getenv("WAGTAILADMIN_PATH", "cms-admin/")
+
+# Hôte et protocole utilisés pour générer les URL absolues.
+HOST_URL = os.getenv("HOST_URL", "localhost")
+HOST_PROTO = os.getenv("HOST_PROTO", "https")
+
 WAGTAIL_I18N_ENABLED = True
-PROCONNECT_ACTIVATED = False
 ```
 
 Voir {doc}`configuration` pour la liste complète des réglages disponibles.

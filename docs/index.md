@@ -15,6 +15,11 @@ sites-conformes est un package Python qui étend Wagtail pour créer des sites c
 - 🧭 Gabarits et menus adaptés au DSFR
 - ♿ Accessibilité RGAA intégrée
 
+L'édition de contenu repose sur les `StreamField` standards de Wagtail. Le
+package fournit un ensemble de blocs DSFR (cartes, alertes, accordéons,
+tableaux, héros, etc.) que `ContentPage` et les autres modèles utilisent
+directement — pas de système maison à apprendre.
+
 ```{toctree}
 ---
 maxdepth: 2
@@ -47,5 +52,5 @@ INSTALLED_APPS = [
 ## Besoin d'aide ?
 
 - 📖 [Documentation Wagtail](https://docs.wagtail.org/)
-- 💬 [GitHub Discussions](https://github.com/numerique-gouv/sites-faciles/discussions)
-- 🐛 [Signaler un bug](https://github.com/numerique-gouv/sites-faciles/issues)
+- 💬 [GitHub Discussions](https://github.com/numerique-gouv/sites-conformes/discussions)
+- 🐛 [Signaler un bug](https://github.com/numerique-gouv/sites-conformes/issues)
