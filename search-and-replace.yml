@@ -14,9 +14,11 @@ apps:
   - menus
 
 # App directory renames applied after all text transformations.
-# The app dir and its namespaced template subdir are both renamed.
-# app_renames:
-#   content_manager: core
+# The app dir name stays short ("core") so import paths read
+# `{package_name}.core`. The Django app label is still `{package_name}_core`,
+# set explicitly in core/apps.py — see the generic apps.py rule above.
+app_renames:
+  content_manager: core
 
 # Named scopes (rules can reference these by name)
 scopes:
@@ -238,22 +240,23 @@ rules:
   # ---------- Rename content_manager → core (post-namespacing) ----------
   # These run after all generic rules have already transformed upstream's
   # "content_manager" into "{package_name}.content_manager" / "{package_name}_content_manager".
-  # They rename the result to "{package_name}.core" / "{package_name}_core".
+  # They rename the result to "{package_name}.core" (import path matching the
+  # app_renames target dir) and "{package_name}_core" (Django app label).
 
-  # - search: "from {package_name}.content_manager"
-  #   replace: "from {package_name}.core"
-  #   scope: all
-  #   literal: true
+  - search: "from {package_name}.content_manager"
+    replace: "from {package_name}.core"
+    scope: all
+    literal: true
 
-  # - search: '"{package_name}.content_manager'
-  #   replace: '"{package_name}.core'
-  #   scope: all
-  #   literal: true
+  - search: '"{package_name}.content_manager'
+    replace: '"{package_name}.core'
+    scope: all
+    literal: true
 
-  # - search: "{package_name}_content_manager"
-  #   replace: "{package_name}_core"
-  #   scope: all
-  #   literal: true
+  - search: "{package_name}_content_manager"
+    replace: "{package_name}_core"
+    scope: all
+    literal: true
 
   # ---------- Root template references → {package_name}_core/ ----------
   # After move_root_templates_to_core() runs, all bare template references

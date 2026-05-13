@@ -299,10 +299,16 @@ def rename_template_dirs(
 def rename_app_dirs(
     app_renames: dict[str, str], package_name: str, dry_run: bool = False
 ) -> None:
-    """Rename app directories: {old_app}/ → {new_app}/, including template subdirs.
+    """Rename app directories: {old_app}/ → {new_app}/.
 
-    Also renames the namespaced template subdir inside the new app:
-    {new_app}/templates/{package_name}_{old_app}/ → {new_app}/templates/{package_name}_{new_app}/
+    After the directory rename, merge the renamed app's templates into the
+    repo-root namespaced templates dir at templates/{new_app}/, then drop the
+    now-empty app-level templates/ dir.
+
+    With the new layout, templates live only at repo-root templates/{new_app}/.
+    The per-app rename_template_dirs() pass already produced
+    {old_app}/templates/{package_name}_{old_app}/ — we hoist those files up
+    into templates/{new_app}/ here.
     """
     for old_app, new_app in app_renames.items():
         src = Path(old_app)
@@ -326,68 +332,80 @@ def rename_app_dirs(
                 logging.error("❌ Failed to rename %s → %s: %s", src, dst, exc)
                 continue
 
-        # Also rename the namespaced template subdir inside the (now-moved) app
-        old_tpl = dst / "templates" / f"{package_name}_{old_app}"
-        new_tpl = dst / "templates" / f"{package_name}_{new_app}"
-        if old_tpl.exists():
+        # Hoist the app's namespaced template subdir up to the repo-root
+        # templates dir under the Django template namespace
+        # ({package_name}_{new_app}), which is independent of the on-disk app
+        # dir name and matches what `apps.py` sets as `label`.
+        app_tpl = dst / "templates" / f"{package_name}_{old_app}"
+        root_tpl = Path("templates") / f"{package_name}_{new_app}"
+
+        if app_tpl.exists():
             if dry_run:
-                logging.info("[DRY-RUN] Would rename template dir: %s → %s", old_tpl, new_tpl)
+                logging.info(
+                    "[DRY-RUN] Would merge %s into %s", app_tpl, root_tpl
+                )
             else:
-                logging.info("📂 Renaming template dir: %s → %s", old_tpl, new_tpl)
+                logging.info("📂 Merging app templates: %s → %s", app_tpl, root_tpl)
+                root_tpl.mkdir(parents=True, exist_ok=True)
+                for entry in list(app_tpl.iterdir()):
+                    target = root_tpl / entry.name
+                    if target.exists():
+                        logging.debug("⏭️  Already at destination, skipping: %s", target)
+                        continue
+                    try:
+                        shutil.move(str(entry), str(target))
+                    except Exception as exc:
+                        logging.error("❌ Failed to move %s → %s: %s", entry, target, exc)
+
+        # Drop the now-empty app-level templates/ dir.
+        app_tpl_root = dst / "templates"
+        if app_tpl_root.exists():
+            if dry_run:
+                logging.info("[DRY-RUN] Would remove empty app templates dir: %s", app_tpl_root)
+            else:
                 try:
-                    shutil.move(str(old_tpl), str(new_tpl))
+                    shutil.rmtree(app_tpl_root)
+                    logging.info("🗑️  Removed app-level templates dir: %s", app_tpl_root)
                 except Exception as exc:
-                    logging.error("❌ Failed to rename %s → %s: %s", old_tpl, new_tpl, exc)
+                    logging.error("❌ Failed to remove %s: %s", app_tpl_root, exc)
 
 
 def move_root_templates_to_core(package_name: str, dry_run: bool = False) -> None:
-    """Move root templates/ dir into core/templates/{package_name}_core/.
+    """Namespace the root templates/ dir into templates/{package_name}_core/.
 
     Upstream keeps base templates at {package_name}/templates/ (root level).
-    After namespacing they should live at core/templates/{package_name}_core/
-    so they can be referenced as "{package_name}_core/base.html" etc.
+    After namespacing they live at templates/{package_name}_core/ (still at
+    repo root) so they can be referenced as "{package_name}_core/base.html" etc.
 
-    If the destination already exists, individual files are moved so that
-    non-HTML files (e.g. robots.txt) are not silently skipped.
+    Implementation: move each file into the namespaced subdirectory in place.
     """
     src = Path("templates")
-    dst = Path("core") / "templates" / f"{package_name}_core"
+    dst = src / f"{package_name}_core"
 
     if not src.exists():
         logging.debug("⏭️  No root templates dir to move: %s", src)
         return
 
-    if not dst.exists():
-        if dry_run:
-            logging.info("[DRY-RUN] Would move: %s → %s", src, dst)
-            return
-        logging.info("📂 Moving root templates: %s → %s", src, dst)
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            shutil.move(str(src), str(dst))
-        except Exception as exc:
-            logging.error("❌ Failed to move %s → %s: %s", src, dst, exc)
+    if dry_run:
+        logging.info("[DRY-RUN] Would namespace %s into %s", src, dst)
         return
 
-    # Destination exists: move any remaining files individually so nothing is skipped.
-    logging.debug("⚠️  Destination already exists, merging files: %s → %s", src, dst)
-    for file in src.rglob("*"):
-        if file.is_dir():
+    logging.info("📂 Namespacing root templates: %s → %s", src, dst)
+    dst.mkdir(parents=True, exist_ok=True)
+
+    # Move every entry under src/ into src/{package_name}_core/ — except the
+    # namespaced subdir itself (which we just created or which already exists).
+    for entry in list(src.iterdir()):
+        if entry == dst:
             continue
-        rel = file.relative_to(src)
-        target = dst / rel
+        target = dst / entry.name
         if target.exists():
             logging.debug("⏭️  Already at destination, skipping: %s", target)
             continue
-        if dry_run:
-            logging.info("[DRY-RUN] Would move: %s → %s", file, target)
-            continue
-        logging.info("📂 Moving: %s → %s", file, target)
-        target.parent.mkdir(parents=True, exist_ok=True)
         try:
-            shutil.move(str(file), str(target))
+            shutil.move(str(entry), str(target))
         except Exception as exc:
-            logging.error("❌ Failed to move %s → %s: %s", file, target, exc)
+            logging.error("❌ Failed to move %s → %s: %s", entry, target, exc)
 
 
 # -- Refactoring Logic --------------------------------------------------------
