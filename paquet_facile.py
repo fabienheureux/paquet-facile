@@ -496,6 +496,8 @@ def _cleanup_package_dir(package_dir: Path) -> None:
         "package.json",
         "package-lock.json",
         "scripts",
+        "scalingo.json",
+        "cron.json.example",
         # Upstream project docs / housekeeping
         "ONBOARDING.md",
         "DOD.md",
