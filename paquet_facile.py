@@ -490,6 +490,12 @@ def _cleanup_package_dir(package_dir: Path) -> None:
         ".gitignore",
         ".dockerignore",
         ".pre-commit-config.yaml",
+        ".git-blame-ignore-revs",
+        "publiccode.yml",
+        "justfile",
+        "package.json",
+        "package-lock.json",
+        "scripts",
         # Upstream project docs / housekeeping
         "ONBOARDING.md",
         "DOD.md",
