@@ -468,6 +468,21 @@ rules:
     scope: all
     literal: true
 
+  # ---------- justfile: prepend migrate_from_sites_faciles to scalingo-postdeploy ----------
+  # On a fresh deploy of the namespaced release to an existing Scalingo app
+  # whose DB still has the legacy table prefixes (`content_manager_*`, `blog_*`,
+  # etc.), Django's `migrate` would create new tables alongside the old ones.
+  # The `migrate_from_sites_faciles` management command renames the legacy
+  # tables in place — it must run BEFORE `migrate`.
+  #
+  # The bare `python manage.py migrate` line appears only inside the
+  # `scalingo-postdeploy` recipe of upstream's justfile; the regular `migrate`
+  # recipe uses `python manage.py migrate {{app}} {{version}}` (with args).
+  - search: "scalingo-postdeploy:\n    python manage.py migrate\n"
+    replace: "scalingo-postdeploy:\n    python manage.py migrate_from_sites_faciles --no-input\n    python manage.py migrate\n"
+    path_glob: "justfile"
+    literal: true
+
   # ---------- DynamicStreamField transformations ----------
   # NOTE: Run with -j 1 flag to avoid race conditions when multiple rules target same file
   # - search: "from wagtail.fields import RichTextField, StreamField"

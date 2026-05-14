@@ -21,6 +21,8 @@ Commit 1 — file-level namespacing:
      dir. The i18n workflow overrides upstream's so the locale-path checks
      point at the packaged sites_conformes/locale/ instead of repo-root
      locale/. The docs workflow rebuilds the Sphinx site on push-to-main.
+  6. Copy git-tracked files under demo/ into the temp dir (a runnable example
+     consumer of the package; sits at the release-branch repo root).
 
 Commit 2 — folder namespacing:
   6. Move every entry from commit 1 into a new sites_conformes/ subdirectory
@@ -200,6 +202,36 @@ def copy_file(source: Path, dest: Path) -> None:
     shutil.copy2(source, dest)
 
 
+def copy_git_tracked_dir(repo_root: Path, rel_dir: str, dest_root: Path) -> int:
+    """Copy git-tracked files under <repo_root>/<rel_dir>/ into <dest_root>/<rel_dir>/.
+
+    Uses `git ls-files` to enumerate so transient artifacts (`.venv/`,
+    `__pycache__/`, `*.pyc`, etc.) never make it into the release branch even
+    though there's no .gitignore in the source dir. Returns the number of
+    files copied.
+    """
+    listing = subprocess.run(
+        ["git", "ls-files", rel_dir],
+        cwd=repo_root,
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    files = [line for line in listing.stdout.splitlines() if line]
+    if not files:
+        logging.warning("⚠️  No git-tracked files under %s/", rel_dir)
+        return 0
+
+    logging.info("📂 Copying %d git-tracked files from %s/ → %s/%s/", len(files), rel_dir, dest_root.name, rel_dir)
+    for rel_path in files:
+        src = repo_root / rel_path
+        dst = dest_root / rel_path
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, dst)
+    return len(files)
+
+
 def ensure_remote(temp_dir: Path, name: str, url: str) -> None:
     existing = run(["git", "remote"], cwd=temp_dir).stdout.split()
     if name in existing:
@@ -287,6 +319,9 @@ def phase_one_files(
     # Ship our docs build workflow so the release branch's GitHub Pages stay
     # in sync with the docs/ content shipped in the same release.
     source_docs_yml = repo_root / ".github" / "workflows" / "docs.yml"
+    # Demo project (runnable example consumer of the package). Lives at the
+    # release-branch repo root, alongside the package and project glue.
+    source_demo = repo_root / "demo"
 
     for required in (
         source_pkg,
@@ -294,6 +329,7 @@ def phase_one_files(
         source_publish_yml,
         source_i18n_yml,
         source_docs_yml,
+        source_demo,
     ):
         if not required.exists():
             logging.error("Required path missing: %s", required)
@@ -330,6 +366,8 @@ def phase_one_files(
     copy_file(source_publish_yml, temp_dir / ".github" / "workflows" / "publish.yml")
     copy_file(source_i18n_yml, temp_dir / ".github" / "workflows" / "ci-check-i18n.yml")
     copy_file(source_docs_yml, temp_dir / ".github" / "workflows" / "docs.yml")
+
+    copy_git_tracked_dir(repo_root, "demo", temp_dir)
 
     commit_all(temp_dir, f"Namespaced release for {tag} (files)")
     return package_entries

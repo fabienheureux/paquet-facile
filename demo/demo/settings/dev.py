@@ -1,4 +1,4 @@
-from .base import *
+from .base import *  # noqa: F403
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -11,10 +11,10 @@ ALLOWED_HOSTS = ["*"]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-INSTALLED_APPS.extend(["debug_toolbar"])
+INSTALLED_APPS.extend(["debug_toolbar"])  # noqa: F405
 
 
 try:
-    from .local import *
+    from .local import *  # noqa: F403
 except ImportError:
     pass
