@@ -36,6 +36,7 @@ maxdepth: 2
 caption: Guides
 ---
 guide/db-storage
+guide/cas-pratique-annuaire
 ```
 
 ```{toctree}

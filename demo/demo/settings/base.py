@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "demo.apps.DemoConfig",
     "home",
     "search",
+    "annuaire",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
