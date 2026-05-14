@@ -1,0 +1,17 @@
+from django.apps import AppConfig
+
+
+class AnnuaireConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "annuaire"
+    verbose_name = "Annuaire"
+
+    def ready(self):
+        # Enregistre le endpoint REST une fois l'app prête. Le router Wagtail
+        # est déjà instancié par sites_conformes.config.api, on ajoute juste
+        # notre endpoint dessus.
+        from sites_conformes.config.api import api_router
+
+        from .api import PsychologuesAPIViewSet
+
+        api_router.register_endpoint("psychologues", PsychologuesAPIViewSet)

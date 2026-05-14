@@ -1,0 +1,28 @@
+# Tâches courantes pour la démo sites-conformes.
+# Lancer `just` sans arguments pour la liste.
+
+# Installer les dépendances (Python + sites-conformes en editable).
+install:
+    uv sync
+
+# Appliquer les migrations.
+migrate:
+    uv run python manage.py migrate
+
+# Insérer des données de démo (psychologues + page d'annuaire publiée).
+seed:
+    uv run python manage.py seed_annuaire
+
+# Créer un compte admin Wagtail.
+createsuperuser:
+    uv run python manage.py createsuperuser
+
+# Lancer le serveur de dev sur http://localhost:8000.
+runserver:
+    uv run python manage.py runserver
+
+# Installation + migrations + données de démo en une commande.
+setup: install migrate seed
+    @echo
+    @echo "Étape suivante : 'just createsuperuser' puis 'just runserver'."
+    @echo "La page d'annuaire est publiée à http://localhost:8000/annuaire/."

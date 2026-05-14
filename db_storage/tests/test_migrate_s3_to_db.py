@@ -5,7 +5,7 @@ from django.core.management import call_command
 from django.test import TestCase
 from wagtail.models import Page, Revision
 
-from db_storage.models import StoredFile
+from sites_conformes.db_storage.models import StoredFile
 
 S3_ENV = {
     "S3_HOST": "s3.example.com",
@@ -40,7 +40,7 @@ class MigrateS3ToDbCommandTestCase(TestCase):
         with self.assertRaises(Exception):
             call_command("migrate_s3_to_db", "--skip-urls")
 
-    @patch("db_storage.management.commands.migrate_s3_to_db.boto3")
+    @patch("sites_conformes.db_storage.management.commands.migrate_s3_to_db.boto3")
     @patch.dict("os.environ", S3_ENV)
     def test_transfer_files_dry_run(self, mock_boto3):
         """Dry run should not create StoredFile entries."""
@@ -62,7 +62,7 @@ class MigrateS3ToDbCommandTestCase(TestCase):
 
         self.assertEqual(StoredFile.objects.count(), 0)
 
-    @patch("db_storage.management.commands.migrate_s3_to_db.boto3")
+    @patch("sites_conformes.db_storage.management.commands.migrate_s3_to_db.boto3")
     @patch.dict("os.environ", S3_ENV)
     def test_transfer_files(self, mock_boto3):
         """Files should be transferred from S3 to StoredFile."""
@@ -92,7 +92,7 @@ class MigrateS3ToDbCommandTestCase(TestCase):
         self.assertEqual(stored.content_type, "image/jpeg")
         self.assertEqual(stored.size, 4)
 
-    @patch("db_storage.management.commands.migrate_s3_to_db.boto3")
+    @patch("sites_conformes.db_storage.management.commands.migrate_s3_to_db.boto3")
     @patch.dict("os.environ", S3_ENV)
     def test_skip_existing_files(self, mock_boto3):
         """Already existing StoredFile entries should be skipped."""
@@ -122,7 +122,7 @@ class MigrateS3ToDbCommandTestCase(TestCase):
         stored = StoredFile.objects.first()
         self.assertEqual(bytes(stored.content), b"old-data")
 
-    @patch("db_storage.management.commands.migrate_s3_to_db.boto3")
+    @patch("sites_conformes.db_storage.management.commands.migrate_s3_to_db.boto3")
     @patch.dict("os.environ", S3_ENV)
     def test_update_revision_urls(self, mock_boto3):
         """S3 URLs in Revision.content (JSONField) should be replaced."""

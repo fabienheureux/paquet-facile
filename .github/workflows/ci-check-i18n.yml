@@ -51,5 +51,5 @@ jobs:
         run: |
           just makemessages
           just compilemessages
-          git diff --exit-code locale/
-          git diff --exit-code */locale/
+          git diff --exit-code sites_conformes/locale/
+          git diff --exit-code sites_conformes/*/locale/

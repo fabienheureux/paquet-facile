@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 from django.core.management import call_command
 from django.test import TestCase
 
-from db_storage.models import StoredFile
+from sites_conformes.db_storage.models import StoredFile
 
 S3_ENV = {
     "S3_HOST": "s3.example.com",
@@ -26,7 +26,7 @@ class MigrateDbToS3CommandTestCase(TestCase):
         with self.assertRaises(Exception):
             call_command("migrate_db_to_s3")
 
-    @patch("db_storage.management.commands.migrate_db_to_s3.boto3")
+    @patch("sites_conformes.db_storage.management.commands.migrate_db_to_s3.boto3")
     @patch.dict("os.environ", S3_ENV)
     def test_dry_run_does_not_upload(self, mock_boto3):
         """Dry run should not upload any files to S3."""
@@ -44,7 +44,7 @@ class MigrateDbToS3CommandTestCase(TestCase):
 
         mock_client.put_object.assert_not_called()
 
-    @patch("db_storage.management.commands.migrate_db_to_s3.boto3")
+    @patch("sites_conformes.db_storage.management.commands.migrate_db_to_s3.boto3")
     @patch.dict("os.environ", S3_ENV)
     def test_upload_files(self, mock_boto3):
         """Files should be uploaded from StoredFile to S3."""
@@ -71,7 +71,7 @@ class MigrateDbToS3CommandTestCase(TestCase):
         self.assertEqual(call_kwargs["Key"], "media/images/photo.jpg")
         self.assertEqual(call_kwargs["ContentType"], "image/jpeg")
 
-    @patch("db_storage.management.commands.migrate_db_to_s3.boto3")
+    @patch("sites_conformes.db_storage.management.commands.migrate_db_to_s3.boto3")
     @patch.dict("os.environ", S3_ENV)
     def test_skip_existing_on_s3(self, mock_boto3):
         """Files already on S3 should be skipped."""
@@ -92,7 +92,7 @@ class MigrateDbToS3CommandTestCase(TestCase):
 
         mock_client.put_object.assert_not_called()
 
-    @patch("db_storage.management.commands.migrate_db_to_s3.boto3")
+    @patch("sites_conformes.db_storage.management.commands.migrate_db_to_s3.boto3")
     @patch.dict("os.environ", S3_ENV)
     def test_empty_db(self, mock_boto3):
         """No error when database has no stored files."""

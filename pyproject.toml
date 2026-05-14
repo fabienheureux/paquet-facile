@@ -1,6 +1,6 @@
 [project]
 name = "sites-conformes"
-version = "3.2.0"
+version = "3.2.0rc1"
 description = "Gestionnaire de contenu permettant de créer et gérer un site internet basé sur le Système de design de l’État, accessible et responsive"
 authors = [
     { name = "Sites Conformes dev team", email = "contact@sites.beta.gouv.fr" }
@@ -50,10 +50,34 @@ dev = [
     "tblib>=3.1.0",
 ]
 
+# Packaging-only — upstream sites-conformes is a Django project and ships
+# no [build-system]. We package it as `sites-conformes` for PyPI.
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sites_conformes*"]
+
+[tool.setuptools.package-data]
+sites_conformes = [
+    "templates/**/*",
+    "static/**/*",
+    "*/templates/**/*",
+    "*/static/**/*",
+    "*/page_templates/**/*",
+    "*/locale/*/LC_MESSAGES/*.po",
+    "*/locale/*/LC_MESSAGES/*.mo",
+]
+
 [tool.black]
 line-length = 119
 
-extend-exclude = '''
+# force-exclude (not extend-exclude) is required so that black skips migration
+# files even when pre-commit passes them explicitly on the command line.
+# `extend-exclude` only applies to recursive directory walks.
+force-exclude = '''
 /(
   | migrations
 )/
@@ -116,6 +140,11 @@ exclude = [
     "venv",
     "migrations",
 ]
+
+# force-exclude makes ruff honor the exclude list even when paths are passed
+# explicitly (which is what pre-commit does). Without this, ruff lints
+# migration files regardless of the exclude rule above.
+force-exclude = true
 
 line-length = 119
 
