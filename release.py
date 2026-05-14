@@ -17,9 +17,10 @@ Commit 1 — file-level namespacing:
      entry in the temp dir.
   3. Copy sites_conformes/sites_conformes/ into the temp dir.
   4. Copy sites_conformes/pyproject.toml into the temp dir.
-  5. Copy our .github/workflows/{publish,ci-check-i18n}.yml into the temp dir
-     (the i18n workflow overrides upstream's so the locale-path checks point
-     at the packaged sites_conformes/locale/ instead of repo-root locale/).
+  5. Copy our .github/workflows/{publish,ci-check-i18n,docs}.yml into the temp
+     dir. The i18n workflow overrides upstream's so the locale-path checks
+     point at the packaged sites_conformes/locale/ instead of repo-root
+     locale/. The docs workflow rebuilds the Sphinx site on push-to-main.
 
 Commit 2 — folder namespacing:
   6. Move every entry from commit 1 into a new sites_conformes/ subdirectory
@@ -283,8 +284,17 @@ def phase_one_files(
     # Override upstream's i18n check workflow because it greps the wrong locale
     # path after packagification (upstream uses `git diff locale/` at repo root).
     source_i18n_yml = repo_root / ".github" / "workflows" / "ci-check-i18n.yml"
+    # Ship our docs build workflow so the release branch's GitHub Pages stay
+    # in sync with the docs/ content shipped in the same release.
+    source_docs_yml = repo_root / ".github" / "workflows" / "docs.yml"
 
-    for required in (source_pkg, source_pyproject, source_publish_yml, source_i18n_yml):
+    for required in (
+        source_pkg,
+        source_pyproject,
+        source_publish_yml,
+        source_i18n_yml,
+        source_docs_yml,
+    ):
         if not required.exists():
             logging.error("Required path missing: %s", required)
             sys.exit(2)
@@ -319,6 +329,7 @@ def phase_one_files(
     copy_file(source_pyproject, temp_dir / "pyproject.toml")
     copy_file(source_publish_yml, temp_dir / ".github" / "workflows" / "publish.yml")
     copy_file(source_i18n_yml, temp_dir / ".github" / "workflows" / "ci-check-i18n.yml")
+    copy_file(source_docs_yml, temp_dir / ".github" / "workflows" / "docs.yml")
 
     commit_all(temp_dir, f"Namespaced release for {tag} (files)")
     return package_entries

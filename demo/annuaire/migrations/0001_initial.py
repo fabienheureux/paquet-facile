@@ -1,10 +1,14 @@
+import annuaire.models
+import wagtail.fields
 from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
     initial = True
 
-    dependencies = []
+    dependencies = [
+        ("wagtailcore", "0040_page_draft_title"),
+    ]
 
     operations = [
         migrations.CreateModel(
@@ -45,5 +49,33 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "Psychologues",
                 "ordering": ("nom",),
             },
+        ),
+        migrations.CreateModel(
+            name="AnnuairePage",
+            fields=[
+                (
+                    "page_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="wagtailcore.page",
+                    ),
+                ),
+                (
+                    "body",
+                    wagtail.fields.StreamField(
+                        annuaire.models._annuaire_stream_blocks,
+                        blank=True,
+                        use_json_field=True,
+                    ),
+                ),
+            ],
+            options={
+                "abstract": False,
+            },
+            bases=("wagtailcore.page",),
         ),
     ]

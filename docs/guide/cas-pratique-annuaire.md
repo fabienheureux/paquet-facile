@@ -1,4 +1,4 @@
-# Cas pratique — annuaire de psychologues sur une carte
+# Cas pratique - annuaire de psychologues sur une carte
 
 Ce guide répond à une question récurrente : comment ajouter une entité métier
 (par exemple un annuaire de psychologues), l'afficher sur une carte
@@ -13,7 +13,7 @@ Le parcours :
 
 Une implémentation complète et exécutable de ce guide se trouve dans
 [`demo/annuaire/`](https://github.com/fabienheureux/paquet-facile/tree/main/demo/annuaire)
-du dépôt — clonez, lancez `python manage.py migrate && python manage.py runserver`
+du dépôt - clonez, lancez `python manage.py migrate && python manage.py runserver`
 depuis `demo/`, créez quelques psychologues dans l'admin Wagtail (Snippets →
 Psychologues), puis une page de type *Annuaire page* pour voir la carte.
 
@@ -95,7 +95,7 @@ Le snippet apparaît dans l'admin Wagtail sous **Snippets → Psychologues**.
 ## 2. Un bloc StreamField qui affiche la carte
 
 Pour intégrer la carte dans une page, on crée un bloc Wagtail. Comme l'éditeur
-ne doit pas saisir manuellement les psys — ils viennent de la base — on
+ne doit pas saisir manuellement les psys - ils viennent de la base - on
 utilise `StaticBlock` : un bloc sans champs éditables qui rend simplement un
 template à partir du contexte fourni par `get_context()`.
 
@@ -140,7 +140,7 @@ bibliothèque de styles cartographiques fournie par la Fabrique des Géocommuns
 (IGN). Elle s'appuie sur [`maplibre-gl`](https://maplibre.org/) pour le rendu.
 
 Pour un POC, le plus simple est de charger les deux via CDN (`unpkg.com`) avec
-un *import map* — pas de bundler nécessaire :
+un *import map* - pas de bundler nécessaire :
 
 ```html
 {# annuaire/templates/annuaire/blocks/liste_psychologues.html #}
@@ -217,7 +217,7 @@ un *import map* — pas de bundler nécessaire :
 ```
 
 Carte Facile fournit aussi des styles `desaturated` et `aerial`, et un système
-de surcouches (`addOverlay(map, Overlay.administrativeBoundaries)`) — voir
+de surcouches (`addOverlay(map, Overlay.administrativeBoundaries)`) - voir
 sa documentation pour les options.
 
 :::{note}
@@ -250,7 +250,7 @@ class AnnuairePage(Page):
 ```
 
 Pour ajouter votre bloc **à toutes** les pages `sites-conformes`, héritez de
-`CommonStreamBlock` à la place — voir
+`CommonStreamBlock` à la place - voir
 `sites_conformes.core.blocks.CommonStreamBlock` et le pattern utilisé par
 [quefairedemesobjets/webapp/qfdmd/blocks.py](https://github.com/fab-geocommuns/quefairedemesobjets).
 
@@ -327,25 +327,10 @@ curl https://votre-site.fr/api/v2/psychologues/42/
 # Filtrer par ville (filtres Wagtail standards)
 curl "https://votre-site.fr/api/v2/psychologues/?ville=Lyon"
 
-# Pagination — limit/offset
+# Pagination - limit/offset
 curl "https://votre-site.fr/api/v2/psychologues/?limit=20&offset=40"
 ```
 
 Les pages contenant le bloc *Liste des psychologues* sont également
 disponibles via `/api/v2/pages/`, et le `StreamField` `body` apparaît
 sérialisé en JSON.
-
-## Pour aller plus loin
-
-- **Carte avec recherche / rayon** : passez à `django.contrib.gis` (PostGIS
-  requis) avec un `PointField`. Les filtres `__distance_lte` deviennent alors
-  disponibles, et vous pouvez exposer un endpoint `?lat=...&lng=...&radius=...`.
-- **Surcouches Carte Facile** : `addOverlay(map, Overlay.administrativeBoundaries)`
-  pour superposer les limites administratives, le cadastre, etc.
-- **Géocodage** : la
-  [base d'adresses nationale](https://adresse.data.gouv.fr/api-doc/adresse)
-  fournit un endpoint `/search/?q=...` pour convertir une adresse en
-  coordonnées (utile pour pré-remplir le snippet à la saisie).
-- **Recherche full-text** : Wagtail expose son moteur de recherche aux
-  snippets via `index.SearchField`. Voir
-  <https://docs.wagtail.org/en/stable/topics/search/index.html>.

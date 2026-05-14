@@ -1,0 +1,23 @@
+# Tâches courantes pour la démo sites-conformes.
+# Lancer `just` sans arguments pour la liste.
+
+# Installer les dépendances (Python + sites-conformes en editable).
+install:
+    uv sync
+
+# Appliquer les migrations.
+migrate:
+    uv run python manage.py migrate
+
+# Créer un compte admin Wagtail.
+createsuperuser:
+    uv run python manage.py createsuperuser
+
+# Lancer le serveur de dev sur http://localhost:8000.
+runserver:
+    uv run python manage.py runserver
+
+# Tout en une commande pour démarrer rapidement.
+setup: install migrate
+    @echo
+    @echo "Étape suivante : 'just createsuperuser' puis 'just runserver'."

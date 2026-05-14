@@ -46,6 +46,13 @@ class Psychologue(models.Model):
         return f"{self.nom} ({self.ville})"
 
 
+def _annuaire_stream_blocks():
+    """Lazy-eval block list to avoid a circular import (blocks → models)."""
+    from .blocks import ListePsychologuesBlock
+
+    return [("liste_psychologues", ListePsychologuesBlock())]
+
+
 class AnnuairePage(Page):
     """Wagtail page with a StreamField that surfaces the annuaire block.
 
@@ -54,15 +61,7 @@ class AnnuairePage(Page):
     Psychologue snippets currently in the database.
     """
 
-    body = StreamField(
-        [
-            ("liste_psychologues", __import__(
-                "annuaire.blocks", fromlist=["ListePsychologuesBlock"]
-            ).ListePsychologuesBlock()),
-        ],
-        blank=True,
-        use_json_field=True,
-    )
+    body = StreamField(_annuaire_stream_blocks, blank=True, use_json_field=True)
 
     content_panels = Page.content_panels + [
         FieldPanel("body"),
