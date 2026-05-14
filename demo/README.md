@@ -19,18 +19,15 @@ de la documentation.
 ## Démarrage
 
 ```bash
-just setup            # uv sync + migrate
-just createsuperuser  # crée le compte admin Wagtail
+just setup            # uv sync + migrate + seed (6 psychologues + page publiée)
+just createsuperuser  # crée le compte admin Wagtail (optionnel pour visiter le site)
 just runserver        # http://localhost:8000
 ```
 
-Puis dans l'admin Wagtail (`/admin/`) :
-
-1. **Snippets → Psychologues** : ajoutez quelques fiches avec leurs coordonnées
-   lat/lng (exemple : Paris `48.856614 / 2.352222`).
-2. **Pages → Add child page → Annuaire page** : créez une page contenant le
-   bloc *Liste des psychologues (carte)*.
-3. Publiez, puis visitez l'URL de la page pour voir la carte interactive.
+La page d'annuaire est publiée à <http://localhost:8000/annuaire/>. Pour
+éditer le contenu, créer ou supprimer des psychologues, passez par l'admin
+Wagtail à <http://localhost:8000/admin/> (**Snippets → Psychologues** /
+**Pages**).
 
 L'API REST est exposée en `/api/v2/psychologues/` :
 

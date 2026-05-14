@@ -35,10 +35,9 @@ Une implémentation complète et exécutable de ce guide se trouve dans
 Pour la lancer :
 
 - clonez le dépôt et placez-vous dans `demo/`
-- lancez `uv run python manage.py migrate`
-- puis `uv run python manage.py runserver`
-- créez quelques psychologues dans l'admin Wagtail (**Snippets → Psychologues**)
-- créez une page de type *Annuaire page* pour voir la carte
+- lancez `just setup` (installe les dépendances, applique les migrations et
+  insère des psychologues + une page d'annuaire publiée à `/annuaire/`)
+- lancez `just runserver` puis ouvrez <http://localhost:8000/annuaire/>
 :::
 
 ## 1. Le snippet `Psychologue`
