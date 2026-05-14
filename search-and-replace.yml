@@ -468,20 +468,12 @@ rules:
     scope: all
     literal: true
 
-  # ---------- justfile: prepend migrate_from_sites_faciles to scalingo-postdeploy ----------
-  # On a fresh deploy of the namespaced release to an existing Scalingo app
-  # whose DB still has the legacy table prefixes (`content_manager_*`, `blog_*`,
-  # etc.), Django's `migrate` would create new tables alongside the old ones.
-  # The `migrate_from_sites_faciles` management command renames the legacy
-  # tables in place — it must run BEFORE `migrate`.
-  #
-  # The bare `python manage.py migrate` line appears only inside the
-  # `scalingo-postdeploy` recipe of upstream's justfile; the regular `migrate`
-  # recipe uses `python manage.py migrate {{app}} {{version}}` (with args).
-  - search: "scalingo-postdeploy:\n    python manage.py migrate\n"
-    replace: "scalingo-postdeploy:\n    python manage.py migrate_from_sites_faciles --no-input\n    python manage.py migrate\n"
-    path_glob: "justfile"
-    literal: true
+  # NOTE: the justfile's scalingo-postdeploy recipe is patched in release.py
+  # (phase_one_files), not here. Reason: paquet_facile.py operates on a clone
+  # that is later moved into the package dir and cleaned up — the justfile
+  # doesn't survive into the release branch through this pipeline. release.py
+  # has its own upstream clone where the justfile lives at repo root and is
+  # the right place to inject the rename step.
 
   # ---------- DynamicStreamField transformations ----------
   # NOTE: Run with -j 1 flag to avoid race conditions when multiple rules target same file

@@ -369,8 +369,48 @@ def phase_one_files(
 
     copy_git_tracked_dir(repo_root, "demo", temp_dir)
 
+    _patch_scalingo_postdeploy(temp_dir)
+
     commit_all(temp_dir, f"Namespaced release for {tag} (files)")
     return package_entries
+
+
+def _patch_scalingo_postdeploy(temp_dir: Path) -> None:
+    """Inject `migrate_from_sites_faciles` before `migrate` in the Scalingo
+    postdeploy recipe of upstream's justfile.
+
+    On a fresh deploy of the namespaced release to an existing Scalingo app
+    whose DB still has the legacy table prefixes (`content_manager_*`, etc.),
+    Django's `migrate` would create new tables alongside the old ones. The
+    `migrate_from_sites_faciles` management command renames the legacy tables
+    in place — it must run BEFORE `migrate`.
+
+    The bare `python manage.py migrate\\n` line is unique to the
+    `scalingo-postdeploy` recipe; the regular `migrate` recipe uses
+    `{{app}} {{version}}` args, so it stays untouched.
+    """
+    justfile = temp_dir / "justfile"
+    if not justfile.exists():
+        logging.warning("⏭️  No justfile at %s — skipping postdeploy patch", justfile)
+        return
+
+    text = justfile.read_text(encoding="utf-8")
+    needle = "scalingo-postdeploy:\n    python manage.py migrate\n"
+    replacement = (
+        "scalingo-postdeploy:\n"
+        "    python manage.py migrate_from_sites_faciles --no-input\n"
+        "    python manage.py migrate\n"
+    )
+
+    if needle not in text:
+        logging.warning(
+            "⏭️  scalingo-postdeploy recipe shape not recognized in %s — skipping patch",
+            justfile,
+        )
+        return
+
+    justfile.write_text(text.replace(needle, replacement, 1), encoding="utf-8")
+    logging.info("📝 Patched scalingo-postdeploy in %s", justfile)
 
 
 def phase_two_folder(
