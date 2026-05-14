@@ -934,7 +934,7 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "rust-just", specifier = ">=1.40.0" },
     { name = "unidecode", specifier = ">=1.4.0" },
-    { name = "wagtail", specifier = ">=7.4" },
+    { name = "wagtail", specifier = ">=7.2.0" },
     { name = "wagtail-honeypot", specifier = ">=1.2.1" },
     { name = "wagtail-localize", specifier = ">=1.12.1" },
     { name = "wagtail-markdown", specifier = ">=0.12.1" },

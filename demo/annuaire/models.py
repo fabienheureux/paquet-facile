@@ -4,6 +4,8 @@ from wagtail.fields import StreamField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
+from .blocks import ListePsychologuesBlock
+
 
 @register_snippet
 class Psychologue(models.Model):
@@ -44,9 +46,6 @@ class Psychologue(models.Model):
 
     def __str__(self):
         return f"{self.nom} ({self.ville})"
-
-
-from .blocks import ListePsychologuesBlock
 
 
 class AnnuairePage(Page):

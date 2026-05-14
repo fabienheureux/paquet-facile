@@ -157,6 +157,15 @@ rules:
     scope: migrations
 
   # ---------- Special-case overrides ----------
+  # `config/forms/baseform.py` is a generic DSFR form helper that lives under
+  # the Django project's `config/` package in upstream. After packagification
+  # the file is moved into the installable package (sites_conformes/forms/),
+  # so the cross-package import in events/forms.py must be rewritten.
+  - search: "from config.forms.baseform import"
+    replace: "from {package_name}.forms.baseform import"
+    scope: all
+    literal: true
+
   - search: 'content_manager\.models\.MonospaceField'
     replace: "{package_name}.content_manager.models.MonospaceField"
     scope: migrations

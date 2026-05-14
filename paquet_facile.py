@@ -355,6 +355,62 @@ def rename_app_dirs(
                     logging.error("❌ Failed to rename %s → %s: %s", old_tpl, new_tpl, exc)
 
 
+def move_baseform_into_package(dry_run: bool = False) -> None:
+    """Move config/forms/baseform.py → forms/baseform.py inside the package.
+
+    Upstream keeps a generic DSFR form helper at config/forms/baseform.py
+    (Django project layout), and events/forms.py imports it as
+    `from config.forms.baseform import ...`. That bare top-level `config`
+    reference doesn't resolve once the package is installed elsewhere
+    (consumers don't get `config/` on sys.path). Hoist the helper into the
+    installable package's own forms/ subpackage so the rewritten import
+    `from {package_name}.forms.baseform import ...` (see search-and-replace.yml)
+    has a target.
+
+    config/forms/__init__.py is removed since the only file under it has been
+    relocated.
+    """
+    src = Path("config") / "forms" / "baseform.py"
+    dst_dir = Path("forms")
+    dst = dst_dir / "baseform.py"
+
+    if not src.exists():
+        logging.debug("⏭️  No baseform to hoist at %s", src)
+        return
+
+    if dst.exists():
+        logging.warning("⚠️  Destination already exists, skipping: %s", dst)
+        return
+
+    if dry_run:
+        logging.info("[DRY-RUN] Would move: %s → %s", src, dst)
+        return
+
+    dst_dir.mkdir(parents=True, exist_ok=True)
+    logging.info("📂 Hoisting baseform: %s → %s", src, dst)
+    try:
+        shutil.move(str(src), str(dst))
+    except Exception as exc:
+        logging.error("❌ Failed to move %s → %s: %s", src, dst, exc)
+        return
+
+    init = Path("config") / "forms" / "__init__.py"
+    if init.exists():
+        try:
+            init.unlink()
+            logging.debug("Removed now-empty %s", init)
+        except Exception as exc:
+            logging.error("❌ Failed to remove %s: %s", init, exc)
+
+    forms_dir = Path("config") / "forms"
+    if forms_dir.exists() and not any(forms_dir.iterdir()):
+        try:
+            forms_dir.rmdir()
+            logging.debug("Removed empty %s", forms_dir)
+        except Exception as exc:
+            logging.error("❌ Failed to remove %s: %s", forms_dir, exc)
+
+
 def move_root_templates_to_core(package_name: str, dry_run: bool = False) -> None:
     """Namespace the root templates/ dir into templates/{package_name}_core/.
 
@@ -472,6 +528,9 @@ def _apply_transformations(config_path: Path, dry_run: bool, jobs: int | None) -
 
     # Move root templates/ → core/templates/{package_name}_core/
     move_root_templates_to_core(package_name, dry_run)
+
+    # Hoist config/forms/baseform.py into the installable package
+    move_baseform_into_package(dry_run)
 
     # Rename app directories (e.g. content_manager → core)
     app_renames: dict[str, str] = config.get("app_renames", {})
