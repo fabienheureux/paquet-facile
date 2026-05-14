@@ -4,10 +4,11 @@ release.py
 Build a release branch on the sites-faciles fork from the namespaced sources
 and open a single PR against numerique-gouv/sites-conformes:main.
 
-The upstream tag and branch name are derived from the version in
-sites_conformes/pyproject.toml — e.g. version "3.2.0rc1" clones tag v3.2.0
-into a release branch v3.2.0rc1-namespaced-folder. Both can be overridden
-with --tag and --branch.
+The branch name is derived from the version in sites_conformes/pyproject.toml
+— e.g. version "4.0.0rc1" → release branch v4.0.0rc1-namespaced-folder.
+The upstream tag we fork from is hardcoded in UPSTREAM_TAG (currently v3.2.0)
+because our packagified release version is decoupled from upstream's tag
+line. Both can be overridden with --tag and --branch.
 
 The branch contains up to four commits:
 
@@ -46,7 +47,6 @@ from __future__ import annotations
 import argparse
 import logging
 import os
-import re
 import shutil
 import subprocess
 import sys
@@ -60,16 +60,18 @@ FORK_OWNER = "fabienheureux"
 PACKAGE_DIR_NAME = "sites_conformes"
 TEMP_DIR_NAME = "sites_conformes_temp"
 
-# PEP 440 pre/post/dev suffix — everything after the base X.Y.Z that we strip
-# to obtain the upstream tag. Matches rc1, rc2, a3, b1, .dev4, .post0, etc.
-_VERSION_SUFFIX_RE = re.compile(r"(?:[._-]?(?:rc|a|b|alpha|beta|dev|post)\d*)+$", re.IGNORECASE)
+# Upstream tag we fork from. Decoupled from our packagified-release version
+# (which is in sites_conformes/pyproject.toml). The upstream project still
+# ships on the 3.x line; the packagification work is a major bump for our
+# consumers but the source code we patch is upstream's 3.2.0.
+UPSTREAM_TAG = "v3.2.0"
 
 
-def read_package_version(repo_root: Path) -> tuple[str, str]:
-    """Return (full_version, base_version) read from sites_conformes/pyproject.toml.
+def read_package_version(repo_root: Path) -> str:
+    """Return the full version string from sites_conformes/pyproject.toml.
 
-    base_version drops any rc/dev/post/a/b suffix so it maps to the upstream
-    git tag. E.g. "3.2.0rc1" -> ("3.2.0rc1", "3.2.0").
+    The version drives the release branch name; the upstream tag we fork from
+    is independent (see UPSTREAM_TAG).
     """
     pyproject = repo_root / PACKAGE_DIR_NAME / "pyproject.toml"
     try:
@@ -86,12 +88,7 @@ def read_package_version(repo_root: Path) -> tuple[str, str]:
     if not isinstance(full, str) or not full:
         logging.error("No project.version in %s", pyproject)
         sys.exit(2)
-
-    base = _VERSION_SUFFIX_RE.sub("", full)
-    if not base:
-        logging.error("Version %r has no base segment after stripping suffix", full)
-        sys.exit(2)
-    return full, base
+    return full
 
 # Upstream directories that the namespaced package renames (and therefore no
 # longer ships under the same name). They must be explicitly deleted in
@@ -585,7 +582,7 @@ def main() -> None:
     parser.add_argument(
         "--tag",
         default=None,
-        help="Upstream tag to clone (default: v<base-version> from sites_conformes/pyproject.toml)",
+        help=f"Upstream tag to clone (default: {UPSTREAM_TAG})",
     )
     parser.add_argument(
         "--branch",
@@ -610,8 +607,8 @@ def main() -> None:
 
     repo_root = Path(__file__).resolve().parent
 
-    full_version, base_version = read_package_version(repo_root)
-    tag = args.tag or f"v{base_version}"
+    full_version = read_package_version(repo_root)
+    tag = args.tag or UPSTREAM_TAG
     branch = args.branch or f"v{full_version}-namespaced-folder"
     logging.info("📌 Package version %s → upstream tag %s, branch %s", full_version, tag, branch)
 
