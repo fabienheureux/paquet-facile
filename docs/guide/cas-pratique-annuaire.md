@@ -11,37 +11,50 @@ Le parcours :
 3. Créer un **bloc StreamField** réutilisable qui affiche la liste sur une carte.
 4. Exposer le tout via l'API REST de Wagtail (`/api/v2/`).
 
-Une implémentation complète et exécutable de ce guide se trouve dans
-[`demo/annuaire/`](https://github.com/fabienheureux/paquet-facile/tree/main/demo/annuaire)
-du dépôt - clonez, lancez `python manage.py migrate && python manage.py runserver`
-depuis `demo/`, créez quelques psychologues dans l'admin Wagtail (Snippets →
-Psychologues), puis une page de type *Annuaire page* pour voir la carte.
-
 ## 0. Prérequis
 
 `sites-conformes` doit être installé et configuré dans votre projet Django.
 Voir [Installation](installation.md) si ce n'est pas fait.
 
+Le guide utilise [`uv`](https://docs.astral.sh/uv/) pour gérer l'environnement
+Python et exécuter les commandes Django (`uv run python ...`). Si vous
+préférez un autre gestionnaire, retirez le préfixe `uv run` : les commandes
+restent identiques.
+
 L'exemple suppose une app Django locale nommée `annuaire` :
 
 ```bash
-python manage.py startapp annuaire
+uv run python manage.py startapp annuaire
 ```
 
 Ajoutez `"annuaire"` à `INSTALLED_APPS`, juste après les apps `sites_conformes.*`.
 
+:::{note}
+Une implémentation complète et exécutable de ce guide se trouve dans
+[`demo/annuaire/`](https://github.com/fabienheureux/paquet-facile/tree/main/demo/annuaire).
+Pour la lancer :
+
+- clonez le dépôt et placez-vous dans `demo/`
+- lancez `uv run python manage.py migrate`
+- puis `uv run python manage.py runserver`
+- créez quelques psychologues dans l'admin Wagtail (**Snippets → Psychologues**)
+- créez une page de type *Annuaire page* pour voir la carte
+:::
+
 ## 1. Le snippet `Psychologue`
 
-Un **snippet** Wagtail est un modèle Django éditable depuis le back office sans
-qu'il s'agisse d'une page. Parfait pour des données réutilisables sur
-plusieurs pages : un annuaire de psys, une liste de lieux, des contacts.
+Un [snippet Wagtail](https://docs.wagtail.org/en/stable/topics/snippets/index.html)
+est un modèle Django éditable depuis le back office sans qu'il s'agisse d'une
+page. Parfait pour des données réutilisables sur plusieurs pages : un annuaire
+de psys, une liste de lieux, des contacts.
 
-Documentation Wagtail de référence :
-<https://docs.wagtail.org/en/stable/topics/snippets/index.html>.
-
-On stocke les coordonnées en `DecimalField` plutôt qu'en PointField (PostGIS),
-pour rester sur une stack Postgres ou SQLite standard. Pour les requêtes
-spatiales avancées (recherche par rayon, etc.), passez à `django.contrib.gis`.
+On stocke les coordonnées en
+[`DecimalField`](https://docs.djangoproject.com/en/stable/ref/models/fields/#decimalfield)
+plutôt qu'en
+[`PointField`](https://docs.djangoproject.com/en/stable/ref/contrib/gis/model-api/#pointfield)
+(PostGIS), pour rester sur une stack Postgres ou SQLite standard. Pour les
+requêtes spatiales avancées (recherche par rayon, etc.), passez à
+[`django.contrib.gis`](https://docs.djangoproject.com/en/stable/ref/contrib/gis/).
 
 ```python
 # annuaire/models.py
@@ -86,18 +99,22 @@ class Psychologue(models.Model):
 Migrations :
 
 ```bash
-python manage.py makemigrations annuaire
-python manage.py migrate
+uv run python manage.py makemigrations annuaire
+uv run python manage.py migrate
 ```
 
 Le snippet apparaît dans l'admin Wagtail sous **Snippets → Psychologues**.
 
 ## 2. Un bloc StreamField qui affiche la carte
 
-Pour intégrer la carte dans une page, on crée un bloc Wagtail. Comme l'éditeur
-ne doit pas saisir manuellement les psys - ils viennent de la base - on
-utilise `StaticBlock` : un bloc sans champs éditables qui rend simplement un
-template à partir du contexte fourni par `get_context()`.
+Pour intégrer la carte dans une page, on crée un [bloc
+Wagtail](https://docs.wagtail.org/en/stable/topics/streamfield.html). Comme
+l'éditeur ne doit pas saisir manuellement les psys - ils viennent de la base -
+on utilise
+[`StaticBlock`](https://docs.wagtail.org/en/stable/reference/streamfield/blocks.html#wagtail.blocks.StaticBlock)
+: un bloc sans champs éditables qui rend simplement un template à partir du
+contexte fourni par
+[`get_context()`](https://docs.wagtail.org/en/stable/topics/streamfield.html#custom-context).
 
 ```python
 # annuaire/blocks.py
@@ -216,20 +233,13 @@ un *import map* - pas de bundler nécessaire :
 </section>
 ```
 
-Carte Facile fournit aussi des styles `desaturated` et `aerial`, et un système
-de surcouches (`addOverlay(map, Overlay.administrativeBoundaries)`) - voir
-sa documentation pour les options.
-
-:::{note}
-En production, vous voudrez bundler `carte-facile` et `maplibre-gl` plutôt que
-de dépendre d'`unpkg.com`. Le pattern reste le même ; remplacez l'`importmap`
-par vos imports applicatifs habituels.
-:::
-
 ## 4. Brancher le bloc sur une page
 
-Le plus simple est de définir une `AnnuairePage` qui n'expose **que** notre
-bloc :
+Le plus simple est de définir une `AnnuairePage` (une
+[`Page` Wagtail](https://docs.wagtail.org/en/stable/topics/pages.html)) qui
+expose un
+[`StreamField`](https://docs.wagtail.org/en/stable/topics/streamfield.html)
+contenant **uniquement** notre bloc :
 
 ```python
 # annuaire/models.py (suite)
@@ -254,18 +264,32 @@ Pour ajouter votre bloc **à toutes** les pages `sites-conformes`, héritez de
 `sites_conformes.core.blocks.CommonStreamBlock` et le pattern utilisé par
 [quefairedemesobjets/webapp/qfdmd/blocks.py](https://github.com/fab-geocommuns/quefairedemesobjets).
 
+:::{warning}
+Hériter de `CommonStreamBlock` couple votre site aux blocs `sites-conformes` :
+**à chaque montée de version où `sites-conformes` modifie ses blocs communs,
+Django détectera un changement de `StreamField` et exigera une migration côté
+projet hôte** (`uv run python manage.py makemigrations` puis `migrate`).
+C'est un compromis connu de l'approche par héritage. La page d'exemple ci-dessus
+(`AnnuairePage` avec un `StreamField` qui ne contient que notre bloc) n'a pas
+ce problème : elle reste stable tant que vous ne touchez pas à
+`ListePsychologuesBlock`.
+:::
+
 Migration, puis dans l'admin Wagtail vous pouvez créer une *Annuaire page* et
 sa carte se rend automatiquement à partir des `Psychologue` en base.
 
 ## 5. Exposer les psychologues via l'API Wagtail
 
-Wagtail fournit nativement une API REST en `/api/v2/`. Référence :
-<https://docs.wagtail.org/en/stable/advanced_topics/api/v2/configuration.html>.
+Wagtail fournit nativement une
+[API REST v2](https://docs.wagtail.org/en/stable/advanced_topics/api/v2/configuration.html)
+en `/api/v2/`.
 
 ### 5.1 Endpoint snippets
 
 Wagtail expose les **pages** et les **images/documents** par défaut, mais
-**pas les snippets**. On écrit un viewset :
+**pas les snippets**. On écrit un
+[viewset personnalisé](https://docs.wagtail.org/en/stable/advanced_topics/api/v2/configuration.html#adding-more-api-endpoints)
+:
 
 ```python
 # annuaire/api.py
@@ -319,18 +343,18 @@ celui de `sites-conformes`, on l'enrichit depuis notre app.
 
 ```bash
 # Liste de tous les psychologues, format JSON
-curl https://votre-site.fr/api/v2/psychologues/
+curl http://localhost:8000/api/v2/psychologues/
 
 # Un seul, par id
-curl https://votre-site.fr/api/v2/psychologues/42/
+curl http://localhost:8000/api/v2/psychologues/42/
 
 # Filtrer par ville (filtres Wagtail standards)
-curl "https://votre-site.fr/api/v2/psychologues/?ville=Lyon"
+curl "http://localhost:8000/api/v2/psychologues/?ville=Lyon"
 
 # Pagination - limit/offset
-curl "https://votre-site.fr/api/v2/psychologues/?limit=20&offset=40"
+curl "http://localhost:8000/api/v2/psychologues/?limit=20&offset=40"
 ```
 
 Les pages contenant le bloc *Liste des psychologues* sont également
-disponibles via `/api/v2/pages/`, et le `StreamField` `body` apparaît
-sérialisé en JSON.
+disponibles via [`/api/v2/pages/`](https://docs.wagtail.org/en/stable/advanced_topics/api/v2/usage.html),
+et le `StreamField` `body` apparaît sérialisé en JSON.
