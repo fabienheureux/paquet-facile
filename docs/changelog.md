@@ -62,7 +62,9 @@ En cas de problème, restaurez la sauvegarde prise à l'étape 1 et ouvrez une
 ### Pour les développeurs
 
 Après un `git pull` sur un clone existant, certains anciens dossiers peuvent
-rester à la racine du dépôt. Purgez-les à la main :
+rester à la racine du dépôt à cause des `__pycache__/` qu'ils contiennent
+(git ne supprime pas un dossier qui contient des fichiers non suivis).
+Purgez-les à la main :
 
 ```bash
 rm -rf blog/ config/ content_manager/ core/ dashboard/ db_storage/ docs/ \
