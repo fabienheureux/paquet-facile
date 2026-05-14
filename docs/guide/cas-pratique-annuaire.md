@@ -1,27 +1,28 @@
-# Cas pratique — annuaire de psychologues
+# Cas pratique — annuaire de psychologues sur une carte
 
-Ce guide répond à une question que les développeurs nous posent souvent : comment
-ajouter un nouveau type de contenu métier (par exemple un annuaire de
-psychologues) à un site `sites-conformes` ?
+Ce guide répond à une question récurrente : comment ajouter une entité métier
+(par exemple un annuaire de psychologues), l'afficher sur une carte
+interactive, et l'exposer via une API ?
 
 Le parcours :
 
 1. Installer `sites-conformes` dans un projet Django existant.
-2. Modéliser l’entité `Psychologue` comme un **snippet** Wagtail.
-3. Créer un **bloc StreamField** réutilisable qui affiche la liste sur n’importe
-   quelle page.
-4. Exposer le tout via l’API REST de Wagtail (`/api/v2/`).
+2. Modéliser l'entité `Psychologue` comme un **snippet** Wagtail.
+3. Créer un **bloc StreamField** réutilisable qui affiche la liste sur une carte.
+4. Exposer le tout via l'API REST de Wagtail (`/api/v2/`).
 
-L’exemple est volontairement minimal — il ne couvre pas la géolocalisation
-(PostGIS) ni la recherche full-text, mais il pose la mécanique commune à ce
-type de fonctionnalité.
+Une implémentation complète et exécutable de ce guide se trouve dans
+[`demo/annuaire/`](https://github.com/fabienheureux/paquet-facile/tree/main/demo/annuaire)
+du dépôt — clonez, lancez `python manage.py migrate && python manage.py runserver`
+depuis `demo/`, créez quelques psychologues dans l'admin Wagtail (Snippets →
+Psychologues), puis une page de type *Annuaire page* pour voir la carte.
 
 ## 0. Prérequis
 
 `sites-conformes` doit être installé et configuré dans votre projet Django.
-Voir [Installation](installation.md) si ce n’est pas fait.
+Voir [Installation](installation.md) si ce n'est pas fait.
 
-L’exemple suppose une app Django locale nommée `annuaire` :
+L'exemple suppose une app Django locale nommée `annuaire` :
 
 ```bash
 python manage.py startapp annuaire
@@ -31,12 +32,16 @@ Ajoutez `"annuaire"` à `INSTALLED_APPS`, juste après les apps `sites_conformes
 
 ## 1. Le snippet `Psychologue`
 
-Un **snippet** Wagtail est un modèle Django qu’on peut éditer depuis le back
-office sans qu’il s’agisse d’une page. Parfait pour des données réutilisables
-sur plusieurs pages : un annuaire de psys, une liste de lieux, des contacts…
+Un **snippet** Wagtail est un modèle Django éditable depuis le back office sans
+qu'il s'agisse d'une page. Parfait pour des données réutilisables sur
+plusieurs pages : un annuaire de psys, une liste de lieux, des contacts.
 
 Documentation Wagtail de référence :
 <https://docs.wagtail.org/en/stable/topics/snippets/index.html>.
+
+On stocke les coordonnées en `DecimalField` plutôt qu'en PointField (PostGIS),
+pour rester sur une stack Postgres ou SQLite standard. Pour les requêtes
+spatiales avancées (recherche par rayon, etc.), passez à `django.contrib.gis`.
 
 ```python
 # annuaire/models.py
@@ -51,14 +56,22 @@ class Psychologue(models.Model):
     ville = models.CharField(max_length=80)
     email = models.EmailField(blank=True)
     telephone = models.CharField(max_length=20, blank=True)
-    # Pour la géolocalisation, voir django.contrib.gis.db.models.PointField
-    # et l’admin Wagtail GIS si vous avez PostGIS.
+    latitude = models.DecimalField(
+        max_digits=9, decimal_places=6,
+        help_text="Latitude WGS84 (ex: 48.856614 pour Paris)",
+    )
+    longitude = models.DecimalField(
+        max_digits=9, decimal_places=6,
+        help_text="Longitude WGS84 (ex: 2.352222 pour Paris)",
+    )
 
     panels = [
         FieldPanel("nom"),
         FieldPanel("ville"),
         FieldPanel("email"),
         FieldPanel("telephone"),
+        FieldPanel("latitude"),
+        FieldPanel("longitude"),
     ]
 
     class Meta:
@@ -70,24 +83,21 @@ class Psychologue(models.Model):
         return f"{self.nom} ({self.ville})"
 ```
 
-Migrations habituelles :
+Migrations :
 
 ```bash
 python manage.py makemigrations annuaire
 python manage.py migrate
 ```
 
-Le snippet apparaît immédiatement dans l’admin Wagtail (menu **Snippets →
-Psychologues**). Vous pouvez créer quelques fiches pour la suite.
+Le snippet apparaît dans l'admin Wagtail sous **Snippets → Psychologues**.
 
-## 2. Un bloc StreamField qui liste les psys
+## 2. Un bloc StreamField qui affiche la carte
 
-Pour intégrer la liste de psychologues dans une page, on définit un bloc
-Wagtail. On veut que l’éditeur puisse simplement **déposer** le bloc dans la
-page — pas saisir les psys manuellement, ils viennent de la base.
-
-C’est exactement le rôle de `StaticBlock` : un bloc sans champs éditables qui
-rend un template à partir du contexte fourni par `get_context()`.
+Pour intégrer la carte dans une page, on crée un bloc Wagtail. Comme l'éditeur
+ne doit pas saisir manuellement les psys — ils viennent de la base — on
+utilise `StaticBlock` : un bloc sans champs éditables qui rend simplement un
+template à partir du contexte fourni par `get_context()`.
 
 ```python
 # annuaire/blocks.py
@@ -97,94 +107,165 @@ from .models import Psychologue
 
 
 class ListePsychologuesBlock(blocks.StaticBlock):
-    """Liste tous les psychologues, paginée par groupes de 20."""
+    """Affiche la liste des psychologues sur une carte interactive."""
 
     class Meta:
         icon = "group"
-        label = "Liste des psychologues"
+        label = "Liste des psychologues (carte)"
         template = "annuaire/blocks/liste_psychologues.html"
-        admin_text = "Affiche la liste complète des psychologues."
+        admin_text = "Affiche tous les psychologues sur une carte Carte Facile."
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-        context["psychologues"] = Psychologue.objects.all()
+        qs = Psychologue.objects.all()
+        context["psychologues"] = qs
+        # Sérialisation JSON-safe : les DecimalField deviennent des float
+        # pour le passage côté JavaScript.
+        context["psychologues_geojson"] = [
+            {
+                "nom": psy.nom,
+                "ville": psy.ville,
+                "lat": float(psy.latitude),
+                "lng": float(psy.longitude),
+            }
+            for psy in qs
+        ]
         return context
 ```
 
-Template DSFR minimal :
+## 3. Le template : carte interactive avec Carte Facile
+
+[Carte Facile](https://fab-geocommuns.github.io/carte-facile-site/) est une
+bibliothèque de styles cartographiques fournie par la Fabrique des Géocommuns
+(IGN). Elle s'appuie sur [`maplibre-gl`](https://maplibre.org/) pour le rendu.
+
+Pour un POC, le plus simple est de charger les deux via CDN (`unpkg.com`) avec
+un *import map* — pas de bundler nécessaire :
 
 ```html
 {# annuaire/templates/annuaire/blocks/liste_psychologues.html #}
-<section class="fr-container fr-py-6w">
-  <h2 class="fr-h3">Annuaire des psychologues</h2>
-  <ul class="fr-list">
-    {% for psy in psychologues %}
-      <li>
-        <strong>{{ psy.nom }}</strong> — {{ psy.ville }}
-        {% if psy.email %}<a href="mailto:{{ psy.email }}">{{ psy.email }}</a>{% endif %}
-      </li>
-    {% empty %}
-      <li>Aucun psychologue dans l’annuaire pour le moment.</li>
-    {% endfor %}
-  </ul>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css">
+<link rel="stylesheet" href="https://unpkg.com/carte-facile@0.9.0/dist/carte-facile.css">
+
+<section class="fr-container fr-py-6w" aria-labelledby="annuaire-titre">
+  <h2 id="annuaire-titre" class="fr-h3">Annuaire des psychologues</h2>
+
+  <div class="fr-grid-row fr-grid-row--gutters">
+    <div class="fr-col-12 fr-col-md-7">
+      <div id="annuaire-carte"
+           style="height: 480px; width: 100%;"
+           role="application"
+           aria-label="Carte interactive de l'annuaire"></div>
+    </div>
+    <div class="fr-col-12 fr-col-md-5">
+      <ul class="fr-list" style="max-height: 480px; overflow-y: auto;">
+        {% for psy in psychologues %}
+          <li>
+            <strong>{{ psy.nom }}</strong> &mdash; {{ psy.ville }}
+            {% if psy.email %}<br><a href="mailto:{{ psy.email }}">{{ psy.email }}</a>{% endif %}
+          </li>
+        {% empty %}
+          <li>Aucun psychologue dans l'annuaire pour le moment.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  {# `json_script` sérialise correctement avec l'échappement requis. #}
+  {{ psychologues_geojson|json_script:"annuaire-data" }}
+
+  <script type="importmap">
+    {
+      "imports": {
+        "maplibre-gl": "https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js",
+        "carte-facile": "https://unpkg.com/carte-facile@0.9.0/dist/carte-facile.esm.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import maplibregl from "maplibre-gl";
+    import { mapStyles } from "carte-facile";
+
+    const data = JSON.parse(document.getElementById("annuaire-data").textContent);
+
+    const map = new maplibregl.Map({
+      container: "annuaire-carte",
+      style: mapStyles.simple,
+      center: [2.5, 47.0],   // centre France
+      zoom: 5,
+    });
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
+
+    map.on("load", () => {
+      if (data.length === 0) return;
+      const bounds = new maplibregl.LngLatBounds();
+      for (const psy of data) {
+        const popup = new maplibregl.Popup({ offset: 18 }).setHTML(
+          `<strong>${psy.nom}</strong><br>${psy.ville}`
+        );
+        new maplibregl.Marker()
+          .setLngLat([psy.lng, psy.lat])
+          .setPopup(popup)
+          .addTo(map);
+        bounds.extend([psy.lng, psy.lat]);
+      }
+      map.fitBounds(bounds, { padding: 40, maxZoom: 10 });
+    });
+  </script>
 </section>
 ```
 
-## 3. Brancher le bloc sur les pages `sites-conformes`
+Carte Facile fournit aussi des styles `desaturated` et `aerial`, et un système
+de surcouches (`addOverlay(map, Overlay.administrativeBoundaries)`) — voir
+sa documentation pour les options.
 
-`sites-conformes` expose `CommonStreamBlock` — le groupe de blocs DSFR que les
-pages `ContentPage`, `BlogEntryPage`, etc. utilisent. Pour ajouter votre bloc
-**partout**, on en hérite :
+:::{note}
+En production, vous voudrez bundler `carte-facile` et `maplibre-gl` plutôt que
+de dépendre d'`unpkg.com`. Le pattern reste le même ; remplacez l'`importmap`
+par vos imports applicatifs habituels.
+:::
 
-```python
-# annuaire/blocks.py (suite)
-from sites_conformes.core.blocks import CommonStreamBlock
+## 4. Brancher le bloc sur une page
 
-
-class CustomBlockMixin(CommonStreamBlock):
-    """Tous les blocs DSFR + les blocs métier de l’annuaire."""
-
-    liste_psychologues = ListePsychologuesBlock()
-```
-
-Pour appliquer le mixin aux pages, soit vous étendez les pages
-`sites-conformes`, soit vous définissez vos propres pages :
+Le plus simple est de définir une `AnnuairePage` qui n'expose **que** notre
+bloc :
 
 ```python
 # annuaire/models.py (suite)
 from wagtail.fields import StreamField
 from wagtail.models import Page
 
-from .blocks import CustomBlockMixin
+
+def _annuaire_stream_blocks():
+    # Lazy-import pour éviter un cycle blocks ↔ models.
+    from .blocks import ListePsychologuesBlock
+    return [("liste_psychologues", ListePsychologuesBlock())]
 
 
 class AnnuairePage(Page):
-    body = StreamField(CustomBlockMixin(), use_json_field=True)
+    body = StreamField(_annuaire_stream_blocks, blank=True, use_json_field=True)
 
-    content_panels = Page.content_panels + [
-        FieldPanel("body"),
-    ]
+    content_panels = Page.content_panels + [FieldPanel("body")]
 ```
 
-Migration, puis dans l’admin vous pourrez ajouter une `AnnuairePage` et
-glisser-déposer le bloc *Liste des psychologues* parmi les blocs DSFR.
+Pour ajouter votre bloc **à toutes** les pages `sites-conformes`, héritez de
+`CommonStreamBlock` à la place — voir
+`sites_conformes.core.blocks.CommonStreamBlock` et le pattern utilisé par
+[quefairedemesobjets/webapp/qfdmd/blocks.py](https://github.com/fab-geocommuns/quefairedemesobjets).
 
-:::{note}
-Pour rester aligné avec `sites-conformes`, vous pouvez héberger votre bloc dans
-un `STREAMFIELD_COMMON_BLOCKS` étendu plutôt qu’une sous-classe. Voir
-`sites_conformes.core.blocks.STREAMFIELD_COMMON_BLOCKS` comme point de départ
-si vous préférez la composition à l’héritage.
-:::
+Migration, puis dans l'admin Wagtail vous pouvez créer une *Annuaire page* et
+sa carte se rend automatiquement à partir des `Psychologue` en base.
 
-## 4. Exposer les psychologues via l’API Wagtail
+## 5. Exposer les psychologues via l'API Wagtail
 
-Wagtail fournit nativement une API REST en `/api/v2/`. Voir la documentation
-officielle : <https://docs.wagtail.org/en/stable/advanced_topics/api/v2/configuration.html>.
+Wagtail fournit nativement une API REST en `/api/v2/`. Référence :
+<https://docs.wagtail.org/en/stable/advanced_topics/api/v2/configuration.html>.
 
-### 4.1 Activer l’endpoint snippets
+### 5.1 Endpoint snippets
 
 Wagtail expose les **pages** et les **images/documents** par défaut, mais
-**pas les snippets**. Pour les rendre accessibles, écrivez un endpoint :
+**pas les snippets**. On écrit un viewset :
 
 ```python
 # annuaire/api.py
@@ -197,58 +278,47 @@ from .models import Psychologue
 class PsychologueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Psychologue
-        fields = ["id", "nom", "ville", "email", "telephone"]
+        fields = ["id", "nom", "ville", "email", "telephone", "latitude", "longitude"]
 
 
 class PsychologuesAPIViewSet(BaseAPIViewSet):
     model = Psychologue
     base_serializer_class = PsychologueSerializer
     body_fields = BaseAPIViewSet.body_fields + [
-        "nom",
-        "ville",
-        "email",
-        "telephone",
+        "nom", "ville", "email", "telephone", "latitude", "longitude",
     ]
-    listing_default_fields = BaseAPIViewSet.listing_default_fields + [
-        "nom",
-        "ville",
-    ]
+    listing_default_fields = BaseAPIViewSet.listing_default_fields + ["nom", "ville"]
 ```
 
-Enregistrez-le sur le router :
+### 5.2 Enregistrement sur le routeur
+
+`sites-conformes` instancie déjà le routeur Wagtail dans
+`sites_conformes.config.api.api_router`. On ajoute notre endpoint depuis
+`AppConfig.ready()` :
 
 ```python
-# config/api.py  (ou config/urls.py)
-from wagtail.api.v2.router import WagtailAPIRouter
-from wagtail.api.v2.views import PagesAPIViewSet
-from wagtail.images.api.v2.views import ImagesAPIViewSet
-from wagtail.documents.api.v2.views import DocumentsAPIViewSet
+# annuaire/apps.py
+from django.apps import AppConfig
 
-from annuaire.api import PsychologuesAPIViewSet
 
-api_router = WagtailAPIRouter("wagtailapi")
-api_router.register_endpoint("pages", PagesAPIViewSet)
-api_router.register_endpoint("images", ImagesAPIViewSet)
-api_router.register_endpoint("documents", DocumentsAPIViewSet)
-api_router.register_endpoint("psychologues", PsychologuesAPIViewSet)
+class AnnuaireConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "annuaire"
+    verbose_name = "Annuaire"
+
+    def ready(self):
+        from sites_conformes.config.api import api_router
+        from .api import PsychologuesAPIViewSet
+        api_router.register_endpoint("psychologues", PsychologuesAPIViewSet)
 ```
 
-Et branchez le router dans `config/urls.py` :
+Cette approche évite de modifier les `urls.py` du projet : le routeur reste
+celui de `sites-conformes`, on l'enrichit depuis notre app.
 
-```python
-from django.urls import path
-from config.api import api_router
-
-urlpatterns = [
-    path("api/v2/", api_router.urls),
-    # …
-]
-```
-
-### 4.2 Exemples d’appels
+### 5.3 Exemples d'appels
 
 ```bash
-# Tous les psychologues, format JSON
+# Liste de tous les psychologues, format JSON
 curl https://votre-site.fr/api/v2/psychologues/
 
 # Un seul, par id
@@ -261,17 +331,21 @@ curl "https://votre-site.fr/api/v2/psychologues/?ville=Lyon"
 curl "https://votre-site.fr/api/v2/psychologues/?limit=20&offset=40"
 ```
 
-Les pages qui contiennent le bloc *Liste des psychologues* sont également
-disponibles via `/api/v2/pages/`. Le rendu du `StreamField` `body` y apparaît
-en JSON.
+Les pages contenant le bloc *Liste des psychologues* sont également
+disponibles via `/api/v2/pages/`, et le `StreamField` `body` apparaît
+sérialisé en JSON.
 
 ## Pour aller plus loin
 
-- **Carte interactive** : ajoutez un `PointField` à `Psychologue` (PostGIS
-  requis) puis un template qui injecte les coordonnées dans une carte Leaflet
-  ou IGN.
-- **Recherche** : Wagtail expose un système de recherche full-text intégrable
-  au snippet. Voir <https://docs.wagtail.org/en/stable/topics/search/index.html>.
-- **Pagination côté template** : utilisez `django.core.paginator.Paginator`
-  dans `get_context()` du `StaticBlock`, et lisez `request.GET["page"]` via
-  `parent_context["request"]`.
+- **Carte avec recherche / rayon** : passez à `django.contrib.gis` (PostGIS
+  requis) avec un `PointField`. Les filtres `__distance_lte` deviennent alors
+  disponibles, et vous pouvez exposer un endpoint `?lat=...&lng=...&radius=...`.
+- **Surcouches Carte Facile** : `addOverlay(map, Overlay.administrativeBoundaries)`
+  pour superposer les limites administratives, le cadastre, etc.
+- **Géocodage** : la
+  [base d'adresses nationale](https://adresse.data.gouv.fr/api-doc/adresse)
+  fournit un endpoint `/search/?q=...` pour convertir une adresse en
+  coordonnées (utile pour pré-remplir le snippet à la saisie).
+- **Recherche full-text** : Wagtail expose son moteur de recherche aux
+  snippets via `index.SearchField`. Voir
+  <https://docs.wagtail.org/en/stable/topics/search/index.html>.
