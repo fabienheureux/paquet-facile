@@ -30,6 +30,22 @@ guide/configuration
 changelog
 ```
 
+```{toctree}
+---
+maxdepth: 2
+caption: Guides
+---
+guide/db-storage
+```
+
+```{toctree}
+---
+maxdepth: 2
+caption: Contribuer
+---
+contrib/git-blame-ignore-revs
+```
+
 ## Démarrage rapide
 
 ```bash

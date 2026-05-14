@@ -74,7 +74,10 @@ sites_conformes = [
 [tool.black]
 line-length = 119
 
-extend-exclude = '''
+# force-exclude (not extend-exclude) is required so that black skips migration
+# files even when pre-commit passes them explicitly on the command line.
+# `extend-exclude` only applies to recursive directory walks.
+force-exclude = '''
 /(
   | migrations
 )/
@@ -137,6 +140,11 @@ exclude = [
     "venv",
     "migrations",
 ]
+
+# force-exclude makes ruff honor the exclude list even when paths are passed
+# explicitly (which is what pre-commit does). Without this, ruff lints
+# migration files regardless of the exclude rule above.
+force-exclude = true
 
 line-length = 119
 

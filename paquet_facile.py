@@ -482,6 +482,48 @@ def _apply_transformations(config_path: Path, dry_run: bool, jobs: int | None) -
 # -- Sync Command -------------------------------------------------------------
 
 
+# Map upstream doc files (under sites_conformes/sites_conformes/docs/) to the
+# sphinx sidebar location they should land in. Entries not listed are skipped
+# with a warning so a new upstream doc surfaces in the next sync log instead
+# of disappearing into a default catch-all.
+PACKAGE_DOCS_TO_SIDEBAR = {
+    "db-storage.md": "guide/db-storage.md",
+    "git-blame-ignore-revs.md": "contrib/git-blame-ignore-revs.md",
+}
+
+
+def _sync_package_docs(package_dir: Path, repo_docs_root: Path, dry_run: bool) -> None:
+    """Copy upstream package docs into the repo's sphinx tree.
+
+    sites_conformes/sites_conformes/docs/<name>.md → docs/<sidebar-path>/<name>.md
+    based on PACKAGE_DOCS_TO_SIDEBAR. Files not listed are logged so we notice
+    if upstream adds new docs that need a sidebar slot.
+    """
+    src_dir = package_dir / "docs"
+    if not src_dir.exists():
+        logging.debug("⏭️  No upstream docs dir to sync: %s", src_dir)
+        return
+
+    for src in sorted(src_dir.glob("*.md")):
+        rel_target = PACKAGE_DOCS_TO_SIDEBAR.get(src.name)
+        if rel_target is None:
+            logging.warning(
+                "⚠️  Upstream doc %s has no sidebar mapping in PACKAGE_DOCS_TO_SIDEBAR; skipping",
+                src.name,
+            )
+            continue
+        dst = repo_docs_root / rel_target
+        if dry_run:
+            logging.info("[DRY-RUN] Would sync %s → %s", src, dst)
+            continue
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            shutil.copy2(src, dst)
+            logging.info("📄 Synced %s → %s", src, dst.relative_to(repo_docs_root.parent))
+        except Exception as exc:
+            logging.error("❌ Failed to sync %s → %s: %s", src, dst, exc)
+
+
 def _cleanup_package_dir(package_dir: Path) -> None:
     """Remove unwanted directories and build files from the package."""
     unwanted = [
@@ -808,6 +850,11 @@ def run_sync(
 
     # Process all templates to create package files
     _process_templates(package_dir, package_root, package_name, tag, config)
+
+    # Sync upstream package docs into the repo's sphinx tree (must run before
+    # _cleanup_package_dir, which doesn't currently delete docs/ but might in
+    # the future, and before _create_release_branch which builds from package_dir).
+    _sync_package_docs(package_dir, Path("docs"), dry_run)
 
     # Cleanup unwanted files and directories before committing
     _cleanup_package_dir(package_dir)

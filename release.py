@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import re
 import shutil
 import subprocess
@@ -361,6 +362,32 @@ def phase_two_folder(
     commit_all(temp_dir, f"Move namespaced sources into {PACKAGE_DIR_NAME}/ for {tag}")
 
 
+def _run_precommit(temp_dir: Path, *, check: bool) -> int:
+    """Invoke `pre-commit run --all-files` non-interactively, streaming output.
+
+    Stdout/stderr go to the terminal directly (not captured) so progress is
+    visible and we don't accumulate large diffs in memory. Stdin is wired to
+    /dev/null so no hook can stall on a prompt. Returns the exit code.
+    """
+    cmd = [
+        "uv", "run", "--with", "pre-commit",
+        "pre-commit", "run", "--all-files",
+        "--show-diff-on-failure",  # noop when only auto-fixers run
+        "--color", "never",
+    ]
+    logging.debug("$ %s (cwd=%s)", " ".join(cmd), temp_dir)
+    with open(os.devnull, "rb") as devnull:
+        result = subprocess.run(
+            cmd,
+            cwd=temp_dir,
+            check=check,
+            stdin=devnull,
+            # stdout/stderr inherited — no PIPE, so output streams live and
+            # large diffs don't balloon the parent's memory.
+        )
+    return result.returncode
+
+
 def phase_three_precommit(temp_dir: Path, tag: str) -> None:
     """Run pre-commit hooks (ruff/black/uv-lock) and commit any auto-fixes.
 
@@ -385,14 +412,10 @@ def phase_three_precommit(temp_dir: Path, tag: str) -> None:
         return
 
     logging.info("🎨 Running pre-commit (first pass — may auto-fix)")
-    subprocess.run(
-        ["uv", "run", "--with", "pre-commit", "pre-commit", "run", "--all-files"],
-        cwd=temp_dir,
-        check=False,
-    )
+    _run_precommit(temp_dir, check=False)
 
     logging.info("🎨 Running pre-commit (verification pass)")
-    run(["uv", "run", "--with", "pre-commit", "pre-commit", "run", "--all-files"], cwd=temp_dir)
+    _run_precommit(temp_dir, check=True)
 
     commit_all(temp_dir, f"Apply pre-commit auto-fixes for {tag}")
 
