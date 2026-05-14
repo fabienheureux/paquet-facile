@@ -365,11 +365,40 @@ def phase_one_files(
     copy_file(source_docs_yml, temp_dir / ".github" / "workflows" / "docs.yml")
 
     copy_git_tracked_dir(repo_root, "demo", temp_dir)
+    _patch_demo_pyproject_source(temp_dir)
 
     _patch_scalingo_postdeploy(temp_dir)
 
     commit_all(temp_dir, f"Namespaced release for {tag} (files)")
     return package_entries
+
+
+def _patch_demo_pyproject_source(temp_dir: Path) -> None:
+    """Rewrite demo/pyproject.toml's editable path for the release-branch layout.
+
+    In this repo, the demo lives next to sites_conformes/ (the package source
+    with its own pyproject.toml), so `path = "../sites_conformes"` resolves.
+    On the release branch the package's pyproject.toml lives at the branch
+    ROOT — `sites_conformes/` underneath is just the package directory with no
+    build metadata. So the editable source must point at "../".
+    """
+    pyproject = temp_dir / "demo" / "pyproject.toml"
+    if not pyproject.exists():
+        logging.warning("⏭️  No demo/pyproject.toml at %s — skipping patch", pyproject)
+        return
+
+    text = pyproject.read_text(encoding="utf-8")
+    needle = 'sites-conformes = { path = "../sites_conformes", editable = true }'
+    replacement = 'sites-conformes = { path = "../", editable = true }'
+
+    if needle not in text:
+        logging.warning(
+            "⏭️  demo/pyproject.toml editable source not in expected form — skipping patch",
+        )
+        return
+
+    pyproject.write_text(text.replace(needle, replacement, 1), encoding="utf-8")
+    logging.info("📝 Patched demo/pyproject.toml editable path → ../")
 
 
 def _patch_scalingo_postdeploy(temp_dir: Path) -> None:

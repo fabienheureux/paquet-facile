@@ -7,10 +7,8 @@ class AnnuaireConfig(AppConfig):
     verbose_name = "Annuaire"
 
     def ready(self):
-        # Enregistre le endpoint REST une fois l'app prête. Le router Wagtail
-        # est déjà instancié par sites_conformes.config.api, on ajoute juste
-        # notre endpoint dessus.
-        from sites_conformes.config.api import api_router
+        # Le router Wagtail est instancié par le projet (demo.api).
+        from demo.api import api_router
 
         from .api import PsychologuesAPIViewSet
 

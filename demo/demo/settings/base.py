@@ -199,8 +199,8 @@ WAGTAILDOCS_EXTENSIONS = [
 TEMPLATES[0]["OPTIONS"]["context_processors"].extend(
     [
         "wagtailmenus.context_processors.wagtailmenus",
-        "sites_conformes.content_manager.context_processors.skiplinks",
-        "sites_conformes.content_manager.context_processors.mega_menus",
+        "sites_conformes.core.context_processors.skiplinks",
+        "sites_conformes.core.context_processors.mega_menus",
     ]
 )
 
@@ -209,7 +209,7 @@ INSTALLED_APPS.extend(
         "dsfr",
         "sites_conformes",
         "sites_conformes.blog",
-        "sites_conformes.content_manager",
+        "sites_conformes.core",
         "sites_conformes.events",
         "wagtail.contrib.settings",
         "wagtail.contrib.typed_table_block",

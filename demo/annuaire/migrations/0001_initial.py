@@ -1,4 +1,4 @@
-import annuaire.models
+import annuaire.blocks
 import wagtail.fields
 from django.db import migrations, models
 
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
                 (
                     "body",
                     wagtail.fields.StreamField(
-                        annuaire.models._annuaire_stream_blocks,
+                        [("liste_psychologues", annuaire.blocks.ListePsychologuesBlock())],
                         blank=True,
                         use_json_field=True,
                     ),

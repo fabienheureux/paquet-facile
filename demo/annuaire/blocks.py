@@ -1,7 +1,5 @@
 from wagtail import blocks
 
-from .models import Psychologue
-
 
 class ListePsychologuesBlock(blocks.StaticBlock):
     """Affiche la liste des psychologues sur une carte interactive.
@@ -18,6 +16,8 @@ class ListePsychologuesBlock(blocks.StaticBlock):
         admin_text = "Affiche tous les psychologues sur une carte Carte Facile."
 
     def get_context(self, value, parent_context=None):
+        from .models import Psychologue
+
         context = super().get_context(value, parent_context=parent_context)
         qs = Psychologue.objects.all()
         context["psychologues"] = qs
