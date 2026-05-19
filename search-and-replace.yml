@@ -318,6 +318,16 @@ rules:
     scope: tests
     literal: true
 
+  # ---------- Wagtail snippet URL names ----------
+  # Wagtail generates admin URL names as `wagtailsnippets_<app_label>_<model>`
+  # (e.g. `wagtailsnippets_menus_mainmenu`). After namespacing, the Django app
+  # label becomes `{package_name}_<app>`, so the URL name must follow:
+  # `wagtailsnippets_{package_name}_<app>_<model>`. Used in `reverse()` calls
+  # like `reverse("wagtailsnippets_menus_mainmenu:list")`.
+  - search: "wagtailsnippets_{app}_"
+    replace: "wagtailsnippets_{package_name}_{app}_"
+    scope: all
+
   # ---------- Bare BASE_DIR / "content_manager/..." paths ----------
   # services/import_export.py has `settings.BASE_DIR / "content_manager/page_templates"`.
   # After app rename + packagification this lives at sites_conformes/core/page_templates/.
