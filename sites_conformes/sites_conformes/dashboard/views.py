@@ -18,7 +18,7 @@ class ShortcutsPanel(Component):
         home_page_edit = reverse("wagtailadmin_pages:edit", args=(quote(home_page.pk),))
         pages_list = reverse("wagtailadmin_explore", args=(quote(home_page.pk),))
         create_page_url = reverse("wagtailadmin_pages:add_subpage", args=(home_page.pk,))
-        settings_url = reverse("wagtailsettings:edit", args=["content_manager", "cmsdsfrconfig", site.pk])
+        settings_url = reverse("wagtailsettings:edit", args=["sites_conformes_core", "cmsdsfrconfig", site.pk])
         main_menus_url = reverse("wagtailsnippets_sites_conformes_menus_mainmenu:list")
 
         return {

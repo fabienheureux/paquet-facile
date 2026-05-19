@@ -368,6 +368,7 @@ def phase_one_files(
     _patch_demo_pyproject_source(temp_dir)
 
     _patch_scalingo_postdeploy(temp_dir)
+    _patch_justfile_cloc(temp_dir)
 
     commit_all(temp_dir, f"Namespaced release for {tag} (files)")
     return package_entries
@@ -437,6 +438,42 @@ def _patch_scalingo_postdeploy(temp_dir: Path) -> None:
 
     justfile.write_text(text.replace(needle, replacement, 1), encoding="utf-8")
     logging.info("📝 Patched scalingo-postdeploy in %s", justfile)
+
+
+def _patch_justfile_cloc(temp_dir: Path) -> None:
+    """Rewrite the `cloc` recipe's app-dir list to the namespaced layout.
+
+    Upstream's recipe loops over bare app dirs (`"blog"`, `"content_manager"`,
+    `"dashboard"`, `"events"`, `"forms"`, `"proconnect"`, `"templates"`,
+    plus `"config"`) at repo root. After packagification all but `config` live
+    under `sites_conformes/`, and `content_manager` was renamed to `core`.
+    """
+    justfile = temp_dir / "justfile"
+    if not justfile.exists():
+        logging.warning("⏭️  No justfile at %s — skipping cloc patch", justfile)
+        return
+
+    text = justfile.read_text(encoding="utf-8")
+    needle = (
+        '    @for d in "config" "blog" "content_manager" "dashboard" '
+        '"events" "forms" "proconnect" "templates" ; do \\\n'
+    )
+    replacement = (
+        '    @for d in "config" "sites_conformes/blog" "sites_conformes/core" '
+        '"sites_conformes/dashboard" "sites_conformes/events" '
+        '"sites_conformes/forms" "sites_conformes/proconnect" '
+        '"sites_conformes/templates" ; do \\\n'
+    )
+
+    if needle not in text:
+        logging.warning(
+            "⏭️  cloc recipe shape not recognized in %s — skipping patch",
+            justfile,
+        )
+        return
+
+    justfile.write_text(text.replace(needle, replacement, 1), encoding="utf-8")
+    logging.info("📝 Patched cloc recipe in %s", justfile)
 
 
 def phase_two_folder(

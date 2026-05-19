@@ -328,6 +328,29 @@ rules:
     replace: "wagtailsnippets_{package_name}_{app}_"
     scope: all
 
+  # ---------- wagtailsettings:edit app_label arg ----------
+  # `reverse("wagtailsettings:edit", args=["content_manager", "cmsdsfrconfig", site.pk])`
+  # — the first positional arg is the Django app_label, which becomes
+  # `{package_name}_core` after the content_manager rename. Without this rule
+  # the admin home's "Configure my site" link 404s. Only one upstream call
+  # site (dashboard/views.py), so a literal rule is sufficient.
+  - search: 'args=["content_manager",'
+    replace: 'args=["{package_name}_core",'
+    scope: all
+    literal: true
+
+  # ---------- shell.py auto_imports: bare quoted dotted import paths ----------
+  # `core/management/commands/shell.py` registers Django shell auto-imports as
+  # quoted dotted strings (e.g. `"content_manager.services.accessors.X"`,
+  # `"menus.models.MainMenu"`). These are import paths, not model refs, so the
+  # namespace separator must be `.` (not `_` like the model-ref special cases
+  # above). Targeted to this file only — bare `"app."` strings elsewhere may
+  # be Django model refs (`"blog.Person"` etc.) which need underscore form
+  # and are handled by their own special-case literals.
+  - search: '"{app}\.'
+    replace: '"{package_name}.{app}.'
+    path_glob: "**/management/commands/shell.py"
+
   # ---------- Bare BASE_DIR / "content_manager/..." paths ----------
   # services/import_export.py has `settings.BASE_DIR / "content_manager/page_templates"`.
   # After app rename + packagification this lives at sites_conformes/core/page_templates/.
