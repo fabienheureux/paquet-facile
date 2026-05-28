@@ -40,9 +40,9 @@ Voir [`docs/git-blame-ignore-revs.md`](./docs/git-blame-ignore-revs.md) pour plu
 [![Made with Django](https://img.shields.io/badge/Made%20with-Django-0C4B33.svg)](https://www.djangoproject.com/)
 [![Made with Wagtail](https://img.shields.io/badge/Made%20with-Wagtail-0F7676.svg)](https://wagtail.io/)
 
-Sites Conformes est développé en utilisant le framework [Django](https://www.djangoproject.com/) et le CMS [Wagtail](https://wagtail.org/). Il est centré autour d'une application principale nommée **content_manager**, accompagnée d’applications annexes pour divers types de pages :
+Sites Conformes est développé en utilisant le framework [Django](https://www.djangoproject.com/) et le CMS [Wagtail](https://wagtail.org/). Il est centré autour d'une application principale nommée **sites_conformes.core**, accompagnée d’applications annexes pour divers types de pages :
 
-- **content_manager** : l’application principale, contient les contenus communs, les pages standard (pages de contenu), les pages d’index de catalogue et la gestion des configurations
+- **sites_conformes.core** : l’application principale, contient les contenus communs, les pages standard (pages de contenu), les pages d’index de catalogue et la gestion des configurations
 - **blog** : Permet de gérer des articles de blog et des index de blog, et les flux RSS correspondants.
 - **dashboard** : Contient les personnalisations des panneaux d’administration de Wagtail (dans `templates/wagtailadmin` et `wagtail_hooks.py`)
 - **[django-dsfr](https://github.com/numerique-gouv/django-dsfr)** : Permet d’utiliser facilement le [système de design de l’État](https://www.systeme-de-design.gouv.fr/) dans des templates Django.

@@ -25,9 +25,9 @@ just coverage
 Pour toutes ces commandes, il est possible via `just` de cibler une application Django spécifique, par exemple :
 
 ```sh
-just test content_manager
-just unittest blog
-just coverage events
+just test sites_conformes.core
+just unittest sites_conformes.blog
+just coverage sites_conformes.events
 ```
 
 ## Définition du fini
@@ -119,6 +119,24 @@ uv run  python manage.py compilemessages
 Il est recommandé d’utiliser [https://poedit.net/](Poedit) pour les traductions, afin de profiter de sa mémoire de traduction
 basée sur celles déjà existantes. Il produit directement le fichier `.mo` à la sauvegarde, il n’est donc pas nécessaire de le
 compiler manuellement.
+
+## Outils d’audit optionnels
+
+### cloc
+
+La recette `just cloc` compte les lignes de code par application. Elle nécessite l’outil [`cloc`](https://github.com/AlDanial/cloc).
+
+Installation sur macOS :
+
+```sh
+brew install cloc
+```
+
+Sur Debian/Ubuntu :
+
+```sh
+sudo apt install cloc
+```
 
 ## Linter de code / Code Style
 
