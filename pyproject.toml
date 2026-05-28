@@ -1,6 +1,9 @@
 [project]
 name = "sites-conformes"
-version = "2.5.3"
+# This is the packagified-release version, decoupled from upstream's tag.
+# Upstream `v3.2.0` is the source we fork from; we publish as `4.0.0` because
+# the packaging changes are large enough to warrant a major bump for consumers.
+version = "4.0.0rc1"
 description = "Gestionnaire de contenu permettant de créer et gérer un site internet basé sur le Système de design de l’État, accessible et responsive"
 authors = [
     { name = "Sites Conformes dev team", email = "contact@sites.beta.gouv.fr" }
@@ -9,10 +12,10 @@ maintainers = [
     { name = "Sites Conformes dev team", email = "contact@sites.beta.gouv.fr" }
 ]
 readme = "README.md"
-requires-python = "<4.0,>=3.11"
+requires-python = "<4.0,>=3.12"
 dependencies = [
     "django-dsfr>=2.4.0",
-    "django>=5.2.8",
+    "django>=6.0",
     "wagtail>=7.2.0",
     "psycopg2-binary>=2.9.10",
     "python-dotenv>=1.1.0",
@@ -51,10 +54,34 @@ dev = [
     "tblib>=3.1.0",
 ]
 
+# Packaging-only — upstream sites-conformes is a Django project and ships
+# no [build-system]. We package it as `sites-conformes` for PyPI.
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sites_conformes*"]
+
+[tool.setuptools.package-data]
+sites_conformes = [
+    "templates/**/*",
+    "static/**/*",
+    "*/templates/**/*",
+    "*/static/**/*",
+    "*/page_templates/**/*",
+    "*/locale/*/LC_MESSAGES/*.po",
+    "*/locale/*/LC_MESSAGES/*.mo",
+]
+
 [tool.black]
 line-length = 119
 
-extend-exclude = '''
+# force-exclude (not extend-exclude) is required so that black skips migration
+# files even when pre-commit passes them explicitly on the command line.
+# `extend-exclude` only applies to recursive directory walks.
+force-exclude = '''
 /(
   | migrations
 )/
@@ -117,6 +144,11 @@ exclude = [
     "venv",
     "migrations",
 ]
+
+# force-exclude makes ruff honor the exclude list even when paths are passed
+# explicitly (which is what pre-commit does). Without this, ruff lints
+# migration files regardless of the exclude rule above.
+force-exclude = true
 
 line-length = 119
 

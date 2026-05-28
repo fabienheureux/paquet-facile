@@ -37,8 +37,8 @@ deploy:
     {{docker_cmd}} {{uv_run}} python manage.py import_illustration_images
     just index
 
-# Pass a django command
-django +command:
+# Pass a django command (or list available django commands)
+django +command="":
     {{docker_cmd}} {{uv_run}} python manage.py {{command}}
 
 import_domain_whitelist:
@@ -60,8 +60,8 @@ alias messages := makemessages
 # Update the translation files
 [group('Internationalization')]
 makemessages:
-    {{docker_cmd}} {{uv_run}} django-admin makemessages -l fr --ignore=manage.py --ignore=config --ignore=medias --ignore=__init__.py --ignore=setup.py --ignore=staticfiles
-    {{docker_cmd}} {{uv_run}} django-admin makemessages -d djangojs -l fr --ignore=config --ignore=medias --ignore=staticfiles
+    {{docker_cmd}} {{uv_run}} django-admin makemessages -l fr --ignore=manage.py --ignore=config --ignore=medias --ignore=__init__.py --ignore=setup.py --ignore=staticfiles  --no-location
+    {{docker_cmd}} {{uv_run}} django-admin makemessages -d djangojs -l fr --ignore=config --ignore=medias --ignore=staticfiles --no-location
 
 alias mm:= makemigrations
 makemigrations app="":
@@ -113,6 +113,7 @@ web-prompt:
 # Commands run by the Scalingo Procfile
 [group('Production')]
 scalingo-postdeploy:
+    python manage.py migrate_from_sites_faciles --no-input
     python manage.py migrate
     python manage.py create_starter_pages
     python manage.py import_page_templates
@@ -125,10 +126,10 @@ scalingo-postdeploy:
 quality:
     {{docker_cmd}} {{uv_run}} pre-commit run --all-files
 
-# Count lines of code per app
+# Count lines of code per app. Requires cloc (see CONTRIBUTING.md).
 [group('Code audit')]
 cloc:
-    @for d in "config" "blog" "content_manager" "dashboard" "events" "forms" "proconnect" "templates" ; do \
+    @for d in "config" sites_conformes/{blog,core,dashboard,events,forms,proconnect,templates} ; do \
     (cd "$d" && echo "$d" && cloc --vcs git); \
     done
 
@@ -164,7 +165,7 @@ clear-local-db:
 # Creates a bunch of example pages
 [group('Dev DB and medias management')]
 demo:
-    just init
+    just init-dev
     {{docker_cmd}} {{uv_run}} python manage.py create_demo_pages
 
 # Descend the latest DB backup & media files of the production database

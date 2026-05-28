@@ -2,4 +2,5 @@
 .github
 .mypy_cache
 .venv
+demo
 staticfiles

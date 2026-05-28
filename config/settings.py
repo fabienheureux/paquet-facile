@@ -58,6 +58,12 @@ FORCE_SCRIPT_NAME = os.getenv("FORCE_SCRIPT_NAME", "").rstrip("/")
 # Allow enabling WhiteNoise via an environment variable (disabled by default)
 SF_USE_WHITENOISE = getenv_bool("SF_USE_WHITENOISE", False)
 
+# Allow storing media files in PostgreSQL instead of the filesystem (disabled by default)
+# Useful for PaaS deployments with ephemeral filesystems (Scalingo, Heroku, etc.)
+# /!\ Not recommended beyond 1 GB of media — prefer S3 for larger volumes.
+# Selection order: S3_HOST wins if set, then SF_USE_DB_STORAGE, then filesystem (default)
+SF_USE_DB_STORAGE = getenv_bool("SF_USE_DB_STORAGE", False)
+
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
@@ -81,7 +87,7 @@ INSTALLED_APPS = [
     "wagtail.snippets",
     "wagtail",
     "wagtailmarkdown",
-    "wagtailmenus",
+    "wagtailmenus",  # Obsolete, to be removed in a future version (replaced by "sites_conformes.menus")
     "wagtail_localize",
     "wagtail_localize.locales",
     "taggit",
@@ -90,21 +96,25 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.humanize",
+    "django.contrib.messages",
     "django.contrib.postgres",
     "django.contrib.sessions",
-    "django.contrib.messages",
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
     "widget_tweaks",
     "dsfr",
-    "content_manager",
-    "blog",
-    "events",
-    "forms",
+    "sites_conformes.core",
+    "sites_conformes.blog",
+    "sites_conformes.events",
+    "sites_conformes.forms",
+    "sites_conformes.menus",
     "wagtail_honeypot",
-    "dashboard",
+    "sites_conformes.dashboard",
     "wagtail.admin",
 ]
+
+if SF_USE_DB_STORAGE:
+    INSTALLED_APPS.insert(-1, "sites_conformes.db_storage")
 
 if SF_USE_WHITENOISE:
     INSTALLED_APPS.insert(0, "whitenoise.runserver_nostatic")
@@ -164,7 +174,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "dsfr/templates"),
-            os.path.join(BASE_DIR, "templates"),
+            os.path.join(BASE_DIR, "sites_conformes/templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -175,8 +185,8 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
                 "wagtailmenus.context_processors.wagtailmenus",
-                "content_manager.context_processors.skiplinks",
-                "content_manager.context_processors.mega_menus",
+                "sites_conformes.core.context_processors.skiplinks",
+                "sites_conformes.core.context_processors.mega_menus",
             ],
         },
     },
@@ -239,7 +249,7 @@ WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ("fr", "Français"),
 ]
 
-LOCALE_PATHS = ["locale"]
+LOCALE_PATHS = [os.path.join(BASE_DIR, "sites_conformes/locale")]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -271,22 +281,47 @@ STATICFILES_FINDERS = [
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
 
 if os.getenv("S3_HOST"):
-    endpoint_url = f"{os.getenv('S3_PROTOCOL', 'https')}://{os.getenv('S3_HOST')}"
+    protocol = os.getenv("S3_PROTOCOL", "https")
+    endpoint_url = f"{protocol}://{os.getenv('S3_HOST')}"
+    bucket_name = os.getenv("S3_BUCKET_NAME", "set-bucket-name")
+    public_host = os.getenv("S3_PUBLIC_HOST", "")
+
+    options = {
+        "bucket_name": bucket_name,
+        "access_key": os.getenv("S3_KEY_ID", "123"),
+        "secret_key": os.getenv("S3_KEY_SECRET", "secret"),
+        "endpoint_url": endpoint_url,
+        "region_name": os.getenv("S3_BUCKET_REGION", "fr"),
+        "file_overwrite": False,
+        "location": os.getenv("S3_LOCATION", ""),
+    }
+
+    if public_host:
+        # Presigned URLs bind the signature to the endpoint hostname, so when the
+        # internal endpoint differs from the public one, signing must be disabled.
+        # The bucket is appended to custom_domain to produce path-style URLs for MinIO.
+        options["custom_domain"] = f"{public_host}/{bucket_name}"
+        options["url_protocol"] = f"{protocol}:"
+        options["querystring_auth"] = False
+        public_endpoint = f"{protocol}://{public_host}"
+    else:
+        public_endpoint = endpoint_url
 
     STORAGES["default"] = {
         "BACKEND": "storages.backends.s3.S3Storage",
-        "OPTIONS": {
-            "bucket_name": os.getenv("S3_BUCKET_NAME", "set-bucket-name"),
-            "access_key": os.getenv("S3_KEY_ID", "123"),
-            "secret_key": os.getenv("S3_KEY_SECRET", "secret"),
-            "endpoint_url": endpoint_url,
-            "region_name": os.getenv("S3_BUCKET_REGION", "fr"),
-            "file_overwrite": False,
-            "location": os.getenv("S3_LOCATION", ""),
-        },
+        "OPTIONS": options,
     }
 
-    MEDIA_URL = f"{endpoint_url}/"
+    MEDIA_URL = f"{public_endpoint}/"
+elif SF_USE_DB_STORAGE:
+    STORAGES["default"] = {
+        "BACKEND": "sites_conformes.db_storage.storage.DatabaseStorage",
+    }
+    MEDIA_URL = os.getenv("MEDIA_URL", "db-storage/")
+    MEDIA_ROOT = os.path.join(BASE_DIR, os.getenv("MEDIA_ROOT", ""))
+
+    if FORCE_SCRIPT_NAME and not MEDIA_URL.startswith(FORCE_SCRIPT_NAME):
+        MEDIA_URL = f"{FORCE_SCRIPT_NAME}/{MEDIA_URL}"
 else:
     STORAGES["default"] = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -315,7 +350,7 @@ if SF_PROD_SERVE_STATIC:
 
     WHITENOISE_STATIC_PREFIX = STATIC_URL
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "sites_conformes/static"),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -347,7 +382,7 @@ LOGOUT_URL = f"{FORCE_SCRIPT_NAME}/{WAGTAILADMIN_PATH}logout/"
 
 WAGTAIL_FRONTEND_LOGIN_URL = LOGIN_URL
 
-WAGTAIL_PASSWORD_REQUIRED_TEMPLATE = "content_manager/password_required.html"
+WAGTAIL_PASSWORD_REQUIRED_TEMPLATE = "sites_conformes_core/password_required.html"
 
 # Disable Gravatar service
 WAGTAIL_GRAVATAR_PROVIDER_URL = None
@@ -369,6 +404,8 @@ WAGTAIL_RICHTEXT_FIELD_FEATURES = [
 
 WAGTAILEMBEDS_RESPONSIVE_HTML = True
 WAGTAIL_MODERATION_ENABLED = False
+
+# Wagtailmenus: Obsolete, to be removed in a future version (replaced by "sites_conformes.menus")
 WAGTAILMENUS_FLAT_MENUS_HANDLE_CHOICES = (
     ("header_tools", "Menu en haut à droite"),
     ("footer", "Menu en pied de page"),
@@ -389,6 +426,10 @@ WAGTAILMENUS_FLAT_MENUS_HANDLE_CHOICES = (
     ("mega_menu_section_15", "Catégorie de méga-menu 15"),
     ("mega_menu_section_16", "Catégorie de méga-menu 16"),
 )
+WAGTAILMENUS_FLAT_MENUS_EDITABLE_IN_WAGTAILADMIN = False
+WAGTAILMENUS_MAIN_MENUS_EDITABLE_IN_WAGTAILADMIN = False
+
+WAGTAILDOCS_MAX_UPLOAD_SIZE = int(os.getenv("WAGTAILDOCS_MAX_UPLOAD_SIZE", 10 * 1024 * 1024))  # 10MB
 
 WAGTAILIMAGES_EXTENSIONS = ["gif", "jpg", "jpeg", "png", "webp", "svg"]
 SF_SCHEME_DEPENDENT_SVGS = True if os.getenv("SF_SCHEME_DEPENDENT_SVGS", False) in ["1", "True"] else False
@@ -441,12 +482,12 @@ LOGOUT_REDIRECT_URL = f"{FORCE_SCRIPT_NAME}/"
 if PROCONNECT_ACTIVATED:
     INSTALLED_APPS += [
         "mozilla_django_oidc",
-        "proconnect",
+        "sites_conformes.proconnect",
     ]
 
     AUTHENTICATION_BACKENDS = [
         "django.contrib.auth.backends.ModelBackend",
-        "proconnect.backends.OIDCAuthenticationBackend",
+        "sites_conformes.proconnect.backends.OIDCAuthenticationBackend",
     ]
 
     LOGOUT_URL = f"{FORCE_SCRIPT_NAME}/oidc/logout/"

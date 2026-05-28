@@ -8,11 +8,11 @@ En particulier, il permet de **construire des pages à l’aide de composants** 
 
 ## Prérequis
 
-Sites Conformes vise à utiliser les dernières versions disponibles de [Django (5.0+)](https://www.djangoproject.com/download/) et [Wagtail](https://docs.wagtail.org/en/stable/releases/upgrading.html).
+Sites Conformes vise à utiliser les dernières versions disponibles de [Django (6.0+)](https://www.djangoproject.com/download/) et [Wagtail](https://docs.wagtail.org/en/stable/releases/upgrading.html).
 
 Les tests automatisés couvrent les versions suivantes :
 
-- Python 3.10 à 3.14 (cf. [versions de Python supportées par Django](https://docs.djangoproject.com/en/5.2/faq/install/))
+- Python 3.12 à 3.14 (cf. [versions de Python supportées par Django](https://docs.djangoproject.com/en/6.0/faq/install/))
 - PostgreSQL 14 à 17 (cf. [versions de PostgreSQL supportées par Django](https://code.djangoproject.com/wiki/SupportedDatabaseVersions))
 
 ## Installation et contribution
@@ -20,6 +20,8 @@ Les tests automatisés couvrent les versions suivantes :
 - Pour déployer le projet en production sur un serveur, voir la [documentation d'installation](https://sites.beta.gouv.fr/documentation/installation/)
 - Pour installer le projet en local pour le développement, voir la [documentation d'embarquement](./ONBOARDING.md)
 - Avant de soumettre une contribution, consulter la  [documentation de contribution](./CONTRIBUTING.md)
+
+[![Déployer sur Scalingo (en test)](https://raw.githubusercontent.com/numerique-gouv/sites-conformes/refs/heads/main/static/artwork/logo-white-bg.svg)](https://dashboard.scalingo.com/create/app?source=https://github.com/numerique-gouv/sites-conformes#production)
 
 ### Git blame
 
@@ -38,14 +40,15 @@ Voir [`docs/git-blame-ignore-revs.md`](./docs/git-blame-ignore-revs.md) pour plu
 [![Made with Django](https://img.shields.io/badge/Made%20with-Django-0C4B33.svg)](https://www.djangoproject.com/)
 [![Made with Wagtail](https://img.shields.io/badge/Made%20with-Wagtail-0F7676.svg)](https://wagtail.io/)
 
-Sites Conformes est développé en utilisant le framework [Django](https://www.djangoproject.com/) et le CMS [Wagtail](https://wagtail.org/). Il est centré autour d'une application principale nommée **content_manager**, accompagnée d’applications annexes pour divers types de pages :
+Sites Conformes est développé en utilisant le framework [Django](https://www.djangoproject.com/) et le CMS [Wagtail](https://wagtail.org/). Il est centré autour d'une application principale nommée **sites_conformes.core**, accompagnée d’applications annexes pour divers types de pages :
 
-- **content_manager** : l’application principale, contient les contenus communs, les pages standard (pages de contenu), les pages d’index de catalogue et la gestion des configurations
+- **sites_conformes.core** : l’application principale, contient les contenus communs, les pages standard (pages de contenu), les pages d’index de catalogue et la gestion des configurations
 - **blog** : Permet de gérer des articles de blog et des index de blog, et les flux RSS correspondants.
 - **dashboard** : Contient les personnalisations des panneaux d’administration de Wagtail (dans `templates/wagtailadmin` et `wagtail_hooks.py`)
 - **[django-dsfr](https://github.com/numerique-gouv/django-dsfr)** : Permet d’utiliser facilement le [système de design de l’État](https://www.systeme-de-design.gouv.fr/) dans des templates Django.
 - **events** : Similaire à `blog`, mais permet de gérer des événements et des pages de calendrier, ainsi que les exports iCal correspondants.
 - **forms** : implémentation du [module de création de formulaire](https://docs.wagtail.org/en/stable/reference/contrib/forms/index.html) de Wagtail, par exemple pour les pages de contact. Volontairement assez limité (suffisant pour un formulaire de contact mais pas beaucoup plus), pour les cas complexes il vaut mieux privilégier l’intégration de [Démarches simplifiées](https://www.demarches-simplifiees.fr) ou de [Grist](https://grist.numerique.gouv.fr/).
+- **db_storage** : stockage des médias en base de données PostgreSQL, alternative au S3 pour les PaaS avec filesystem éphémère (cf. [documentation](./docs/db-storage.md))
 - **proconnect** : permet la connexion via [ProConnect](https://www.proconnect.gouv.fr/)
 
 ### Structure du dépôt

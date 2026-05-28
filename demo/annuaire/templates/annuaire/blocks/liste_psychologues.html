@@ -1,0 +1,82 @@
+{% load static %}
+
+{# Bloc StaticBlock — voir annuaire/blocks.py.
+   La carte est dessinée par Carte Facile (https://fab-geocommuns.github.io/carte-facile-site)
+   en s'appuyant sur maplibre-gl. Les coordonnées des psychologues sont
+   sérialisées via `{{ value|json_script }}` (échappement JSON correct par
+   défaut) puis lues par le module ESM. #}
+
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css">
+<link rel="stylesheet" href="https://unpkg.com/carte-facile@0.9.0/dist/carte-facile.css">
+
+<section class="fr-container fr-py-6w" aria-labelledby="annuaire-titre">
+  <h2 id="annuaire-titre" class="fr-h3">Annuaire des psychologues</h2>
+
+  <div class="fr-grid-row fr-grid-row--gutters">
+    <div class="fr-col-12 fr-col-md-7">
+      <div id="annuaire-carte"
+           style="height: 480px; width: 100%; border: 1px solid var(--border-default-grey);"
+           role="application"
+           aria-label="Carte interactive de l'annuaire">
+      </div>
+    </div>
+
+    <div class="fr-col-12 fr-col-md-5">
+      <ul class="fr-list" style="max-height: 480px; overflow-y: auto;">
+        {% for psy in psychologues %}
+          <li>
+            <strong>{{ psy.nom }}</strong> &mdash; {{ psy.ville }}<br>
+            {% if psy.email %}<a href="mailto:{{ psy.email }}">{{ psy.email }}</a>{% endif %}
+            {% if psy.telephone %}&nbsp;&middot;&nbsp;{{ psy.telephone }}{% endif %}
+          </li>
+        {% empty %}
+          <li>Aucun psychologue dans l'annuaire pour le moment.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  {{ psychologues_geojson|json_script:"annuaire-data" }}
+
+  <script type="importmap">
+    {
+      "imports": {
+        "maplibre-gl": "https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js",
+        "carte-facile": "https://unpkg.com/carte-facile@0.9.0/dist/carte-facile.esm.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import maplibregl from "maplibre-gl";
+    import { mapStyles } from "carte-facile";
+
+    const data = JSON.parse(document.getElementById("annuaire-data").textContent);
+
+    const map = new maplibregl.Map({
+      container: "annuaire-carte",
+      style: mapStyles.simple,
+      center: [2.5, 47.0],   // centre France
+      zoom: 5,
+    });
+
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
+
+    map.on("load", () => {
+      if (data.length === 0) return;
+
+      const bounds = new maplibregl.LngLatBounds();
+      for (const psy of data) {
+        const popup = new maplibregl.Popup({ offset: 18 }).setHTML(
+          `<strong>${psy.nom}</strong><br>${psy.ville}`
+        );
+        new maplibregl.Marker()
+          .setLngLat([psy.lng, psy.lat])
+          .setPopup(popup)
+          .addTo(map);
+        bounds.extend([psy.lng, psy.lat]);
+      }
+      map.fitBounds(bounds, { padding: 40, maxZoom: 10 });
+    });
+  </script>
+</section>
